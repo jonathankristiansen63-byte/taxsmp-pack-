@@ -30,12 +30,27 @@ dist/                     <- built zip + its SHA-1 (don't edit by hand)
 src/                      <- full-size original artwork
 ```
 
+## Velocity plugin (TaxSMP PackLoader)
+
+`velocity-plugin/TaxSMP-PackLoader.jar` sends this pack to players **once**, when they join.
+Switching between NA and EU doesn't send it again, so there's no reload.
+
+- Put the jar in `plugins/` on **both** proxies and restart them. Needs Velocity 4.2+ (Java 25).
+- Players must accept the pack (forced). Bedrock players are skipped if Floodgate is installed.
+- It reads the newest pack from this repo by itself, checking every 10 minutes.
+  Run `/taxpack reload` to grab a new version right away. `/taxpack` shows the version in use.
+  Both commands need the `taxsmp.packloader.admin` permission.
+- Settings: `plugins/taxsmp-packloader/config.yml`.
+- Source code: `velocity-plugin/`. Build it with `mvn package` (JDK 25).
+
+The NA and EU servers must **not** send a pack themselves: leave `resource-pack=` empty in their `server.properties`.
+
 ## Making changes
 
 1. Edit or add files in `pack/`.
 2. Push to `main`. GitHub Actions runs `build.py` and commits the new `dist/TaxSMP-Pack.zip` for you.
    (Or run `python build.py` yourself and commit `dist/` too.)
-3. Run `/taxpack reload` on Velocity (or restart it) so players get the new version.
+3. Within 10 minutes both proxies pick up the new version for new joins (or run `/taxpack reload`).
 
 Rules the build checks for you:
 - Each font image must be **256x256 or smaller**.
@@ -50,15 +65,16 @@ The character has to be in **double quotes** so YAML turns `` into the real c
 ```yaml
 header-footer:
   enabled: true
-  header:
-    - "&f"
-    - ""
-    - ""
-    - ""
-    - ""
-    - ""
-    - ""
-    - "&7%online%&8/&7%maxplayers% &fplayers online"
+  designs:
+    default:
+      header:
+      - "&f"
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
 ```
 
 To make the logo bigger or smaller, change `height` for `` in

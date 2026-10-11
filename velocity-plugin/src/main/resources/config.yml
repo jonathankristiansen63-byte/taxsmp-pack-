@@ -1,0 +1,23 @@
+# TaxSMP PackLoader
+# Sends the TaxSMP resource pack once when a player joins this proxy.
+# Switching between NA and EU keeps the pack loaded, so it is not sent again.
+
+# Where the pack lives on GitHub.
+github-repo: "jonathankristiansen63-byte/taxsmp-pack-"
+github-branch: "main"
+pack-path: "dist/TaxSMP-Pack.zip"
+
+# Keep this the same forever. Pack updates then replace the old pack instead of stacking on top of it.
+pack-id: "b1c37d58-7d24-4ea8-abd6-e63cae91af50"
+
+# true = players have to accept the pack, or they get disconnected.
+force: true
+
+# Text on Minecraft's resource pack screen. Supports & color codes.
+prompt: "&6&lTaxSMP &fneeds its resource pack to play!"
+
+# How often (in minutes) to check GitHub for a new version of the pack. 0 = only on startup and /taxpack reload.
+check-every-minutes: 10
+
+# Don't send the Java pack to Bedrock players (needs Floodgate on this proxy).
+skip-bedrock: true
