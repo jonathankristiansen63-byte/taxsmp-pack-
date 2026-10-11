@@ -264,7 +264,7 @@ def main():
         {"type": "space", "advances": {ch: -n for n, ch in MOVE_LEFT.items()} | {ch: n for n, ch in MOVE_RIGHT.items()}},
     ]
     font_path = PACK / "assets/minecraft/font/default.json"
-    font_path.write_text(json.dumps({"providers": providers}, indent=2) + "\n", encoding="utf-8")
+    font_path.write_text(json.dumps({"providers": providers}, indent=2) + "\n", encoding="utf-8", newline="\n")
 
     font = Font(sys.argv[1])
 
@@ -288,7 +288,7 @@ def main():
         ], font),
     }
     lang_path = PACK / "assets/minecraft/lang/en_us.json"
-    lang_path.write_text(json.dumps(labels, indent=2) + "\n", encoding="utf-8")
+    lang_path.write_text(json.dumps(labels, indent=2) + "\n", encoding="utf-8", newline="\n")
 
     render_preview(font, labels, ROOT / "preview/pause-menu.png", jar)
     print(f'"{BACK_TEXT}" is {back_w} px, "{LEAVE_TEXT}" is {leave_w} px, logo is {logo_w:.1f} px wide')
