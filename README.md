@@ -39,7 +39,9 @@ button strips and centered title plates. The shop quantity controls use red minu
 and green plus icons. Orders use matching navigation, search, sort, filter, refresh,
 confirm and cancel icons; the existing new-order slot uses a green plus.
 Inventory sizes, item positions and click actions are preserved. Bedrock keeps
-the normal chest window; custom item icons and title artwork require the Java pack.
+the normal chest window; install the separate Bedrock button pack below for its
+custom item icons. Menu title artwork and scoreboard pictures remain Java-only.
+The Java ping line uses a compass item icon.
 
 Build the backend with `mvn -f server-plugin/pom.xml package` (JDK 21 or newer).
 Install `dist/TaxSMP.jar` in the backend server's `plugins/` directory and restart.
@@ -50,6 +52,17 @@ To regenerate GUI assets, run `python tools/gui.py "path/to/client.jar"` with a
 Minecraft client jar containing the vanilla `generic_54.png` texture, then `python build.py`.
 The generated green plus and red minus sheet is stored in `src/gui-quantity-buttons.png`.
 Its icons are exported at 32x32 using nearest-neighbor sizing to preserve pixel edges.
+
+## Bedrock buttons for Geyser-Velocity
+
+The separate `dist/TaxSMP-Bedrock-Buttons.mcpack` contains all 12 button icons,
+including the generated green plus and red minus. Copy it into each proxy's
+`plugins/Geyser-Velocity/packs/` folder, and copy `dist/taxsmp-buttons-geyser.json`
+into `plugins/Geyser-Velocity/custom_mappings/`. Enable custom content and restart
+the proxies. See [the Bedrock install guide](bedrock/README.md) for requirements.
+
+Build with `python tools/bedrock_buttons.py`. Bedrock scoreboard text does not
+depend on a custom font pack. The Java Velocity PackLoader remains separate.
 
 ## Velocity plugin (TaxSMP PackLoader)
 

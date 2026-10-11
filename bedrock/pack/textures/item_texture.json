@@ -1,0 +1,66 @@
+{
+  "resource_pack_name": "taxsmp_gui_buttons",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "taxsmp_gui_search": {
+      "textures": [
+        "textures/items/taxsmp/search"
+      ]
+    },
+    "taxsmp_gui_sort": {
+      "textures": [
+        "textures/items/taxsmp/sort"
+      ]
+    },
+    "taxsmp_gui_filter": {
+      "textures": [
+        "textures/items/taxsmp/filter"
+      ]
+    },
+    "taxsmp_gui_refresh": {
+      "textures": [
+        "textures/items/taxsmp/refresh"
+      ]
+    },
+    "taxsmp_gui_mine": {
+      "textures": [
+        "textures/items/taxsmp/mine"
+      ]
+    },
+    "taxsmp_gui_prev": {
+      "textures": [
+        "textures/items/taxsmp/prev"
+      ]
+    },
+    "taxsmp_gui_next": {
+      "textures": [
+        "textures/items/taxsmp/next"
+      ]
+    },
+    "taxsmp_gui_back": {
+      "textures": [
+        "textures/items/taxsmp/back"
+      ]
+    },
+    "taxsmp_gui_yes": {
+      "textures": [
+        "textures/items/taxsmp/yes"
+      ]
+    },
+    "taxsmp_gui_no": {
+      "textures": [
+        "textures/items/taxsmp/no"
+      ]
+    },
+    "taxsmp_gui_plus": {
+      "textures": [
+        "textures/items/taxsmp/plus"
+      ]
+    },
+    "taxsmp_gui_minus": {
+      "textures": [
+        "textures/items/taxsmp/minus"
+      ]
+    }
+  }
+}

@@ -1707,7 +1707,7 @@ public class AuctionManager implements CommandExecutor, Listener {
       this.removeGeneratedWorthLore(hand);
       Inventory inv = Bukkit.createInventory(null, 27, MenuUpdates.displayTitle("§0" + toSmallCaps("confirm ah sell")));
       inv.setItem(13, hand);
-      ItemStack green = this.createItem(Material.LIME_DYE, "§aᴄᴏɴғɪʀᴍ ʟɪꜱᴛɪɴɢ");
+      ItemStack green = com.taxsmp.ui.GuiSkin.button(this.createItem(Material.LIME_DYE, "§aᴄᴏɴғɪʀᴍ ʟɪꜱᴛɪɴɢ"), "yes");
       ItemMeta gm = green.getItemMeta();
       double raw = price > 0.0 ? price : PriceManager.getPrice(hand.getType()) * hand.getAmount();
       double cap = 1.0E10;

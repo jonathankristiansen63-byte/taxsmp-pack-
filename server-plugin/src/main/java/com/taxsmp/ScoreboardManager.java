@@ -55,24 +55,9 @@ public class ScoreboardManager implements Listener {
    private static final String ICON_START = "\u0002";
    private static final String ICON_END = "\u0003";
    private static final Map<String, Object> SPRITES = new ConcurrentHashMap<>();
-   // Same order as the icons in the TaxSMP Bedrock pack (font/glyph_E2.png), see taxsmp-pack tools/bedrock_pack.py.
-   private static final Map<String, Character> BEDROCK_ICONS = Map.ofEntries(
-      Map.entry("item/name_tag", ''),
-      Map.entry("item/gold_ingot", ''),
-      Map.entry("item/diamond", ''),
-      Map.entry("item/egg", ''),
-      Map.entry("item/trial_key", ''),
-      Map.entry("item/clock_00", ''),
-      Map.entry("item/diamond_sword", ''),
-      Map.entry("item/bone", ''),
-      Map.entry("item/iron_chestplate", ''),
-      Map.entry("item/totem_of_undying", ''),
-      Map.entry("item/ender_pearl", ''),
-      Map.entry("item/emerald", '')
-   );
    private static boolean shadowReady;
    // Scoreboard frame from the TaxSMP resource pack (font taxsmp:hud, tools/hud.py in the pack repo).
-   // The board is always FRAME_BOARD_WIDTH px wide with 15 lines, so the frame fits it exactly.
+   // The Java board is FRAME_BOARD_WIDTH px wide with 12 lines, matching the frame.
    private static final int FRAME_BOARD_WIDTH = 144;
    private static final int FRAME_PICTURE_WIDTH = 148;
    private static final int FRAME_INDENT = 3;
@@ -321,7 +306,7 @@ public class ScoreboardManager implements Listener {
       lines.add(icon("item/bone", bedrock) + white + "Deaths: " + gray + deaths);
       lines.add(icon("item/iron_chestplate", bedrock) + white + "Team: " + (team.isBlank() ? gray + "None" : purple + team));
       lines.add(icon("item/totem_of_undying", bedrock) + white + "Players: " + gold + onlineCount);
-      lines.add(icon("item/ender_pearl", bedrock) + white + "Ping: " + green + ping + "ms " + gray + "| " + cyan + region);
+      lines.add(icon("item/compass_16", bedrock) + white + "Ping: " + green + ping + "ms " + gray + "| " + cyan + region);
       lines.add("");
       boolean framed = this.frameEnabled(bedrock);
       int contentWidth = FRAME_BOARD_WIDTH - 2 * FRAME_INDENT;
@@ -338,11 +323,10 @@ public class ScoreboardManager implements Listener {
       return lines;
    }
 
-   /** An item picture at the start of a line: a sprite on Java, a TaxSMP Bedrock pack glyph on Bedrock. */
+   /** Scoreboard artwork is Java-only; Bedrock keeps readable text without pack glyphs. */
    private static String icon(String sprite, boolean bedrock) {
       if (bedrock) {
-         Character glyph = BEDROCK_ICONS.get(sprite);
-         return glyph == null ? "" : "§f" + glyph + " ";
+         return "";
       } else {
          return ICON_START + sprite + ICON_END + " ";
       }

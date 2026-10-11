@@ -5,7 +5,7 @@ name: Build pack
 on:
   push:
     branches: [main]
-    paths: ["pack/**", "build.py"]
+    paths: ["pack/**", "bedrock/**", "build.py", "tools/bedrock_buttons.py"]
   workflow_dispatch:
 
 permissions:
@@ -20,6 +20,7 @@ jobs:
         with:
           python-version: "3.14"
       - run: python build.py
+      - run: python tools/bedrock_buttons.py
       - name: Commit the rebuilt zip
         run: |
           git config user.name "github-actions[bot]"

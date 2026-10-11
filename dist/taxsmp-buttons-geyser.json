@@ -1,0 +1,201 @@
+{
+  "format_version": 2,
+  "items": {
+    "minecraft:oak_sign": [
+      {
+        "type": "definition",
+        "model": "taxsmp:b/search",
+        "bedrock_identifier": "taxsmp:gui_search_oak_sign",
+        "display_name": "Search",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_search",
+          "creative_category": "none"
+        }
+      }
+    ],
+    "minecraft:cauldron": [
+      {
+        "type": "definition",
+        "model": "taxsmp:b/sort",
+        "bedrock_identifier": "taxsmp:gui_sort_cauldron",
+        "display_name": "Sort",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_sort",
+          "creative_category": "none"
+        }
+      }
+    ],
+    "minecraft:hopper": [
+      {
+        "type": "definition",
+        "model": "taxsmp:b/filter",
+        "bedrock_identifier": "taxsmp:gui_filter_hopper",
+        "display_name": "Filter",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_filter",
+          "creative_category": "none"
+        }
+      }
+    ],
+    "minecraft:egg": [
+      {
+        "type": "definition",
+        "model": "taxsmp:b/refresh",
+        "bedrock_identifier": "taxsmp:gui_refresh_egg",
+        "display_name": "Refresh",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_refresh",
+          "creative_category": "none"
+        }
+      }
+    ],
+    "minecraft:writable_book": [
+      {
+        "type": "definition",
+        "model": "taxsmp:b/refresh",
+        "bedrock_identifier": "taxsmp:gui_refresh_writable_book",
+        "display_name": "Refresh",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_refresh",
+          "creative_category": "none"
+        }
+      }
+    ],
+    "minecraft:chest": [
+      {
+        "type": "definition",
+        "model": "taxsmp:b/mine",
+        "bedrock_identifier": "taxsmp:gui_mine_chest",
+        "display_name": "Mine",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_mine",
+          "creative_category": "none"
+        }
+      }
+    ],
+    "minecraft:arrow": [
+      {
+        "type": "definition",
+        "model": "taxsmp:b/prev",
+        "bedrock_identifier": "taxsmp:gui_prev_arrow",
+        "display_name": "Prev",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_prev",
+          "creative_category": "none"
+        }
+      },
+      {
+        "type": "definition",
+        "model": "taxsmp:b/next",
+        "bedrock_identifier": "taxsmp:gui_next_arrow",
+        "display_name": "Next",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_next",
+          "creative_category": "none"
+        }
+      }
+    ],
+    "minecraft:red_stained_glass_pane": [
+      {
+        "type": "definition",
+        "model": "taxsmp:b/back",
+        "bedrock_identifier": "taxsmp:gui_back_red_stained_glass_pane",
+        "display_name": "Back",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_back",
+          "creative_category": "none"
+        }
+      },
+      {
+        "type": "definition",
+        "model": "taxsmp:b/no",
+        "bedrock_identifier": "taxsmp:gui_no_red_stained_glass_pane",
+        "display_name": "No",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_no",
+          "creative_category": "none"
+        }
+      },
+      {
+        "type": "definition",
+        "model": "taxsmp:b/minus",
+        "bedrock_identifier": "taxsmp:gui_minus_red_stained_glass_pane",
+        "display_name": "Minus",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_minus",
+          "creative_category": "none"
+        }
+      }
+    ],
+    "minecraft:lime_stained_glass_pane": [
+      {
+        "type": "definition",
+        "model": "taxsmp:b/yes",
+        "bedrock_identifier": "taxsmp:gui_yes_lime_stained_glass_pane",
+        "display_name": "Yes",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_yes",
+          "creative_category": "none"
+        }
+      },
+      {
+        "type": "definition",
+        "model": "taxsmp:b/plus",
+        "bedrock_identifier": "taxsmp:gui_plus_lime_stained_glass_pane",
+        "display_name": "Plus",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_plus",
+          "creative_category": "none"
+        }
+      }
+    ],
+    "minecraft:green_stained_glass_pane": [
+      {
+        "type": "definition",
+        "model": "taxsmp:b/yes",
+        "bedrock_identifier": "taxsmp:gui_yes_green_stained_glass_pane",
+        "display_name": "Yes",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_yes",
+          "creative_category": "none"
+        }
+      }
+    ],
+    "minecraft:lime_dye": [
+      {
+        "type": "definition",
+        "model": "taxsmp:b/yes",
+        "bedrock_identifier": "taxsmp:gui_yes_lime_dye",
+        "display_name": "Yes",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_yes",
+          "creative_category": "none"
+        }
+      }
+    ],
+    "minecraft:red_dye": [
+      {
+        "type": "definition",
+        "model": "taxsmp:b/no",
+        "bedrock_identifier": "taxsmp:gui_no_red_dye",
+        "display_name": "No",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_no",
+          "creative_category": "none"
+        }
+      }
+    ],
+    "minecraft:red_terracotta": [
+      {
+        "type": "definition",
+        "model": "taxsmp:b/no",
+        "bedrock_identifier": "taxsmp:gui_no_red_terracotta",
+        "display_name": "No",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_no",
+          "creative_category": "none"
+        }
+      }
+    ]
+  }
+}
