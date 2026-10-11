@@ -8,6 +8,7 @@ font picture's top edge is at (6 + 7 - ascent), so ascent = 13 - y puts it at wi
 Keep the characters and sizes in sync with com.taxsmp.ui.GuiSkin in the plugin.
 
 The 10 button icons are cut from src/gui-buttons.png (made with ChatGPT): 5 columns x 2 rows.
+The minus/plus controls are cut from src/gui-quantity-buttons.png: 2 columns x 1 row.
 File names are short on purpose: Windows has a 260 character path limit.
 
     python tools/gui.py "path/to/26.3.jar"
@@ -79,28 +80,6 @@ def bar():
     return img
 
 
-def quantity_button(positive):
-    """Native pixel icons for quantity controls and creating an order, matching the UI buttons."""
-    img = Image.new("RGBA", (16, 16), CLEAR)
-    px = img.load()
-    outline = (13, 24, 34, 255)
-    face = (100, 171, 46, 255) if positive else (196, 57, 57, 255)
-    highlight = (149, 213, 82, 255) if positive else (248, 110, 103, 255)
-    shadow = (61, 111, 29, 255) if positive else (136, 34, 34, 255)
-    rect(px, 1, 0, 14, 15, outline)
-    rect(px, 0, 1, 15, 14, outline)
-    rect(px, 2, 1, 13, 14, face)
-    rect(px, 1, 2, 14, 13, face)
-    rect(px, 2, 1, 13, 1, highlight)
-    rect(px, 1, 2, 1, 13, highlight)
-    rect(px, 2, 14, 13, 14, shadow)
-    rect(px, 14, 2, 14, 13, shadow)
-    rect(px, 4, 7, 11, 8, LIGHT)
-    if positive:
-        rect(px, 7, 4, 8, 11, LIGHT)
-    return img.resize((32, 32), Image.Resampling.NEAREST)
-
-
 def plate_piece(kind):
     """Title plate, 12 px tall: left cap (4 px), middles (16 px / 1 px) and right cap (4 px)."""
     w = {"l": 4, "m16": 16, "m1": 1, "r": 4}[kind]
@@ -136,15 +115,15 @@ def runs(values):
     return out
 
 
-def buttons(sheet_path):
-    """Cut the 10 icons out of the ChatGPT sheet (5 x 2, transparent background) at 32x32."""
+def buttons(sheet_path, grid=(5, 2), resampling=Image.Resampling.LANCZOS):
+    """Export isolated sprites from a transparent sheet at inventory texture size (32x32)."""
     sheet = Image.open(sheet_path).convert("RGBA")
     alpha = sheet.getchannel("A").point(lambda a: 255 if a > 32 else 0).load()
     w, h = sheet.size
     cols = runs([x for x in range(w) if any(alpha[x, y] for y in range(0, h, 2))])
     rows = runs([y for y in range(h) if any(alpha[x, y] for x in range(0, w, 2))])
-    if len(cols) != 5 or len(rows) != 2:
-        sys.exit(f"Expected 5 x 2 icons in the button sheet, found {len(cols)} x {len(rows)}")
+    if (len(cols), len(rows)) != grid:
+        sys.exit(f"Expected {grid[0]} x {grid[1]} icons in the button sheet, found {len(cols)} x {len(rows)}")
     icons = []
     for (y0, y1) in rows:
         for (x0, x1) in cols:
@@ -152,7 +131,7 @@ def buttons(sheet_path):
             size = max(icon.size)
             square = Image.new("RGBA", (size, size), CLEAR)
             square.paste(icon, ((size - icon.width) // 2, (size - icon.height) // 2))
-            icons.append(square.convert("RGBa").resize((32, 32), Image.LANCZOS).convert("RGBA"))
+            icons.append(square.convert("RGBa").resize((32, 32), resampling).convert("RGBA"))
     return icons
 
 
@@ -190,7 +169,8 @@ def main():
     # Item textures must sit under textures/item/ (or block/) or Minecraft never loads them.
     (ASSETS / "textures/item/b").mkdir(parents=True, exist_ok=True)
     icons = dict(zip(BUTTONS, buttons(ROOT / "src/gui-buttons.png")))
-    icons.update(plus=quantity_button(True), minus=quantity_button(False))
+    minus, plus = buttons(ROOT / "src/gui-quantity-buttons.png", (2, 1), Image.Resampling.NEAREST)
+    icons.update(plus=plus, minus=minus)
     for name, icon in icons.items():
         icon.save(ASSETS / f"textures/item/b/{name}.png")
         write_json(ASSETS / f"models/b/{name}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"taxsmp:item/b/{name}"}})

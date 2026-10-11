@@ -48,8 +48,8 @@ example database settings, with MySQL disabled until configured.
 
 To regenerate GUI assets, run `python tools/gui.py "path/to/client.jar"` with a
 Minecraft client jar containing the vanilla `generic_54.png` texture, then `python build.py`.
-The green plus and red minus textures are drawn on a native pixel grid so their
-edges remain sharp at inventory scale.
+The generated green plus and red minus sheet is stored in `src/gui-quantity-buttons.png`.
+Its icons are exported at 32x32 using nearest-neighbor sizing to preserve pixel edges.
 
 ## Velocity plugin (TaxSMP PackLoader)
 
