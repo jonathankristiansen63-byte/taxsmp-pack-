@@ -55,7 +55,7 @@ public class SellManager implements CommandExecutor, Listener {
          inventory.setItem(slot, null);
       }
 
-      inventory.setItem(44, named(Material.LIME_STAINED_GLASS_PANE, "§x§5§5§F§F§B§8$" + PriceManager.formatPrice(total), "§7Click to sell items"));
+      inventory.setItem(44, com.taxsmp.ui.GuiSkin.button(named(Material.LIME_STAINED_GLASS_PANE, "§x§5§5§F§F§B§8$" + PriceManager.formatPrice(total), "§7Click to sell items"), "info"));
    }
 
    private static ItemStack named(Material material, String name, String loreLine) {

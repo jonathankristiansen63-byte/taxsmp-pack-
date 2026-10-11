@@ -38,7 +38,10 @@ The backend plugin uses the `taxsmp:gui` font for gray menu panels, inset item s
 button strips and centered title plates. The shop quantity controls use red minus
 and green plus icons. Orders use matching navigation, search, sort, filter, refresh,
 confirm and cancel icons; the existing new-order slot uses a green plus.
-Inventory sizes, item positions and click actions are preserved. Bedrock keeps
+Auction and orders use a centered 7x3 item grid with a full empty spacer row
+above the controls. Shop, sell and sell-multiplier retain their internal layouts.
+All these Java menus have matching silver bevels and a highlighted gray toolbar.
+Bedrock keeps
 the normal chest window; install the separate Bedrock button pack below for its
 custom item icons. Menu title artwork and scoreboard pictures remain Java-only.
 The Java ping line uses a compass item icon.
@@ -55,14 +58,22 @@ Its icons are exported at 32x32 using nearest-neighbor sizing to preserve pixel 
 
 ## Bedrock buttons for Geyser-Velocity
 
-The separate `dist/TaxSMP-Bedrock-Buttons.mcpack` contains all 13 button icons,
-including the generated green plus and red minus. Copy it into each proxy's
+The separate `dist/TaxSMP-Bedrock-Buttons.mcpack` contains all 13 button icons
+and five RTP artwork icons, including the generated green plus and red minus.
+Copy it into each proxy's
 `plugins/Geyser-Velocity/packs/` folder, and copy `dist/taxsmp-buttons-geyser.json`
 into `plugins/Geyser-Velocity/custom_mappings/`. Enable custom content and restart
 the proxies. See [the Bedrock install guide](bedrock/README.md) for requirements.
 
 Build with `python tools/bedrock_buttons.py`. Bedrock scoreboard text does not
 depend on a custom font pack. The Java Velocity PackLoader remains separate.
+
+## RTP artwork menus
+
+`dist/FoliaRTP.jar` adds three dimension cards and a two-region map to the uploaded
+FoliaRTP plugin. Overworld and Nether offer EU Central and NA East; End's map offers
+only EU Central. Bedrock uses working native inventory buttons with matching
+artwork icons. See [installation and build instructions](rtp-ui/README.md).
 
 ## Velocity plugin (TaxSMP PackLoader)
 

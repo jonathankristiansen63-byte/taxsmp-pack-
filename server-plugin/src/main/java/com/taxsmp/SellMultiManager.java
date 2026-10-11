@@ -149,6 +149,10 @@ public class SellMultiManager implements CommandExecutor, Listener {
       return this.db != null && this.db.isEnabled();
    }
 
+   public boolean isMenuTitle(String title) {
+      return MAIN_TITLE.equals(title) || this.titleToCategory.containsKey(title) || this.pricesTitleToCategory.containsKey(title);
+   }
+
    private void createTable() {
       try (
          Connection conn = this.db.getConnection();

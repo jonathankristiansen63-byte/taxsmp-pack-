@@ -147,6 +147,16 @@
           "icon": "taxsmp_gui_plus",
           "creative_category": "none"
         }
+      },
+      {
+        "type": "definition",
+        "model": "taxsmp:b/info",
+        "bedrock_identifier": "taxsmp:gui_info_lime_stained_glass_pane",
+        "display_name": "Info",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_info",
+          "creative_category": "none"
+        }
       }
     ],
     "minecraft:green_stained_glass_pane": [
@@ -205,6 +215,62 @@
         "display_name": "Info",
         "bedrock_options": {
           "icon": "taxsmp_gui_info",
+          "creative_category": "none"
+        }
+      }
+    ],
+    "minecraft:moss_block": [
+      {
+        "type": "definition",
+        "model": "taxsmp:rtp/overworld",
+        "bedrock_identifier": "taxsmp:rtp_overworld_moss_block",
+        "display_name": "Overworld",
+        "bedrock_options": {
+          "icon": "taxsmp_rtp_overworld",
+          "creative_category": "none"
+        }
+      },
+      {
+        "type": "definition",
+        "model": "taxsmp:rtp/region_eu",
+        "bedrock_identifier": "taxsmp:rtp_region_eu_moss_block",
+        "display_name": "Region Eu",
+        "bedrock_options": {
+          "icon": "taxsmp_rtp_region_eu",
+          "creative_category": "none"
+        }
+      },
+      {
+        "type": "definition",
+        "model": "taxsmp:rtp/region_na",
+        "bedrock_identifier": "taxsmp:rtp_region_na_moss_block",
+        "display_name": "Region Na",
+        "bedrock_options": {
+          "icon": "taxsmp_rtp_region_na",
+          "creative_category": "none"
+        }
+      }
+    ],
+    "minecraft:nether_wart_block": [
+      {
+        "type": "definition",
+        "model": "taxsmp:rtp/nether",
+        "bedrock_identifier": "taxsmp:rtp_nether_nether_wart_block",
+        "display_name": "Nether",
+        "bedrock_options": {
+          "icon": "taxsmp_rtp_nether",
+          "creative_category": "none"
+        }
+      }
+    ],
+    "minecraft:end_stone_bricks": [
+      {
+        "type": "definition",
+        "model": "taxsmp:rtp/end",
+        "bedrock_identifier": "taxsmp:rtp_end_end_stone_bricks",
+        "display_name": "End",
+        "bedrock_options": {
+          "icon": "taxsmp_rtp_end",
           "creative_category": "none"
         }
       }

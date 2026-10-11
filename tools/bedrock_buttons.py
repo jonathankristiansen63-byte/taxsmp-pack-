@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).absolute().parent.parent
 PACK = ROOT / 'bedrock/pack'
 DIST = ROOT / 'dist'
-VERSION = [1, 0, 1]
+VERSION = [1, 0, 2]
 
 # Each (Java material, item_model) pair needs a unique Bedrock identifier.
 # Restrict mappings to the actual menu materials, so vanilla gameplay items keep
@@ -32,8 +32,11 @@ BASE_ITEMS = {
     'no': ['red_stained_glass_pane', 'red_dye', 'red_terracotta'],
     'plus': ['lime_stained_glass_pane'],
     'minus': ['red_stained_glass_pane'],
-    'info': ['book'],
+    'info': ['book', 'lime_stained_glass_pane'],
 }
+
+RTP_ITEMS = {'overworld': 'moss_block', 'nether': 'nether_wart_block', 'end': 'end_stone_bricks',
+             'region_eu': 'moss_block', 'region_na': 'moss_block'}
 
 
 def write_json(path, data):
@@ -81,6 +84,21 @@ def main():
                 'display_name': button.title(),
                 'bedrock_options': {'icon': icon, 'creative_category': 'none'},
             })
+    for name, base in RTP_ITEMS.items():
+        icon = 'taxsmp_rtp_' + name
+        texture_path = 'textures/items/taxsmp/rtp_' + name
+        target = PACK / (texture_path + '.png')
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / f'pack/assets/taxsmp/textures/item/rtp/{name}.png', target)
+        texture_data[icon] = {'textures': [texture_path]}
+        identifier = 'taxsmp:rtp_' + name + '_' + base
+        assert identifier not in identifiers
+        identifiers.add(identifier)
+        items.setdefault('minecraft:' + base, []).append({
+            'type': 'definition', 'model': 'taxsmp:rtp/' + name, 'bedrock_identifier': identifier,
+            'display_name': name.replace('_', ' ').title(),
+            'bedrock_options': {'icon': icon, 'creative_category': 'none'},
+        })
     write_json(PACK / 'textures/item_texture.json', {
         'resource_pack_name': 'taxsmp_gui_buttons',
         'texture_name': 'atlas.items',
@@ -100,7 +118,7 @@ def main():
                 archive.writestr(info, path.read_bytes())
     (DIST / 'TaxSMP-Bedrock-Buttons.mcpack.sha256').write_text(
         hashlib.sha256(output.read_bytes()).hexdigest() + '\n', encoding='utf-8', newline='\n')
-    print(f'Built {output.name}: {len(BASE_ITEMS)} button textures, {len(identifiers)} Geyser definitions; no scoreboard assets.')
+    print(f'Built {output.name}: {len(texture_data)} textures, {len(identifiers)} Geyser definitions; no scoreboard assets.')
 
 
 if __name__ == '__main__':

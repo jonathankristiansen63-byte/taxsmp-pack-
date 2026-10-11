@@ -61,10 +61,23 @@ def sunken(px, x0, y0, x1, y1, fill):
 def panel(vanilla, rows):
     """The chest window's top part with the slots removed and an inset tray where they were."""
     h = 17 + rows * 18
-    img = vanilla.crop((0, 0, 176, h)).copy()
+    img = Image.new("RGBA", (176, h), PANEL_GRAY)
     px = img.load()
-    rect(px, 7, 17, 168, h - 1, PANEL_GRAY)
-    sunken(px, 6, 16, 169, h - 1, TRAY_FILL)
+    # Raised silver shell around an inset tray. Keep the active slot area at x=7.
+    rect(px, 1, 0, 174, 0, DARK)
+    rect(px, 0, 1, 0, h - 2, DARK)
+    rect(px, 175, 1, 175, h - 2, DARK)
+    rect(px, 1, h - 1, 174, h - 1, DARK)
+    rect(px, 2, 1, 173, 2, LIGHT)
+    rect(px, 1, 2, 2, h - 3, LIGHT)
+    rect(px, 173, 3, 174, h - 3, SHADE)
+    rect(px, 3, h - 3, 172, h - 2, SHADE)
+    # Three hard bands: black rim, silver lip and dark inset edge.
+    sunken(px, 4, 15, 171, h - 4, (0, 0, 0, 255))
+    sunken(px, 5, 16, 170, h - 5, (230, 230, 230, 255))
+    sunken(px, 6, 17, 169, h - 6, TRAY_FILL)
+    for x, y in ((0, 0), (175, 0), (0, h - 1), (175, h - 1)):
+        px[x, y] = CLEAR
     return img
 
 
@@ -76,7 +89,13 @@ def slot():
 
 def bar():
     img = Image.new("RGBA", (162, 18), BAR_FILL)
-    sunken(img.load(), 0, 0, 161, 17, BAR_FILL)
+    px = img.load()
+    sunken(px, 0, 0, 161, 17, BAR_FILL)
+    # The reference has a silver reflected edge and a lighter upper face.
+    rect(px, 1, 1, 160, 7, (94, 94, 94, 255))
+    rect(px, 1, 1, 160, 1, (170, 170, 170, 255))
+    rect(px, 1, 15, 160, 15, (158, 158, 158, 255))
+    rect(px, 1, 16, 160, 16, (225, 225, 225, 255))
     return img
 
 
@@ -195,6 +214,8 @@ def main():
         write_json(ASSETS / f"models/b/{name}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"taxsmp:item/b/{name}"}})
         write_json(ASSETS / f"items/b/{name}.json", {"model": {"type": "minecraft:model", "model": f"taxsmp:b/{name}"}})
     print(f"gui font: {len(providers)} providers, {len(icons)} buttons")
+    from rtp_assets import build
+    build(sys.argv[1])
 
 
 if __name__ == "__main__":

@@ -66,6 +66,31 @@
       "textures": [
         "textures/items/taxsmp/info"
       ]
+    },
+    "taxsmp_rtp_overworld": {
+      "textures": [
+        "textures/items/taxsmp/rtp_overworld"
+      ]
+    },
+    "taxsmp_rtp_nether": {
+      "textures": [
+        "textures/items/taxsmp/rtp_nether"
+      ]
+    },
+    "taxsmp_rtp_end": {
+      "textures": [
+        "textures/items/taxsmp/rtp_end"
+      ]
+    },
+    "taxsmp_rtp_region_eu": {
+      "textures": [
+        "textures/items/taxsmp/rtp_region_eu"
+      ]
+    },
+    "taxsmp_rtp_region_na": {
+      "textures": [
+        "textures/items/taxsmp/rtp_region_na"
+      ]
     }
   }
 }

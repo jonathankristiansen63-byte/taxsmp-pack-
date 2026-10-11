@@ -2,10 +2,10 @@ package com.taxsmp.ui;
 
 /** Centered market grid, with padding above and a separate controls row. */
 public final class MarketLayout {
-   public static final int SIZE = 45;
+   public static final int SIZE = 54;
    public static final int CAPACITY = 21;
-   public static final int SEARCH = 37, SORT = 38, PREV = 39, REFRESH = 40,
-      NEXT = 41, FILTER = 42, MINE = 43;
+   public static final int SEARCH = 46, SORT = 47, PREV = 48, REFRESH = 49,
+      NEXT = 50, FILTER = 51, MINE = 52;
 
    private MarketLayout() {}
 

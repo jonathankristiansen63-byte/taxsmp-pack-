@@ -107,8 +107,9 @@ public final class GuiSkin implements Listener {
          if ((scoreboard == null || !scoreboard.isBedrockPlayer(player))
             && top.getType() == InventoryType.CHEST
             && top.getSize() % 9 == 0
-            && isSkinned(plain)) {
-            event.titleOverride(build(top, title, fullGrid(plain), plain.startsWith("ʙᴜʏɪɴɢ"), compactGrid(plain)));
+            && (isSkinned(plain) || this.plugin.getSellMultiManager() != null && this.plugin.getSellMultiManager().isMenuTitle(title))) {
+            String visibleTitle = plain.equals("Drop Items to Sell") ? "Sell" : title;
+            event.titleOverride(build(top, visibleTitle, fullGrid(plain), plain.startsWith("ʙᴜʏɪɴɢ"), compactGrid(plain)));
          }
       }
    }
@@ -118,13 +119,13 @@ public final class GuiSkin implements Listener {
          || plain.startsWith("ɢᴇᴍ ꜱʜᴏᴘ")
          || plain.startsWith("ʙᴜʏɪɴɢ")
          || plain.startsWith("Auction")
-         || plain.startsWith("Orders");
+         || plain.startsWith("Orders") || plain.equals("Drop Items to Sell") || plain.equals("Confirm Sell");
    }
 
    /** Listing pages fill in after they open, so every slot gets a square there. */
    private static boolean fullGrid(String plain) {
       return plain.startsWith("Auction (") || plain.startsWith("Orders (") || plain.startsWith("Auction -> Transactions")
-         || plain.equals("Orders -> Your Orders") || plain.equals("Orders -> Select An Item");
+         || plain.equals("Orders -> Your Orders") || plain.equals("Orders -> Select An Item") || plain.equals("Drop Items to Sell");
    }
 
    private static boolean compactGrid(String plain) {
