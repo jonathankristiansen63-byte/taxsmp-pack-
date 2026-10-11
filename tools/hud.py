@@ -57,9 +57,11 @@ def make_frame():
     ring(1, GOLD_LIGHT)
     ring(2, GOLD)
     ring(3, BLACK)
-    # Gold line between the header and the lines (the 1 px gap at top-1).
+    # Minecraft draws the title row at 40% black and the lines at 30%. A 14% black layer over
+    # the lines (drawn before their text) makes the whole board one even shade: 1 - 0.7 * 0.86 = 0.4.
     for x in range(4, w - 4):
-        px[x, lines_top - 1] = GOLD
+        for y in range(lines_top - 1, bottom):
+            px[x, y] = (0, 0, 0, 36)
 
     # Glyph top = title line top + 7 - ascent = (top - 9) + 7 - ascent = top - 14.
     return img, {"height": h, "ascent": 12}
