@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "taxsmp:b/mine"
+    "layer0": "taxsmp:item/b/mine"
   }
 }

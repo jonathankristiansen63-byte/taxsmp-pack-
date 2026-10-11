@@ -170,10 +170,11 @@ def main():
     providers.append({"type": "space", "advances": {ch: -n for n, ch in MOVE_LEFT.items()} | {ch: n for n, ch in MOVE_RIGHT.items()}})
     write_json(ASSETS / "font/gui.json", {"providers": providers})
 
-    (ASSETS / "textures/b").mkdir(parents=True, exist_ok=True)
+    # Item textures must sit under textures/item/ (or block/) or Minecraft never loads them.
+    (ASSETS / "textures/item/b").mkdir(parents=True, exist_ok=True)
     for name, icon in zip(BUTTONS, buttons(ROOT / "src/gui-buttons.png")):
-        icon.save(ASSETS / f"textures/b/{name}.png")
-        write_json(ASSETS / f"models/b/{name}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"taxsmp:b/{name}"}})
+        icon.save(ASSETS / f"textures/item/b/{name}.png")
+        write_json(ASSETS / f"models/b/{name}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"taxsmp:item/b/{name}"}})
         write_json(ASSETS / f"items/b/{name}.json", {"model": {"type": "minecraft:model", "model": f"taxsmp:b/{name}"}})
     print(f"gui font: {len(providers)} providers, {len(BUTTONS)} buttons")
 
