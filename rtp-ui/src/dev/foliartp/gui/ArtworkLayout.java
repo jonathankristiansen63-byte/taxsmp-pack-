@@ -24,8 +24,8 @@ public final class ArtworkLayout {
       if (slot < 0 || slot >= 45) return null;
       int row = slot / 9, column = slot % 9;
       if (row < 1 || row > 3) return null;
-      if (column >= 1 && column <= 3) return "na";
-      if (column >= 4 && column <= 7) return "eu";
+      if (column >= 1 && column <= 2) return "na";
+      if (column >= 3 && column <= 7) return "eu";
       return null;
    }
 

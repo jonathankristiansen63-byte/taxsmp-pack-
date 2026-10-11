@@ -32,6 +32,23 @@ def title_plate(image, font, label):
     text(image, font, label, 88, 6)
 
 
+def map_caption(image, label, x, y):
+    # Small crisp captions directly below each pin, matching the reference map.
+    letters = {'A': ('010','101','111','101','101'), 'C': ('111','100','100','100','111'),
+               'E': ('111','100','110','100','111'), 'L': ('100','100','100','100','111'),
+               'N': ('101','111','111','111','101'), 'R': ('110','101','110','101','101'),
+               'S': ('111','100','111','001','111'), 'T': ('111','010','010','010','010'),
+               'U': ('101','101','101','101','111'), ' ': ('000',)*5}
+    glyphs = Image.new('RGBA', (len(label) * 4 - 1, 5), CLEAR)
+    for index, character in enumerate(label):
+        for row, pixels in enumerate(letters[character]):
+            for column, pixel in enumerate(pixels):
+                if pixel == '1': glyphs.putpixel((index * 4 + column, row), LIGHT)
+    left = x - glyphs.width // 2
+    rect(image.load(), left - 1, y - 1, left + glyphs.width, y + 5, (33, 41, 50, 255))
+    image.alpha_composite(glyphs, (left, y))
+
+
 def pin(image, x, y):
     # x/y is the actual point on the map. Its white top and dark lip add shine.
     px = image.load()
@@ -79,12 +96,10 @@ def build(jar_path):
     # Pin tips sit on the eastern US and central Europe in this particular map.
     # Captions stay inside their matching inventory click regions.
     end_regions = regions.copy()
-    for region, x, y, label, label_x, label_y in (('na', 46, 50, 'NA EAST', 51, 69), ('eu', 83, 45, 'EU CENTRAL', 112, 61)):
-        width = font.width(label)
+    for region, x, y, label in (('na', 46, 50, 'NA EAST'), ('eu', 83, 45, 'EU CENTRAL')):
         for target in ((regions, end_regions) if region == 'eu' else (regions,)):
             pin(target, x, y)
-            rect(target.load(), label_x - width // 2 - 2, label_y - 1, label_x + width // 2 + 2, label_y + 8, (33, 41, 50, 255))
-            text(target, font, label, label_x, label_y, LIGHT)
+            map_caption(target, label, x, y + 3)
         icon = Image.new('RGBA', (32, 32), (27, 72, 116, 255))
         icon.alpha_composite(world.resize((32, 16), Image.Resampling.NEAREST), (0, 8))
         pin(icon, round((x - 8) / 5), 8 + round((y - 22) / 5))
