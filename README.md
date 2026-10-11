@@ -13,7 +13,7 @@ https://raw.githubusercontent.com/jonathankristiansen63-byte/taxsmp-pack-/main/d
 | Feature | How it works |
 |---|---|
 | TaxSMP logo at the top of the **tab list** | Font character `` draws the logo. Put it in the TAB header (see below). |
-| TaxSMP logo on the **pause menu** (Esc) | The "Game Menu" title is replaced with character ``, for every language. |
+| **Pause menu** (Esc): logo right above "Back to Game", yellow "ᴄᴏᴍᴇ ʙᴀᴄᴋ ꜱᴏᴏɴ...." Disconnect button, banner under it | Drawn with font characters inside the button labels. Made by `tools/pause_menu.py`, see below. Preview: `preview/pause-menu.png` |
 | Pack icon | `pack/pack.png` |
 
 ## Folder layout
@@ -36,7 +36,9 @@ src/                      <- full-size original artwork
 Switching between NA and EU doesn't send it again, so there's no reload.
 
 - Put the jar in `plugins/` on **both** proxies and restart them. Needs Velocity 4.2+ (Java 25).
-- Players must accept the pack (forced). Bedrock players are skipped if Floodgate is installed.
+- Players stay on the joining screen until the pack has loaded, so they can't play without it.
+  If they decline, or don't answer within 2 minutes, they get kicked (`accept-timeout-seconds`, `kick-message`).
+  Bedrock players are skipped if Floodgate is installed.
 - It reads the newest pack from this repo by itself, checking every 10 minutes.
   Run `/taxpack reload` to grab a new version right away. `/taxpack` shows the version in use.
   Both commands need the `taxsmp.packloader.admin` permission.
@@ -82,6 +84,18 @@ To make the logo bigger or smaller, change `height` for `` in
 
 ## Pause menu
 
-The `` logo sits above the pause title, which Minecraft draws 40 px from the top.
-`ascent: 39` moves it up so it fits above the "Back to Game" button on small screens.
-To move it down, lower `ascent` (it must stay at or below `height`).
+A server pack can't add things to the pause menu, so the pictures are font characters inside
+the button labels (`menu.returnToGame` and `menu.disconnect` in the lang file). Space characters
+move them to exact spots relative to their button, so they stay in place on any screen size.
+The "Game Menu" title is hidden.
+
+Don't edit those lang lines or `font/default.json` by hand. Change the settings at the top of
+`tools/pause_menu.py` (sizes, colors, button text) or the artwork in `src/`, then run it.
+It needs a Minecraft 26.3 client jar to measure the text exactly:
+
+```
+python tools/pause_menu.py "path/to/26.3.jar"
+python build.py
+```
+
+It also draws `preview/pause-menu.png` so you can check the result before pushing.

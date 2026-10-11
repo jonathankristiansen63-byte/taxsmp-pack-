@@ -5,10 +5,15 @@ import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
+import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.player.PlayerResourcePackStatusEvent;
+import com.velocitypowered.api.event.player.PlayerResourcePackStatusEvent.Status;
 import com.velocitypowered.api.event.player.ServerPostConnectEvent;
+import com.velocitypowered.api.event.player.configuration.PlayerConfigurationEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.PluginContainer;
@@ -33,7 +38,10 @@ import java.time.Duration;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.kyori.adventure.text.Component;
@@ -44,7 +52,7 @@ import org.yaml.snakeyaml.Yaml;
 @Plugin(
     id = "taxsmp-packloader",
     name = "TaxSMP PackLoader",
-    version = "1.0.0",
+    version = "1.1.0",
     description = "Sends the TaxSMP resource pack once when a player joins the network",
     authors = {"TaxSMP"},
     dependencies = {@Dependency(id = "floodgate", optional = true)})
@@ -61,13 +69,16 @@ public final class PackLoader {
       .connectTimeout(Duration.ofSeconds(10))
       .build();
   private final AtomicBoolean checking = new AtomicBoolean();
+  private final Set<UUID> hasPack = ConcurrentHashMap.newKeySet();
+  private final Map<UUID, CompletableFuture<Status>> waiting = new ConcurrentHashMap<>();
 
   private volatile Settings settings;
   private volatile Pack pack;
   private ScheduledTask checkTask;
 
   record Settings(String repo, String branch, String path, UUID packId, boolean force,
-                  Component prompt, int checkEveryMinutes, boolean skipBedrock) {}
+                  Component prompt, int acceptTimeoutSeconds, Component kickMessage,
+                  int checkEveryMinutes, boolean skipBedrock) {}
 
   /** The pack zip at one exact GitHub commit, and the SHA-1 of that file. */
   record Pack(String commit, String url, byte[] sha1) {
@@ -101,34 +112,90 @@ public final class PackLoader {
   }
 
   @Subscribe
+  public void onConfiguration(PlayerConfigurationEvent event, Continuation continuation) {
+    // 1.20.2+ players go through this while joining (and when switching NA <-> EU), before they're in the world.
+    Player player = event.player();
+    Pack current = packFor(player);
+    if (current == null || !settings.force()) {
+      if (current != null) {
+        sendPack(player, current);
+      }
+      continuation.resume();
+      return;
+    }
+    // Keep the player on the joining screen until the pack has loaded, so nobody can skip it.
+    CompletableFuture<Status> result = new CompletableFuture<>();
+    waiting.put(player.getUniqueId(), result);
+    result.completeOnTimeout(null, settings.acceptTimeoutSeconds(), TimeUnit.SECONDS)
+        .whenComplete((status, error) -> {
+          waiting.remove(player.getUniqueId(), result);
+          if (status != Status.SUCCESSFUL && player.isActive()) {
+            player.disconnect(settings.kickMessage());
+          }
+          continuation.resume();
+        });
+    sendPack(player, current);
+  }
+
+  @Subscribe
   public void onServerPostConnect(ServerPostConnectEvent event) {
-    // Moving between NA and EU keeps the pack loaded, so only send it for the first server after joining.
-    if (event.getPreviousServer() == null) {
-      sendPack(event.getPlayer());
+    // Clients older than 1.20.2 have no joining phase for packs, so they get it on their first server.
+    Player player = event.getPlayer();
+    if (event.getPreviousServer() == null
+        && player.getProtocolVersion().compareTo(ProtocolVersion.MINECRAFT_1_20_2) < 0) {
+      Pack current = packFor(player);
+      if (current != null) {
+        sendPack(player, current);
+      }
     }
   }
 
   @Subscribe
   public void onPackStatus(PlayerResourcePackStatusEvent event) {
-    if (!settings.packId().equals(event.getPackId())) {
+    UUID uuid = event.getPlayer().getUniqueId();
+    CompletableFuture<Status> result = waiting.get(uuid);
+    boolean ours = settings.packId().equals(event.getPackId()) || (event.getPackId() == null && result != null);
+    if (!ours || event.getStatus().isIntermediate()) {
       return;
     }
-    switch (event.getStatus()) {
-      case FAILED_DOWNLOAD, INVALID_URL, FAILED_RELOAD -> logger.warn(
-          "{} couldn't load the TaxSMP pack ({})", event.getPlayer().getUsername(), event.getStatus());
-      default -> { }
+    if (event.getStatus() == Status.SUCCESSFUL) {
+      hasPack.add(uuid);
+    } else {
+      logger.warn("{} didn't load the TaxSMP pack ({})", event.getPlayer().getUsername(), event.getStatus());
+    }
+    if (result != null) {
+      event.setOverwriteKick(true); // we kick them ourselves, with our own message
+      result.complete(event.getStatus());
     }
   }
 
-  private void sendPack(Player player) {
+  @Subscribe
+  public void onDisconnect(DisconnectEvent event) {
+    UUID uuid = event.getPlayer().getUniqueId();
+    hasPack.remove(uuid);
+    CompletableFuture<Status> result = waiting.remove(uuid);
+    if (result != null) {
+      result.complete(null);
+    }
+  }
+
+  /** The pack to send this player, or null if they already have it or shouldn't get it. */
+  private Pack packFor(Player player) {
+    if (hasPack.contains(player.getUniqueId())) {
+      return null;
+    }
     Pack current = pack;
     if (current == null) {
       logger.warn("Not sending the pack to {}: it hasn't been downloaded from GitHub yet", player.getUsername());
-      return;
+      return null;
     }
     if (settings.skipBedrock() && isBedrock(player)) {
-      return;
+      return null;
     }
+    return current;
+  }
+
+  private void sendPack(Player player, Pack current) {
     ResourcePackInfo info = proxy.createResourcePackBuilder(current.url())
         .setId(settings.packId())
         .setHash(current.sha1())
@@ -264,6 +331,9 @@ public final class PackLoader {
         UUID.fromString(String.valueOf(yaml.getOrDefault("pack-id", "b1c37d58-7d24-4ea8-abd6-e63cae91af50"))),
         Boolean.parseBoolean(String.valueOf(yaml.getOrDefault("force", true))),
         LEGACY.deserialize(String.valueOf(yaml.getOrDefault("prompt", "&6&lTaxSMP &fneeds its resource pack to play!"))),
+        Integer.parseInt(String.valueOf(yaml.getOrDefault("accept-timeout-seconds", 120))),
+        LEGACY.deserialize(String.valueOf(yaml.getOrDefault("kick-message",
+            "&cYou have to accept the &6&lTaxSMP &cresource pack to play!\n&7Rejoin and click &fYes&7."))),
         Integer.parseInt(String.valueOf(yaml.getOrDefault("check-every-minutes", 10))),
         Boolean.parseBoolean(String.valueOf(yaml.getOrDefault("skip-bedrock", true))));
   }

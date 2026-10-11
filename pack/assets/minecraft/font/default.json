@@ -5,14 +5,59 @@
       "file": "taxsmp:font/logo.png",
       "height": 56,
       "ascent": 7,
-      "chars": [""]
+      "chars": [
+        "\ue8a0"
+      ]
     },
     {
       "type": "bitmap",
-      "file": "taxsmp:font/logo.png",
-      "height": 52,
-      "ascent": 39,
-      "chars": [""]
+      "file": "taxsmp:font/pause_logo.png",
+      "height": 72,
+      "ascent": 72,
+      "chars": [
+        "\ue8a1"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:font/leave_button.png",
+      "height": 18,
+      "ascent": 12,
+      "chars": [
+        "\ue8a2"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:font/banner.png",
+      "height": 39,
+      "ascent": -11,
+      "chars": [
+        "\ue8b0\ue8b1\ue8b2\ue8b3"
+      ]
+    },
+    {
+      "type": "space",
+      "advances": {
+        "\ue8c0": -1,
+        "\ue8c1": -2,
+        "\ue8c2": -4,
+        "\ue8c3": -8,
+        "\ue8c4": -16,
+        "\ue8c5": -32,
+        "\ue8c6": -64,
+        "\ue8c7": -128,
+        "\ue8c8": -256,
+        "\ue8d0": 1,
+        "\ue8d1": 2,
+        "\ue8d2": 4,
+        "\ue8d3": 8,
+        "\ue8d4": 16,
+        "\ue8d5": 32,
+        "\ue8d6": 64,
+        "\ue8d7": 128,
+        "\ue8d8": 256
+      }
     }
   ]
 }

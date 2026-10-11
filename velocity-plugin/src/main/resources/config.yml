@@ -1,5 +1,5 @@
 # TaxSMP PackLoader
-# Sends the TaxSMP resource pack once when a player joins this proxy.
+# Sends the TaxSMP resource pack once when a player joins this proxy, while they're still on the joining screen.
 # Switching between NA and EU keeps the pack loaded, so it is not sent again.
 
 # Where the pack lives on GitHub.
@@ -10,8 +10,11 @@ pack-path: "dist/TaxSMP-Pack.zip"
 # Keep this the same forever. Pack updates then replace the old pack instead of stacking on top of it.
 pack-id: "b1c37d58-7d24-4ea8-abd6-e63cae91af50"
 
-# true = players have to accept the pack, or they get disconnected.
+# true = players stay on the joining screen until the pack has loaded. If they decline it,
+# or don't answer within accept-timeout-seconds, they get disconnected with kick-message.
 force: true
+accept-timeout-seconds: 120
+kick-message: "&cYou have to accept the &6&lTaxSMP &cresource pack to play!\n&7Rejoin and click &fYes&7."
 
 # Text on Minecraft's resource pack screen. Supports & color codes.
 prompt: "&6&lTaxSMP &fneeds its resource pack to play!"
