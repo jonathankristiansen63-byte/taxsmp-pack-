@@ -8,6 +8,7 @@ The distributed jar's default Redis settings are disabled examples.
 Overworld and Nether open a map with EU Central and NA East. End opens the same
 map with only EU Central; selecting it calls the original `/rtp end` command.
 Its card and hover name say only End.
+Region selectors have no back button or toolbar; press Esc to close them.
 Selections call the existing executor, retaining permissions, combat checks,
 cooldowns, countdowns, NA availability and cross-server routing. The EU/NA names
 in the artwork do not change the configured destination servers.

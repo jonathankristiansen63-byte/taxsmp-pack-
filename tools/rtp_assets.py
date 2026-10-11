@@ -71,7 +71,7 @@ def build(jar_path):
         model(dimension, icon)
     posters.save(ASSETS / 'textures/g/rtp.png')
 
-    regions = panel(None, 6)
+    regions = panel(None, 5)
     title_plate(regions, font, 'SELECT REGION')
     sunken(regions.load(), 6, 20, 169, 103, (0, 0, 0, 255))
     world = Image.open(ROOT / 'src/rtp/map.png').convert('RGBA').resize((160, 80), Image.Resampling.NEAREST)
@@ -89,17 +89,14 @@ def build(jar_path):
         icon.alpha_composite(world.resize((32, 16), Image.Resampling.NEAREST), (0, 8))
         pin(icon, round((x - 8) / 5), 8 + round((y - 22) / 5))
         model('region_' + region, icon)
-    back = Image.open(ASSETS / 'textures/item/b/back.png').resize((16, 16), Image.Resampling.NEAREST)
     for name, target in (('regions', regions), ('regions_end', end_regions)):
-        target.alpha_composite(bar(), (7, 107))
-        target.alpha_composite(back, (80, 108))
         target.save(ASSETS / f'textures/g/{name}.png')
     model('hit', Image.new('RGBA', (16, 16), CLEAR))
 
     path = ASSETS / 'font/gui.json'
     data = json.loads(path.read_text(encoding='utf-8'))
     data['providers'] = [p for p in data['providers'] if p.get('file') not in ('taxsmp:g/rtp.png', 'taxsmp:g/regions.png', 'taxsmp:g/regions_end.png')]
-    for name, code, height in (('rtp', 0xE170, 107), ('regions', 0xE171, 125), ('regions_end', 0xE172, 125)):
+    for name, code, height in (('rtp', 0xE170, 107), ('regions', 0xE171, 107), ('regions_end', 0xE172, 107)):
         data['providers'].insert(0, {'type': 'bitmap', 'file': f'taxsmp:g/{name}.png', 'height': height, 'ascent': 13, 'chars': [chr(code)]})
     write_json(path, data)
     (ROOT / 'preview').mkdir(exist_ok=True)

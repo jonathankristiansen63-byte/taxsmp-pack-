@@ -43,7 +43,7 @@ public final class ArtworkMenus implements Listener {
    public static void open(Player player, FoliaRTP plugin, String dimension) {
       boolean nativeMenu = isBedrock(player) || !plugin.getConfig().getBoolean("rtp.artwork-menu", true);
       boolean root = "root".equals(dimension);
-      int size = nativeMenu ? 27 : root ? 45 : 54;
+      int size = nativeMenu ? 27 : 45;
       Component title = nativeMenu ? Component.text(root ? "Random Teleport" : "Select Region", NamedTextColor.DARK_GRAY)
          : Component.text("\uE143" + (char)(root ? 0xE170 : "end".equals(dimension) ? 0xE172 : 0xE171), NamedTextColor.WHITE)
             .font(Key.key("taxsmp:gui")).shadowColor(ShadowColor.none());
@@ -72,7 +72,6 @@ public final class ArtworkMenus implements Listener {
                if (region != null) inventory.setItem(slot, button(Material.PAPER, "eu".equals(region) ? "EU Central" : "NA East", "rtp/hit", "Random teleport in the " + dimension));
             }
          }
-         inventory.setItem(ArtworkLayout.back(nativeMenu), button(Material.RED_STAINED_GLASS_PANE, "Back", "b/back", "Choose a dimension"));
       }
       player.openInventory(inventory);
    }
@@ -100,10 +99,6 @@ public final class ArtworkMenus implements Listener {
          player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
          open(player, plugin, world);
       } else {
-         if (slot == ArtworkLayout.back(holder.nativeMenu)) {
-            open(player, plugin, "root");
-            return;
-         }
          String region = ArtworkLayout.region(slot, holder.nativeMenu, holder.dimension);
          if (region != null) execute(player, holder.dimension, region);
       }

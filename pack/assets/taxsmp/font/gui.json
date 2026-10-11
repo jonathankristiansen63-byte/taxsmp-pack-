@@ -3,7 +3,7 @@
     {
       "type": "bitmap",
       "file": "taxsmp:g/regions_end.png",
-      "height": 125,
+      "height": 107,
       "ascent": 13,
       "chars": [
         "\ue172"
@@ -12,7 +12,7 @@
     {
       "type": "bitmap",
       "file": "taxsmp:g/regions.png",
-      "height": 125,
+      "height": 107,
       "ascent": 13,
       "chars": [
         "\ue171"
