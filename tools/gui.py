@@ -1,4 +1,4 @@
-"""Generate the TaxSMP menu look (shop, auction house): font taxsmp:gui + button item models.
+"""Generate the TaxSMP menu look (shop, auction house, orders): font taxsmp:gui + button item models.
 
 The TaxSMP plugin builds each menu's background inside its title, from pieces of this font:
 a panel for the number of rows, a slot square under every item, a dark bar for the button row,
@@ -38,7 +38,6 @@ SHADE = (160, 160, 160, 255)
 SLOT_FILL = (139, 139, 139, 255)
 TRAY_FILL = (176, 176, 176, 255)
 BAR_FILL = (74, 74, 74, 255)
-BAR_EDGE = (42, 42, 42, 255)
 PLATE_FILL = (226, 226, 226, 255)
 CLEAR = (0, 0, 0, 0)
 
@@ -76,12 +75,30 @@ def slot():
 
 def bar():
     img = Image.new("RGBA", (162, 18), BAR_FILL)
-    px = img.load()
-    rect(px, 0, 0, 161, 0, BAR_EDGE)
-    rect(px, 0, 17, 161, 17, BAR_EDGE)
-    rect(px, 0, 0, 0, 17, BAR_EDGE)
-    rect(px, 161, 0, 161, 17, BAR_EDGE)
+    sunken(img.load(), 0, 0, 161, 17, BAR_FILL)
     return img
+
+
+def quantity_button(positive):
+    """Native pixel icons for quantity controls and creating an order, matching the UI buttons."""
+    img = Image.new("RGBA", (16, 16), CLEAR)
+    px = img.load()
+    outline = (13, 24, 34, 255)
+    face = (100, 171, 46, 255) if positive else (196, 57, 57, 255)
+    highlight = (149, 213, 82, 255) if positive else (248, 110, 103, 255)
+    shadow = (61, 111, 29, 255) if positive else (136, 34, 34, 255)
+    rect(px, 1, 0, 14, 15, outline)
+    rect(px, 0, 1, 15, 14, outline)
+    rect(px, 2, 1, 13, 14, face)
+    rect(px, 1, 2, 14, 13, face)
+    rect(px, 2, 1, 13, 1, highlight)
+    rect(px, 1, 2, 1, 13, highlight)
+    rect(px, 2, 14, 13, 14, shadow)
+    rect(px, 14, 2, 14, 13, shadow)
+    rect(px, 4, 7, 11, 8, LIGHT)
+    if positive:
+        rect(px, 7, 4, 8, 11, LIGHT)
+    return img.resize((32, 32), Image.Resampling.NEAREST)
 
 
 def plate_piece(kind):
@@ -172,11 +189,13 @@ def main():
 
     # Item textures must sit under textures/item/ (or block/) or Minecraft never loads them.
     (ASSETS / "textures/item/b").mkdir(parents=True, exist_ok=True)
-    for name, icon in zip(BUTTONS, buttons(ROOT / "src/gui-buttons.png")):
+    icons = dict(zip(BUTTONS, buttons(ROOT / "src/gui-buttons.png")))
+    icons.update(plus=quantity_button(True), minus=quantity_button(False))
+    for name, icon in icons.items():
         icon.save(ASSETS / f"textures/item/b/{name}.png")
         write_json(ASSETS / f"models/b/{name}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"taxsmp:item/b/{name}"}})
         write_json(ASSETS / f"items/b/{name}.json", {"model": {"type": "minecraft:model", "model": f"taxsmp:b/{name}"}})
-    print(f"gui font: {len(providers)} providers, {len(BUTTONS)} buttons")
+    print(f"gui font: {len(providers)} providers, {len(icons)} buttons")
 
 
 if __name__ == "__main__":

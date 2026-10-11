@@ -28,7 +28,28 @@ pack/                     <- the actual resource pack (edit files here)
 build.py                  <- builds dist/TaxSMP-Pack.zip
 dist/                     <- built zip + its SHA-1 (don't edit by hand)
 src/                      <- full-size original artwork
+server-plugin/            <- TaxSMP backend plugin source (shop, auction, orders, economy)
+dist/TaxSMP.jar            <- built backend plugin for Paper / Folia 1.21.11
 ```
+
+## Shop and orders menus
+
+The backend plugin uses the `taxsmp:gui` font for gray menu panels, inset item slots,
+button strips and centered title plates. The shop quantity controls use red minus
+and green plus icons. Orders use matching navigation, search, sort, filter, refresh,
+confirm and cancel icons; the existing new-order slot uses a green plus.
+Inventory sizes, item positions and click actions are preserved. Bedrock keeps
+the normal chest window; custom item icons and title artwork require the Java pack.
+
+Build the backend with `mvn -f server-plugin/pom.xml package` (JDK 21 or newer).
+Install `dist/TaxSMP.jar` in the backend server's `plugins/` directory and restart.
+Keep the existing `plugins/TaxSMP/config.yml`; the public default config contains
+example database settings, with MySQL disabled until configured.
+
+To regenerate GUI assets, run `python tools/gui.py "path/to/client.jar"` with a
+Minecraft client jar containing the vanilla `generic_54.png` texture, then `python build.py`.
+The green plus and red minus textures are drawn on a native pixel grid so their
+edges remain sharp at inventory scale.
 
 ## Velocity plugin (TaxSMP PackLoader)
 

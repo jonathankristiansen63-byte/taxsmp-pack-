@@ -1,0 +1,207 @@
+# Region label shown on the scoreboard ping line, e.g. "Ping: 42ms (EU)".
+# Set this to "NA" on the NA server and leave it "EU" on the EU server.
+region: EU
+
+# Shared MySQL database for cross-server (EU <-> NA) data sync.
+# BOTH servers must point at the SAME database. When disabled or unreachable,
+# TaxSMP falls back to local files (no sync) so it still runs.
+mysql:
+  enabled: false
+  host: "localhost"
+  port: 3306
+  database: "taxsmp"
+  username: "taxsmp"
+  password: ""
+  params: "useSSL=false&autoReconnect=true&characterEncoding=utf8&rewriteBatchedStatements=true"
+  # How many connections this server may use at once. The plugin never lets more
+  # work than this reach the database - everything else waits its turn instead of
+  # timing out - so a value that is too low shows up as lag, not as errors.
+  # It opens one more than this for its own health checks, and BOTH servers
+  # (EU and NA) draw from the same MySQL account, so budget roughly
+  # (pool-size + 1) x 2 against whatever max_user_connections the host allows.
+  pool-size: 10
+
+  # ---------------------------------------------------------------
+  # Local backups (protection against the database losing data)
+  # ---------------------------------------------------------------
+  # Every change is still written to MySQL the instant it happens - these
+  # settings do NOT delay saving. They are a separate safety copy kept on
+  # this server's own disk, in plugins/TaxSMP/snapshots/.
+  #
+  # They exist for the case where MySQL itself goes backwards: the host
+  # restores an old backup, the disk fails, or someone runs a bad query.
+  # The plugin cannot detect that on its own, so it keeps its own recent
+  # record of what every player had.
+  #
+  # How often to write a backup file, in minutes.
+  # Lower = less can ever be lost. 5 is a good default; 1 is fine too.
+  snapshot-minutes: 5
+  # How many backup files to keep before deleting the oldest.
+  # 288 files at 5 minutes each = the last 24 hours.
+  snapshot-keep: 288
+
+# Global Settings
+settings:
+  tpa_requests: true
+  tpa_here_requests: true
+  payments: true
+  scoreboard: true
+  public_chat: true
+  private_messages: true
+  chat_server_messages: true
+  hotbar_server_messages: true
+  pay_alerts: true
+  bounty_alerts: true
+  auction_alerts: true
+  totem_particles: true
+  explosion_particles: true
+  explosion_sounds: true
+  fast_crystals: true
+  quick_auction_buy: false
+  chainmail_on_respawn: true
+  disable_mob_spawns: false
+  tpa_confirm_menus: true
+  sound_notifications: true
+  worth_display: true
+
+# ---------------------------------------------------------------
+# Staff teleport (/ftp)
+# ---------------------------------------------------------------
+# /ftp <player> goes to that player wherever they are. On this server it is a
+# straight teleport. On the other one, the destination is written to MySQL, the
+# proxy is asked to move the player, and the teleport finishes as they land.
+#
+# Needs a BungeeCord or Velocity proxy (Velocity: bungee-plugin-message-channel
+# must be on, which is the default) and MySQL for the cross-server half.
+ftp:
+  # What the proxy calls each backend, keyed by that backend's network-server-id
+  # - which defaults to the lowercased `region` at the top of this file. Only
+  # needed when the proxy's name for a server differs from that id.
+  server-names:
+    eu: eu
+    na: na
+  # How long a queued teleport stays valid after the player is sent across.
+  timeout-seconds: 60
+
+# ---------------------------------------------------------------
+# Bounties (/bounty, /setbountymap)
+# ---------------------------------------------------------------
+# Players put money on each other's heads; whoever gets the kill collects it.
+# The posters are drawn onto real maps, so nothing extra has to be installed.
+# There are no server-wide announcements: only the people involved are told.
+bounty:
+  # Smallest bounty anyone can place, in dollars.
+  min-amount: 1.0
+  # Largest a single player's head may be worth. 0 means no limit.
+  max-total: 0.0
+  # Whether a player may put a bounty on themselves.
+  allow-self: false
+  # How many names the most-wanted board shows (max 10).
+  board-size: 10
+  # A bounty is not claimable by dying in the AFK world.
+  ignore-afk-world: true
+  # Hand out that player's wanted poster map when someone runs /bounty <player>.
+  poster-on-lookup: true
+  # Default size, in maps, of the wall /setbountymap hangs. 3x3 is 384x384 pixels.
+  board:
+    width: 3
+    height: 3
+
+# Scoreboard Settings
+scoreboards:
+  enabled: true
+  # Shows the player's Minecraft face next to their name on the sidebar.
+  # Needs a 1.21.9+ client (Java only); older clients and Bedrock just see the name.
+  player-head: true
+  scoreboards:
+    taxsmp:
+      title: "&e&lTAXSMP"
+      lines:
+        - "&fᴛᴀxꜱᴍᴘ.ɴᴇᴛ"
+        - ""
+        - "&e%player%:"
+        - "&a$ &fMoney: &a%vault_eco_balance_formatted%"
+        - "&c✠ &fKills: &c%statistic_player_kills%"
+        - "&d☠ &fDeaths: &d%statistic_deaths%"
+        - "&e🧪 &fPlayers: &e%server_online_players%"
+        - "&c❖ &fEggs: &c%eggs%"
+        - ""
+        - "&9☄ &fPing: &9%ping%ms &9(EU)"
+        - ""
+        - "&a[$] &7store.taxsmp.net"
+
+# The server-drawn menu screens (1.21.6+ only). These are real client screens, not chests.
+menus:
+  enabled: true
+  # Adds the "TaxSMP" button to the pause menu. Needs a small data pack in the main world,
+  # which the plugin writes and keeps up to date on its own.
+  pause-menu-button: true
+  # Reload server data automatically after writing that pack, so the button appears without
+  # a restart. Turn off if you would rather run /minecraft:reload yourself.
+  auto-reload-datapack: true
+  # Homes come from a separate plugin, so point these at whichever one you run.
+  homes:
+    # Answer a bare /home (and /homes) with the TaxSMP screen instead of that plugin's chest
+    # menu. Only for players who can draw it: Bedrock and Java clients older than 1.21.11 fall
+    # through and still get the old menu. /home <number>, /home check, /sethome and /delhome
+    # are never touched.
+    take-over-command: true
+    # %slot% is the home's number, %name% its name. The Homes plugin takes the number.
+    home-command: "home %slot%"
+    team-home-command: "teamhome"
+    # Shown on a home slot the player has not unlocked, and said in chat if they click it.
+    locked-tooltip: "Buy Taxer+ for more home slots"
+    locked-message: "Unlock more home slots in the store! /store"
+  teleport:
+    to-player-command: "tpa %player%"
+    here-command: "tpahere %player%"
+
+# Data Storage (The plugin will fill these automatically)
+shop:
+  total: {}
+sell:
+  total: {}
+players: {}
+
+# ---------------------------------------------------------------------------
+# Read-only HTTP API for the website (leaderboards, player stats, who is online).
+# Answers come from in-memory snapshots, so it never touches the main thread.
+#   GET /ping
+#   GET /leaderboard?type=money&limit=10&offset=0   (types: money, deaths, playtime, placed, broken, mobs, kills)
+#   GET /leaderboards?limit=10
+#   GET /player?name=<name>   or   /player?uuid=<uuid>
+#   GET /online
+# Send the key in the X-API-Key header on every request when require-key is true.
+# ---------------------------------------------------------------------------
+web-api:
+  # Turn the whole web API on or off.
+  enabled: true
+  # Use a port your host has actually allocated to you.
+  port: 8123
+  # Address to listen on. 0.0.0.0 = every interface. (You may also use the key "host" for this.)
+  bind: 0.0.0.0
+  # Left blank: a key is generated here on first start. Never share or post it.
+  key: ''
+  # Recommended: true. The website calls the API from its own server (Netlify function),
+  # so the key is never seen by visitors. When true every endpoint needs the X-API-Key header.
+  require-key: false
+  # CORS header. Set this to your site, e.g. 'https://taxsmp.net', instead of '*' if you like.
+  allow-origin: '*'
+  # How often (seconds) the sorted boards are rebuilt. Joins and quits also trigger a refresh.
+  cache-seconds: 30
+  # Entries returned by /leaderboard when no limit is given.
+  default-limit: 10
+  # Largest limit a client may ask for (use ?offset= to page through more).
+  max-limit: 500
+  # Players in vanish (SuperVanish, PremiumVanish, EssentialsX, or the "vanished" metadata)
+  # never show as online in /online, /player or the leaderboard online flags.
+  hide-vanished: true
+  # Floodgate username prefix for Bedrock players. Lets the site look up ".Name" as "Name".
+  # Must match username-prefix in Floodgate's config.
+  floodgate-prefix: '.'
+  # Per-client-address token bucket. Over the limit gets HTTP 429 with a Retry-After header.
+  rate-limit:
+    # Requests per second allowed on average.
+    per-second: 20
+    # Extra requests allowed in a short burst.
+    burst: 60

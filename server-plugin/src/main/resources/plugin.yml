@@ -1,0 +1,233 @@
+name: TaxSMP
+main: com.taxsmp.TaxSMP
+version: 1.0
+api-version: 1.21
+author: TaxmanMC, Rhynohowl, ChatGPT
+folia-supported: true
+# Downloaded at runtime onto the plugin classpath (no shading needed) for cross-server MySQL sync.
+libraries:
+  - com.mysql:mysql-connector-j:8.4.0
+  - com.zaxxer:HikariCP:5.1.0
+commands:
+  taxsmp:
+    description: Open the TaxSMP menu
+    usage: /taxsmp [screen] | reload | reloadmenus
+    aliases: [menu, taxmenu]
+  shop:
+    description: Open the shop
+    usage: /shop
+  sell:
+    description: Sell items
+    usage: /sell
+  sellhistory:
+    description: See every item you have sold with /sell and the Chicken Sell Axe
+    usage: /sellhistory [player]
+    aliases: [sellhist]
+  sellmulti:
+    description: View and claim your sell multipliers
+    usage: /sellmulti [category]
+    aliases: [sellmultiplier, sellmultis]
+  ah:
+    description: Open the auction house
+    usage: /ah
+  order:
+    description: Open the Orders menu (place and fulfil buy orders)
+    usage: /order [search terms]
+    aliases: [orders, ordering]
+  worth:
+    description: Show worth of item in hand
+    usage: /worth
+  bal:
+    description: Check a player's balance or your own
+    usage: /bal [player]
+  eggs:
+    description: Check your egg balance or another player's
+    usage: /eggs [player] | add <player> <amount>
+  gems:
+    description: Check, pay, or (OP) add gems
+    usage: /gems [player] | pay <player> <amount> | add <player> <amount>
+    aliases: [gem]
+  baltop:
+    description: Show top balances GUI
+    usage: /baltop
+  leaderboard:
+    description: Open the leaderboards menu
+    usage: /leaderboard [money|deaths|playtime|placed|broken|mobs|kills]
+    aliases: [leaderboards, lb]
+  ignore:
+    description: Ignore or unignore a player
+    usage: /ignore <player>
+  clearchat:
+    description: Clear the chat for all players (OP only)
+    usage: /clearchat
+    permission: taxsmp.clearchat
+    permission-message: You do not have permission to use this command.
+  combatremove:
+    description: Remove combat tags and grant 10s immunity (OP only)
+    usage: /combatremove
+    permission: taxsmp.combatremove
+    permission-message: You do not have permission to use this command.
+  pay:
+    description: Pay a player money
+    usage: /pay <player> <amount>
+  nightvision:
+    description: Toggle infinite night vision (persists through death)
+    aliases: [nv]
+  setprice:
+    description: Set sell price for an item (OP only)
+    usage: /setprice <material|hand> <price>
+    permission: taxsmp.setprice
+    permission-message: You do not have permission to use this command.
+  seteggs:
+    description: Set a player's egg balance (OP only)
+    usage: /seteggs <player> <amount>
+    permission: taxsmp.seteggs
+    permission-message: You do not have permission to use this command.
+  shopsetprice:
+    description: Set shop cost for an item (OP only)
+    usage: /shopsetprice <material|hand> <price>
+    permission: taxsmp.shopsetprice
+    permission-message: You do not have permission to use this command.
+  resetblockstats:
+    description: Reset block-place/break statistics for players (OP only)
+    usage: /resetblockstats
+    permission: taxsmp.resetblockstats
+    permission-message: You do not have permission to use this command.
+  stats:
+    description: Show player stats or another player's stats
+    usage: /stats [player]
+  removemoney:
+    description: Remove all money from a player's balance (OP only)
+    usage: /removemoney <player>
+    permission: taxsmp.removemoney
+    permission-message: You do not have permission to use this command.
+  settings:
+    description: Open the settings GUI
+    usage: /settings
+  r:
+    description: Reply to the last player who messaged you.
+    usage: /r <message>
+  msg:
+    description: Send a private message to a player.
+    usage: /msg <player> <message>
+  tell:
+    description: Send a private message to a player.
+    usage: /tell <player> <message>
+  w:
+    description: Send a private message to a player.
+    usage: /w <player> <message>
+  chickenpickaxe:
+    description: Give a Chicken Pickaxe to a player (OP only)
+    usage: /chickenpickaxe give <player>
+    permission: taxsmp.chickenpickaxe
+    permission-message: You do not have permission to use this command.
+  taxmoney:
+    description: Add, set, or take money from a player's balance (OP only)
+    usage: /taxmoney <add|set|take> <player> <amount>
+    permission: taxsmp.taxmoney
+    permission-message: You do not have permission to use this command.
+  ftp:
+    description: Teleport to a player anywhere on the network (staff)
+    usage: /ftp <player>
+    permission: taxsmp.ftp
+    permission-message: You do not have permission to use this command.
+  bounty:
+    description: Place, look up and collect bounties
+    usage: /bounty [player] | add <player> <amount> | top | poster <player> | remove <player>
+    aliases: [bounties, wanted]
+  setbountymap:
+    description: Hang a floating most-wanted map board (OP only)
+    usage: /setbountymap [width] [height] | remove | removeall | list
+    permission: taxsmp.setbountymap
+    permission-message: You do not have permission to use this command.
+  sellwand:
+    description: Sell wands have been removed
+    usage: /sellwand
+    permission: taxsmp.sellwand
+    permission-message: You do not have permission to use this command.
+permissions:
+  taxsmp.reload:
+    description: Allows reloading config.yml and the web API (/taxsmp reload)
+    default: op
+  taxsmp.menus.reload:
+    description: Allows rewriting and reloading the menu data pack (/taxsmp reloadmenus)
+    default: op
+  taxsmp.clearchat:
+    description: Allows using /clearchat
+    default: op
+  taxsmp.combatremove:
+    description: Allows using /combatremove
+    default: op
+  taxsmp.setprice:
+    description: Allows setting sell prices (/setprice)
+    default: op
+  taxsmp.seteggs:
+    description: Allows setting egg balances (/seteggs)
+    default: op
+  taxsmp.gems.add:
+    description: Allows adding gems to players (/gems add) - used by the web store
+    default: op
+  taxsmp.eggs.others:
+    description: Allows checking other players' egg balances
+    default: op
+  eggsanywhere:
+    description: Allows earning eggs outside the AFK world
+    default: false
+  taxsmp.eggsanywhere:
+    description: Allows earning eggs outside the AFK world
+    default: false
+  taxsmp.shopsetprice:
+    description: Allows setting shop prices (/shopsetprice)
+    default: op
+  taxsmp.resetblockstats:
+    description: Allows resetting block stats
+    default: op
+  taxsmp.removemoney:
+    description: Allows removing money from players
+    default: op
+  taxsmp.chickenpickaxe:
+    description: Allows giving Chicken Pickaxe items
+    default: op
+  taxsmp.taxmoney:
+    description: Allows using /taxmoney add/set/take
+    default: op
+  taxsmp.sellhistory.others:
+    description: Allows viewing another player's /sellhistory
+    default: op
+  taxsmp.sellwand:
+    description: Allows giving Sell Wand items (/sellwand)
+    default: op
+  taxsmp.ftp:
+    description: Allows teleporting to any player on the network (/ftp)
+    default: op
+  taxsmp.bounty.place:
+    description: Allows placing bounties (/bounty add)
+    default: true
+  taxsmp.bounty.admin:
+    description: Allows cancelling and refunding bounties (/bounty remove)
+    default: op
+  taxsmp.setbountymap:
+    description: Allows hanging floating bounty boards (/setbountymap)
+    default: op
+  taxsmp.quickauctionbuy:
+    description: Allows toggling and using Quick Auction Buy
+    default: false
+  taxsmp.quickauctionbuy.use:
+    description: Alias permission for Quick Auction Buy
+    default: false
+  taxsmp.quickbuy:
+    description: Legacy alias permission for Quick Auction Buy
+    default: false
+  taxsmp.20auctionitems:
+    description: Allows having up to 20 active auction listings
+    default: false
+  taxsmp.20auctionitems.use:
+    description: Alias permission for 20 active auction listings
+    default: false
+  taxsmp.20auction:
+    description: Legacy alias permission for 20 active auction listings
+    default: false
+  taxsmp.orders.27:
+    description: Allows having up to 27 active orders
+    default: false
+softdepend: [Vault, LuckPerms, TPAPlugin, CustomSpawners, SignGUI, TaxTeams, floodgate, FasterCrystals, PlayerVaults, ProtocolLib]
