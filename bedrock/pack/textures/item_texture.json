@@ -61,6 +61,11 @@
       "textures": [
         "textures/items/taxsmp/minus"
       ]
+    },
+    "taxsmp_gui_info": {
+      "textures": [
+        "textures/items/taxsmp/info"
+      ]
     }
   }
 }

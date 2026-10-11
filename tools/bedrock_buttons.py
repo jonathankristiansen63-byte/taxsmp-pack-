@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).absolute().parent.parent
 PACK = ROOT / 'bedrock/pack'
 DIST = ROOT / 'dist'
-VERSION = [1, 0, 0]
+VERSION = [1, 0, 1]
 
 # Each (Java material, item_model) pair needs a unique Bedrock identifier.
 # Restrict mappings to the actual menu materials, so vanilla gameplay items keep
@@ -32,6 +32,7 @@ BASE_ITEMS = {
     'no': ['red_stained_glass_pane', 'red_dye', 'red_terracotta'],
     'plus': ['lime_stained_glass_pane'],
     'minus': ['red_stained_glass_pane'],
+    'info': ['book'],
 }
 
 

@@ -111,6 +111,11 @@ public final class MenuUpdates {
       return TITLES.getOrDefault(var0, var0);
    }
 
+   public static String displayTitle(String internal, String display) {
+      TITLES.put(display, internal);
+      return display;
+   }
+
    private static Object call(Object var0, String var1, Class<?>[] var2, Object... var3) {
       try {
          Method var4 = var0.getClass().getMethod(var1, var2);

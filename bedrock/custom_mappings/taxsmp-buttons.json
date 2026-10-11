@@ -196,6 +196,18 @@
           "creative_category": "none"
         }
       }
+    ],
+    "minecraft:book": [
+      {
+        "type": "definition",
+        "model": "taxsmp:b/info",
+        "bedrock_identifier": "taxsmp:gui_info_book",
+        "display_name": "Info",
+        "bedrock_options": {
+          "icon": "taxsmp_gui_info",
+          "creative_category": "none"
+        }
+      }
     ]
   }
 }

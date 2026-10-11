@@ -55,7 +55,7 @@ Its icons are exported at 32x32 using nearest-neighbor sizing to preserve pixel 
 
 ## Bedrock buttons for Geyser-Velocity
 
-The separate `dist/TaxSMP-Bedrock-Buttons.mcpack` contains all 12 button icons,
+The separate `dist/TaxSMP-Bedrock-Buttons.mcpack` contains all 13 button icons,
 including the generated green plus and red minus. Copy it into each proxy's
 `plugins/Geyser-Velocity/packs/` folder, and copy `dist/taxsmp-buttons-geyser.json`
 into `plugins/Geyser-Velocity/custom_mappings/`. Enable custom content and restart

@@ -1,8 +1,8 @@
 # Bedrock GUI buttons
 
-This pack contains the same 12 button textures as the Java pack: search, sort,
+This pack contains the same 13 button textures as the Java pack: search, sort,
 filter, refresh, your items/orders, previous, next, back, confirm, cancel, plus and
-minus. It keeps the server's existing inventory slots and Bedrock's native chest
+minus, and the green information/transactions button. It keeps the server's existing inventory slots and Bedrock's native chest
 UI. The scoreboard artwork and Java title backgrounds are not part of this pack.
 
 ## Install on each Velocity proxy running Geyser

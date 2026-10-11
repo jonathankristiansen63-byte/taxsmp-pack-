@@ -11,6 +11,7 @@ import java.util.Map;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -107,7 +108,7 @@ public final class GuiSkin implements Listener {
             && top.getType() == InventoryType.CHEST
             && top.getSize() % 9 == 0
             && isSkinned(plain)) {
-            event.titleOverride(build(top, title, fullGrid(plain), plain.startsWith("ʙᴜʏɪɴɢ")));
+            event.titleOverride(build(top, title, fullGrid(plain), plain.startsWith("ʙᴜʏɪɴɢ"), compactGrid(plain)));
          }
       }
    }
@@ -126,14 +127,20 @@ public final class GuiSkin implements Listener {
          || plain.equals("Orders -> Your Orders") || plain.equals("Orders -> Select An Item");
    }
 
-   private static Component build(Inventory top, String title, boolean fullGrid, boolean buying) {
+   private static boolean compactGrid(String plain) {
+      return plain.startsWith("Auction Page [") || plain.startsWith("Auction Search [")
+         || plain.startsWith("Auction My Listings [") || plain.startsWith("Auction Transactions [")
+         || plain.startsWith("Orders Page [") || plain.startsWith("Orders Search [");
+   }
+
+   private static Component build(Inventory top, String title, boolean fullGrid, boolean buying, boolean compact) {
       int rows = top.getSize() / 9;
       StringBuilder glyphs = new StringBuilder();
       int pen = move(glyphs, TITLE_X, 0);
       glyphs.append((char)(PANEL + rows));
       pen += PANEL_ADVANCE;
       boolean[] bars = new boolean[rows];
-      bars[rows - 1] = rows > 1 && (fullGrid || hasButton(top, (rows - 1) * 9, rows * 9));
+      bars[rows - 1] = rows > 1 && (fullGrid || compact || hasButton(top, (rows - 1) * 9, rows * 9));
       // Quantity controls sit on their own gray strip, with an inset item preview over it.
       if (buying && rows > 1) {
          bars[1] = hasButton(top, 9, 18);
@@ -150,7 +157,7 @@ public final class GuiSkin implements Listener {
          int row = slot / 9;
          ItemStack item = top.getItem(slot);
          boolean filled = item != null && !item.getType().isAir();
-         if (!isButton(item) && (filled || fullGrid && row < rows - 1)) {
+         if (!isButton(item) && (compact ? MarketLayout.index(slot) >= 0 : filled || fullGrid && row < rows - 1)) {
             pen = move(glyphs, pen, 7 + slot % 9 * 18);
             glyphs.append((char)(SLOT + row));
             pen += SLOT_ADVANCE;
@@ -179,9 +186,9 @@ public final class GuiSkin implements Listener {
       pen += 5;
       move(glyphs, pen, WINDOW_CENTER - textWidth / 2);
       // Siblings, so the title text keeps the normal font. White keeps the pictures' own colors.
-      return Component.empty()
-         .append(Component.text(glyphs.toString(), NamedTextColor.WHITE).font(FONT))
-         .append(LegacyComponentSerializer.legacySection().deserialize(title));
+      return Component.empty().color(NamedTextColor.WHITE)
+         .append(Component.text(glyphs.toString(), NamedTextColor.WHITE).font(FONT).shadowColor(ShadowColor.none()))
+         .append(LegacyComponentSerializer.legacySection().deserialize(title).colorIfAbsent(NamedTextColor.DARK_GRAY));
    }
 
    private static boolean isButton(ItemStack item) {

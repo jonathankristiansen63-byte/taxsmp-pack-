@@ -37,7 +37,7 @@ DARK = (55, 55, 55, 255)
 LIGHT = (255, 255, 255, 255)
 SHADE = (160, 160, 160, 255)
 SLOT_FILL = (139, 139, 139, 255)
-TRAY_FILL = (176, 176, 176, 255)
+TRAY_FILL = PANEL_GRAY
 BAR_FILL = (74, 74, 74, 255)
 PLATE_FILL = (226, 226, 226, 255)
 CLEAR = (0, 0, 0, 0)
@@ -99,6 +99,24 @@ def plate_piece(kind):
         rect(px, 2, 1, 2, 10, SHADE)
         px[3, 0] = px[3, 11] = CLEAR
     return img
+
+
+def information_button():
+    """Native 16px Minecraft button: a white lowercase i on a green bevel."""
+    img = Image.new("RGBA", (16, 16), CLEAR)
+    px = img.load()
+    rect(px, 1, 0, 14, 15, (35, 48, 21, 255))
+    rect(px, 0, 1, 15, 14, (35, 48, 21, 255))
+    rect(px, 1, 1, 14, 14, (112, 169, 28, 255))
+    rect(px, 2, 1, 13, 2, (178, 225, 79, 255))
+    rect(px, 1, 2, 2, 12, (178, 225, 79, 255))
+    rect(px, 2, 13, 14, 14, (62, 108, 11, 255))
+    rect(px, 13, 3, 14, 13, (62, 108, 11, 255))
+    rect(px, 7, 4, 8, 5, LIGHT)
+    rect(px, 6, 7, 8, 8, LIGHT)
+    rect(px, 7, 9, 8, 11, LIGHT)
+    rect(px, 6, 12, 9, 12, LIGHT)
+    return img.resize((32, 32), Image.Resampling.NEAREST)
 
 
 def runs(values):
@@ -171,6 +189,7 @@ def main():
     icons = dict(zip(BUTTONS, buttons(ROOT / "src/gui-buttons.png")))
     minus, plus = buttons(ROOT / "src/gui-quantity-buttons.png", (2, 1), Image.Resampling.NEAREST)
     icons.update(plus=plus, minus=minus)
+    icons['info'] = information_button()
     for name, icon in icons.items():
         icon.save(ASSETS / f"textures/item/b/{name}.png")
         write_json(ASSETS / f"models/b/{name}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"taxsmp:item/b/{name}"}})

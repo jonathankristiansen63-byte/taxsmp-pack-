@@ -1,5 +1,7 @@
 package com.taxsmp;
 
+import com.taxsmp.ui.MarketLayout;
+
 import com.taxsmp.storage.Db;
 import com.taxsmp.storage.ItemCodec;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
@@ -233,7 +235,7 @@ public class OrderManager implements CommandExecutor, Listener {
       String sortChoice = this.viewerSortChoice.getOrDefault(p.getUniqueId(), "recent");
       this.applySortChoice(list, sortChoice);
       int total = list.size();
-      int maxPage = Math.max(1, (int)Math.ceil(total / 45.0));
+      int maxPage = Math.max(1, (int)Math.ceil(total / (double)MarketLayout.CAPACITY));
       if (page < 1) {
          page = 1;
       }
@@ -243,36 +245,36 @@ public class OrderManager implements CommandExecutor, Listener {
       }
 
       String titleTail = searchQuery != null && !searchQuery.isBlank() ? "search: " + searchQuery : "page " + page;
-      Inventory inv = Bukkit.createInventory(null, 54, MenuUpdates.displayTitle("§0" + toSmallCaps("orders - " + titleTail)));
-      int start = (page - 1) * 45;
+      Inventory inv = Bukkit.createInventory(null, MarketLayout.SIZE, MenuUpdates.displayTitle("§0" + toSmallCaps("orders - " + titleTail), MarketLayout.title(searchQuery != null && !searchQuery.isBlank() ? "Orders Search" : "Orders Page", page, maxPage)));
+      int start = (page - 1) * MarketLayout.CAPACITY;
 
-      for (int i = 0; i < 45 && start + i < list.size(); i++) {
-         inv.setItem(i, this.buildOrderDisplay(list.get(start + i)));
+      for (int i = 0; i < MarketLayout.CAPACITY && start + i < list.size(); i++) {
+         inv.setItem(MarketLayout.slot(i), this.buildOrderDisplay(list.get(start + i)));
       }
 
       if (page > 1) {
-         inv.setItem(45, this.createItem(Material.ARROW, "§eᴘʀᴇᴠɪᴏᴜꜱ ᴘᴀɢᴇ"));
+         inv.setItem(MarketLayout.PREV, this.createItem(Material.ARROW, "§eᴘʀᴇᴠɪᴏᴜꜱ ᴘᴀɢᴇ"));
       }
 
-      inv.setItem(47, this.createSortButton(sortChoice));
-      inv.setItem(48, this.createFilterButton(filterChoice));
+      inv.setItem(MarketLayout.SORT, this.createSortButton(sortChoice));
+      inv.setItem(MarketLayout.FILTER, this.createFilterButton(filterChoice));
       ItemStack refresh = this.createItem(Material.EGG, "§eᴏʀᴅᴇʀꜱ");
       ItemMeta rm = refresh.getItemMeta();
       rm.setLore(Arrays.asList("§7ᴄʟɪᴄᴋ ᴛᴏ ʀᴇғʀᴇꜱʜ"));
       refresh.setItemMeta(rm);
-      inv.setItem(49, com.taxsmp.ui.GuiSkin.button(refresh, "refresh"));
+      inv.setItem(MarketLayout.REFRESH, com.taxsmp.ui.GuiSkin.button(refresh, "refresh"));
       ItemStack search = this.createItem(Material.OAK_SIGN, "§eꜱᴇᴀʀᴄʜ");
       ItemMeta sm = search.getItemMeta();
       sm.setLore(Arrays.asList("§7ᴄʟɪᴄᴋ ᴛᴏ ꜱᴇᴀʀᴄʜ"));
       search.setItemMeta(sm);
-      inv.setItem(50, search);
+      inv.setItem(MarketLayout.SEARCH, search);
       ItemStack yours = this.createItem(Material.CHEST, "§eʏᴏᴜʀ ᴏʀᴅᴇʀꜱ");
       ItemMeta ym = yours.getItemMeta();
       ym.setLore(Arrays.asList("§7ᴄʟɪᴄᴋ ᴛᴏ ᴠɪᴇᴡ ʏᴏᴜʀ ᴏʀᴅᴇʀꜱ"));
       yours.setItemMeta(ym);
-      inv.setItem(51, yours);
+      inv.setItem(MarketLayout.MINE, yours);
       if (page < maxPage) {
-         inv.setItem(53, this.createItem(Material.ARROW, "§eɴᴇxᴛ ᴘᴀɢᴇ"));
+         inv.setItem(MarketLayout.NEXT, this.createItem(Material.ARROW, "§eɴᴇxᴛ ᴘᴀɢᴇ"));
       }
 
       this.viewerPage.put(p.getUniqueId(), page);
@@ -784,7 +786,7 @@ public class OrderManager implements CommandExecutor, Listener {
    private void handleDeliverClick(Player p, int slot) {
       List<OrderManager.Order> list = this.viewerList.getOrDefault(p.getUniqueId(), Collections.emptyList());
       int page = this.viewerPage.getOrDefault(p.getUniqueId(), 1);
-      int idx = (page - 1) * 45 + slot;
+      int idx = (page - 1) * MarketLayout.CAPACITY + slot;
       if (idx >= 0 && idx < list.size()) {
          OrderManager.Order o = list.get(idx);
          if (!this.orders.contains(o)) {
@@ -1971,39 +1973,37 @@ public class OrderManager implements CommandExecutor, Listener {
             int page = this.viewerPage.getOrDefault(p.getUniqueId(), 1);
             String query = this.viewerSearchQuery.get(p.getUniqueId());
             switch (var7) {
-               case 45:
+               case MarketLayout.PREV:
                   this.openOrders(p, Math.max(1, page - 1), query);
                   break;
-               case 46:
-               case 52:
                default:
-                  if (var7 >= 0 && var7 < 45) {
-                     this.handleDeliverClick(p, var7);
+                  if (MarketLayout.index(var7) >= 0) {
+                     this.handleDeliverClick(p, MarketLayout.index(var7));
                   }
                   break;
-               case 47:
+               case MarketLayout.SORT:
                   p.playSound(p.getLocation(), Sound.BLOCK_CHERRY_WOOD_BUTTON_CLICK_ON, SoundCategory.AMBIENT, 2.0F, 1.0F);
                   this.viewerSortChoice.put(p.getUniqueId(), this.cycleSort(this.viewerSortChoice.getOrDefault(p.getUniqueId(), "recent")));
                   this.openOrders(p, 1, query);
                   break;
-               case 48:
+               case MarketLayout.FILTER:
                   p.playSound(p.getLocation(), Sound.BLOCK_CHERRY_WOOD_BUTTON_CLICK_ON, SoundCategory.AMBIENT, 2.0F, 1.0F);
                   this.viewerFilterChoice.put(p.getUniqueId(), this.cycleFilter(this.viewerFilterChoice.getOrDefault(p.getUniqueId(), "all")));
                   this.openOrders(p, 1, query);
                   break;
-               case 49:
+               case MarketLayout.REFRESH:
                   p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
                   this.openOrders(p, page, query);
                   break;
-               case 50:
+               case MarketLayout.SEARCH:
                   p.playSound(p.getLocation(), Sound.BLOCK_CHERRY_WOOD_BUTTON_CLICK_ON, SoundCategory.AMBIENT, 2.0F, 1.0F);
                   this.openSearchSign(p);
                   break;
-               case 51:
+               case MarketLayout.MINE:
                   p.playSound(p.getLocation(), Sound.BLOCK_CHERRY_WOOD_BUTTON_CLICK_ON, SoundCategory.AMBIENT, 2.0F, 1.0F);
                   this.openYourOrders(p);
                   break;
-               case 53:
+               case MarketLayout.NEXT:
                   this.openOrders(p, page + 1, query);
             }
          } else if (title.equals("§0" + toSmallCaps("select item"))) {

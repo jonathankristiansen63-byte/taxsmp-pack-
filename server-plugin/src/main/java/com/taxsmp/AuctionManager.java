@@ -1,5 +1,6 @@
 package com.taxsmp;
 
+import com.taxsmp.ui.MarketLayout;
 import com.taxsmp.storage.Db;
 import com.taxsmp.storage.ItemCodec;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
@@ -74,6 +75,7 @@ public class AuctionManager implements CommandExecutor, Listener {
    private final Db db;
    private ScheduledTask syncTask = null;
    private final Map<UUID, List<AuctionManager.AuctionItem>> viewerUserActive = new ConcurrentHashMap<>();
+   private final Map<UUID, Integer> viewerUserPage = new ConcurrentHashMap<>();
    private final Map<UUID, List<AuctionManager.ReturnItem>> viewerUserReturns = new ConcurrentHashMap<>();
    private final Map<UUID, ItemStack> pendingItems = new HashMap<>();
    private final Map<UUID, Double> pendingPrices = new HashMap<>();
@@ -761,7 +763,7 @@ public class AuctionManager implements CommandExecutor, Listener {
       String choice = this.viewerSortChoice.getOrDefault(p.getUniqueId(), "recent");
       this.applySortChoice(list, choice);
       int total = list.size();
-      int maxPage = Math.max(1, (int)Math.ceil(total / 45.0));
+      int maxPage = Math.max(1, (int)Math.ceil(total / (double)MarketLayout.CAPACITY));
       if (page < 1) {
          page = 1;
       }
@@ -770,25 +772,25 @@ public class AuctionManager implements CommandExecutor, Listener {
          page = maxPage;
       }
 
-      Inventory ah = Bukkit.createInventory(null, 54, MenuUpdates.displayTitle("§0" + toSmallCaps("auction house - page " + page)));
+      Inventory ah = Bukkit.createInventory(null, MarketLayout.SIZE, MenuUpdates.displayTitle("§0" + toSmallCaps("auction house - page " + page), MarketLayout.title("Auction Page", page, maxPage)));
       this.renderItems(ah, list, page);
       if (page > 1) {
-         ah.setItem(45, this.createItem(Material.ARROW, "§eᴘʀᴇᴠɪᴏᴜꜱ ᴘᴀɢᴇ"));
+         ah.setItem(MarketLayout.PREV, this.createItem(Material.ARROW, "§eᴘʀᴇᴠɪᴏᴜꜱ ᴘᴀɢᴇ"));
       }
 
-      ah.setItem(49, this.createItem(Material.EGG, "§eʀᴇғʀᴇꜱʜ"));
+      ah.setItem(MarketLayout.REFRESH, this.createItem(Material.EGG, "§eʀᴇғʀᴇꜱʜ"));
       if (page < maxPage) {
-         ah.setItem(53, this.createItem(Material.ARROW, "§eɴᴇxᴛ ᴘᴀɢᴇ"));
+         ah.setItem(MarketLayout.NEXT, this.createItem(Material.ARROW, "§eɴᴇxᴛ ᴘᴀɢᴇ"));
       }
 
-      ah.setItem(47, com.taxsmp.ui.GuiSkin.button(this.createSortButton(choice), "sort"));
-      ah.setItem(48, com.taxsmp.ui.GuiSkin.button(this.createFilterButton(filterChoice), "filter"));
+      ah.setItem(MarketLayout.SORT, com.taxsmp.ui.GuiSkin.button(this.createSortButton(choice), "sort"));
+      ah.setItem(MarketLayout.FILTER, com.taxsmp.ui.GuiSkin.button(this.createFilterButton(filterChoice), "filter"));
       ItemStack searchItem = this.createItem(Material.OAK_SIGN, "§eꜱᴇᴀʀᴄʜ");
       ItemMeta searchMeta = searchItem.getItemMeta();
       searchMeta.setLore(Arrays.asList("§7ᴜꜱᴇ: /ᴀʜ <ꜱᴇᴀʀᴄʜ ᴛᴇʀᴍꜱ>"));
       searchItem.setItemMeta(searchMeta);
-      ah.setItem(50, com.taxsmp.ui.GuiSkin.button(searchItem, "search"));
-      ah.setItem(51, this.createItem(Material.CHEST, "§eʏᴏᴜʀ ɪᴛᴇᴍꜱ"));
+      ah.setItem(MarketLayout.SEARCH, com.taxsmp.ui.GuiSkin.button(searchItem, "search"));
+      ah.setItem(MarketLayout.MINE, this.createItem(Material.CHEST, "§eʏᴏᴜʀ ɪᴛᴇᴍꜱ"));
       this.viewerPage.put(p.getUniqueId(), page);
       this.viewerList.put(p.getUniqueId(), list);
       if (sellerFilter != null) {
@@ -804,11 +806,11 @@ public class AuctionManager implements CommandExecutor, Listener {
    }
 
    private void renderItems(Inventory inv, List<AuctionManager.AuctionItem> list, int page) {
-      int start = (page - 1) * 45;
+      int start = (page - 1) * MarketLayout.CAPACITY;
 
       int idx;
-      for (int i = 0; i < 45 && (idx = start + i) < list.size(); i++) {
-         inv.setItem(i, this.buildListingDisplay(list.get(idx)));
+      for (int i = 0; i < MarketLayout.CAPACITY && (idx = start + i) < list.size(); i++) {
+         inv.setItem(MarketLayout.slot(i), this.buildListingDisplay(list.get(idx)));
       }
    }
 
@@ -947,10 +949,10 @@ public class AuctionManager implements CommandExecutor, Listener {
       this.stopLiveExpiryTimer(p);
       List<AuctionManager.AuctionItem> list = this.viewerList.getOrDefault(p.getUniqueId(), Collections.emptyList());
       int page = this.viewerPage.getOrDefault(p.getUniqueId(), 1);
-      int start = (page - 1) * 45;
+      int start = (page - 1) * MarketLayout.CAPACITY;
       boolean hasTimed = false;
 
-      for (int i = 0; i < 45 && start + i < list.size(); i++) {
+      for (int i = 0; i < MarketLayout.CAPACITY && start + i < list.size(); i++) {
          if (this.hasExpiry(list.get(start + i).item)) {
             hasTimed = true;
             break;
@@ -992,10 +994,10 @@ public class AuctionManager implements CommandExecutor, Listener {
             } else {
                List<AuctionManager.AuctionItem> list = this.viewerList.getOrDefault(p.getUniqueId(), Collections.emptyList());
                int page = this.viewerPage.getOrDefault(p.getUniqueId(), 1);
-               int start = (page - 1) * 45;
+               int start = (page - 1) * MarketLayout.CAPACITY;
                boolean changed = false;
 
-               for (int slot = 0; slot < 45; slot++) {
+               for (int slot = 0; slot < MarketLayout.CAPACITY; slot++) {
                   int idx = start + slot;
                   if (idx >= list.size()) {
                      break;
@@ -1003,7 +1005,7 @@ public class AuctionManager implements CommandExecutor, Listener {
 
                   AuctionManager.AuctionItem ai = list.get(idx);
                   if (this.hasExpiry(ai.item)) {
-                     top.setItem(slot, this.buildListingDisplay(ai));
+                     top.setItem(MarketLayout.slot(slot), this.buildListingDisplay(ai));
                      changed = true;
                   }
                }
@@ -1159,7 +1161,7 @@ public class AuctionManager implements CommandExecutor, Listener {
          }
 
          int page = this.viewerPage.getOrDefault(p.getUniqueId(), 1);
-         if (slot == 47) {
+         if (slot == MarketLayout.SORT) {
             String curSort = this.viewerSortChoice.getOrDefault(p.getUniqueId(), "recent");
             String newSort = this.cycleSort(curSort);
             p.playSound(p.getLocation(), Sound.BLOCK_CHERRY_WOOD_BUTTON_CLICK_ON, SoundCategory.AMBIENT, 2.0F, 1.0F);
@@ -1174,7 +1176,7 @@ public class AuctionManager implements CommandExecutor, Listener {
             } else {
                this.openAH(p, 1, null);
             }
-         } else if (slot == 48) {
+         } else if (slot == MarketLayout.FILTER) {
             String curFilter = this.viewerFilterChoice.getOrDefault(p.getUniqueId(), "all");
             String newFilter = this.cycleFilter(curFilter);
             p.playSound(p.getLocation(), Sound.BLOCK_CHERRY_WOOD_BUTTON_CLICK_ON, SoundCategory.AMBIENT, 2.0F, 1.0F);
@@ -1189,11 +1191,11 @@ public class AuctionManager implements CommandExecutor, Listener {
             } else {
                this.openAH(p, 1, null);
             }
-         } else if (slot != 50) {
-            if (slot == 51) {
+         } else if (slot != MarketLayout.SEARCH) {
+            if (slot == MarketLayout.MINE) {
                p.playSound(p.getLocation(), Sound.BLOCK_CHERRY_WOOD_BUTTON_CLICK_ON, SoundCategory.AMBIENT, 2.0F, 1.0F);
                this.openUserItems(p);
-            } else if (slot == 49) {
+            } else if (slot == MarketLayout.REFRESH) {
                p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1.0F, 1.0F);
                UUID filter = this.viewerFilter.get(p.getUniqueId());
                String query = this.viewerSearchQuery.get(p.getUniqueId());
@@ -1204,7 +1206,7 @@ public class AuctionManager implements CommandExecutor, Listener {
                } else {
                   this.openAH(p, page, null);
                }
-            } else if (slot == 45) {
+            } else if (slot == MarketLayout.PREV) {
                if (e.getCurrentItem() == null || e.getCurrentItem().getType() != Material.ARROW) {
                   return;
                }
@@ -1219,7 +1221,7 @@ public class AuctionManager implements CommandExecutor, Listener {
                } else {
                   this.openAH(p, targetPage, null);
                }
-            } else if (slot == 53) {
+            } else if (slot == MarketLayout.NEXT) {
                if (e.getCurrentItem() == null || e.getCurrentItem().getType() != Material.ARROW) {
                   return;
                }
@@ -1234,14 +1236,14 @@ public class AuctionManager implements CommandExecutor, Listener {
                } else {
                   this.openAH(p, targetPage, null);
                }
-            } else if (slot >= 0 && slot < 45) {
+            } else if (MarketLayout.index(slot) >= 0) {
                e.setCancelled(true);
                ItemStack clickedItem = e.getCurrentItem();
                if (clickedItem == null || clickedItem.getType() == Material.AIR) {
                   return;
                }
 
-               this.handleAHItemClick(p, slot);
+               this.handleAHItemClick(p, MarketLayout.index(slot));
             }
          }
       } else if (title.equals("§0" + toSmallCaps("confirm ah buy"))) {
@@ -1278,7 +1280,7 @@ public class AuctionManager implements CommandExecutor, Listener {
    private void handleAHItemClick(Player p, int slot) {
       List<AuctionManager.AuctionItem> current = this.viewerList.getOrDefault(p.getUniqueId(), this.auctionItems);
       int page = this.viewerPage.getOrDefault(p.getUniqueId(), 1);
-      int idx = (page - 1) * 45 + slot;
+      int idx = (page - 1) * MarketLayout.CAPACITY + slot;
       if (idx < current.size()) {
          AuctionManager.AuctionItem ai = current.get(idx);
          if (ai.seller.equals(p.getUniqueId())) {
@@ -1516,18 +1518,21 @@ public class AuctionManager implements CommandExecutor, Listener {
    }
 
    private void openUserItems(Player p) {
+      this.openUserItems(p, this.viewerUserPage.getOrDefault(p.getUniqueId(), 1));
+   }
+
+   private void openUserItems(Player p, int requestedPage) {
       if (this.usingDb()) {
          Bukkit.getAsyncScheduler().runNow(this.plugin, t -> {
             List<AuctionManager.ReturnItem> rets = this.dbLoadReturns(p.getUniqueId());
-            p.getScheduler().run(this.plugin, tt -> this.renderUserItems(p, rets), null);
+            p.getScheduler().run(this.plugin, tt -> this.renderUserItems(p, rets, requestedPage), null);
          });
       } else {
-         this.renderUserItems(p, this.pendingReturns.getOrDefault(p.getUniqueId(), new ArrayList<>()));
+         this.renderUserItems(p, this.pendingReturns.getOrDefault(p.getUniqueId(), new ArrayList<>()), requestedPage);
       }
    }
 
-   private void renderUserItems(Player p, List<AuctionManager.ReturnItem> returned) {
-      Inventory inv = Bukkit.createInventory(null, 27, MenuUpdates.displayTitle("§0" + toSmallCaps("auction -> your items")));
+   private void renderUserItems(Player p, List<AuctionManager.ReturnItem> returned, int requestedPage) {
       int i = 0;
       long now = System.currentTimeMillis();
       ArrayList<AuctionManager.AuctionItem> mineActive = new ArrayList<>();
@@ -1538,12 +1543,19 @@ public class AuctionManager implements CommandExecutor, Listener {
          }
       }
 
+      int maxPage = MarketLayout.pages(mineActive.size() + returned.size());
+      int page = Math.max(1, Math.min(maxPage, requestedPage));
+      int start = (page - 1) * MarketLayout.CAPACITY;
+      this.viewerUserPage.put(p.getUniqueId(), page);
+      Inventory inv = Bukkit.createInventory(null, MarketLayout.SIZE,
+         MenuUpdates.displayTitle("§0" + toSmallCaps("auction -> your items"), MarketLayout.title("Auction My Listings", page, maxPage)));
       this.viewerUserActive.put(p.getUniqueId(), mineActive);
       this.viewerUserReturns.put(p.getUniqueId(), new ArrayList<>(returned));
 
       for (AuctionManager.AuctionItem ai : mineActive) {
-         if (i >= 26) {
-            break;
+         int index = i++;
+         if (index < start || index >= start + MarketLayout.CAPACITY) {
+            continue;
          }
 
          ItemStack it = ai.item.clone();
@@ -1567,14 +1579,15 @@ public class AuctionManager implements CommandExecutor, Listener {
             it.setItemMeta(m);
          }
 
-         inv.setItem(i++, it);
+         inv.setItem(MarketLayout.slot(index - start), it);
       }
 
       long deleteWindow = 604800000L;
 
       for (AuctionManager.ReturnItem ri : returned) {
-         if (i >= 26) {
-            break;
+         int index = i++;
+         if (index < start || index >= start + MarketLayout.CAPACITY) {
+            continue;
          }
 
          ItemStack it = ri.item.clone();
@@ -1589,22 +1602,31 @@ public class AuctionManager implements CommandExecutor, Listener {
          lore.add("§7" + days + "d " + hours + "h " + mins + "m Until Item Deletes");
          m.setLore(lore);
          it.setItemMeta(m);
-         inv.setItem(i++, it);
+         inv.setItem(MarketLayout.slot(index - start), it);
       }
 
-      inv.setItem(26, this.createTransactionsOpenBook());
+      inv.setItem(MarketLayout.PREV, this.createItem(Material.ARROW, "§eᴘʀᴇᴠɪᴏᴜꜱ ᴘᴀɢᴇ"));
+      inv.setItem(MarketLayout.REFRESH, this.createTransactionsOpenBook());
+      inv.setItem(MarketLayout.NEXT, this.createItem(Material.ARROW, "§eɴᴇxᴛ ᴘᴀɢᴇ"));
       p.openInventory(inv);
    }
 
    private void handleUserItemClick(Player p, int slot) {
-      if (slot == 26) {
+      int page = this.viewerUserPage.getOrDefault(p.getUniqueId(), 1);
+      if (slot == MarketLayout.PREV || slot == MarketLayout.NEXT) {
+         this.openUserItems(p, page + (slot == MarketLayout.PREV ? -1 : 1));
+         return;
+      }
+      int index = MarketLayout.index(slot);
+      if (slot == MarketLayout.REFRESH) {
          p.playSound(p.getLocation(), Sound.BLOCK_CHERRY_WOOD_BUTTON_CLICK_ON, SoundCategory.AMBIENT, 2.0F, 1.0F);
          this.openTransactions(p, 1);
-      } else if (slot >= 0 && slot <= 26) {
+      } else if (index >= 0) {
+         int entry = (page - 1) * MarketLayout.CAPACITY + index;
          List<AuctionManager.AuctionItem> mine = this.viewerUserActive.getOrDefault(p.getUniqueId(), Collections.emptyList());
          List<AuctionManager.ReturnItem> returned = this.viewerUserReturns.getOrDefault(p.getUniqueId(), Collections.emptyList());
-         if (slot < mine.size()) {
-            AuctionManager.AuctionItem ai = mine.get(slot);
+         if (entry < mine.size()) {
+            AuctionManager.AuctionItem ai = mine.get(entry);
             if (this.usingDb()) {
                Bukkit.getAsyncScheduler().runNow(this.plugin, t -> {
                   boolean won = this.dbDeleteListing(ai.id);
@@ -1630,7 +1652,7 @@ public class AuctionManager implements CommandExecutor, Listener {
                this.openUserItems(p);
             }
          } else {
-            int rIdx = slot - mine.size();
+            int rIdx = entry - mine.size();
             if (rIdx >= 0 && rIdx < returned.size()) {
                AuctionManager.ReturnItem ri = returned.get(rIdx);
                if (this.usingDb()) {
@@ -1760,8 +1782,8 @@ public class AuctionManager implements CommandExecutor, Listener {
          transactions = all;
       }
 
-      int pageCapacity = 45;
-      int maxPage = Math.max(1, (int)Math.ceil(transactions.size() / 45.0));
+      int pageCapacity = MarketLayout.CAPACITY;
+      int maxPage = Math.max(1, (int)Math.ceil(transactions.size() / (double)MarketLayout.CAPACITY));
       if (page < 1) {
          page = 1;
       }
@@ -1770,11 +1792,11 @@ public class AuctionManager implements CommandExecutor, Listener {
          page = maxPage;
       }
 
-      Inventory inv = Bukkit.createInventory(null, 54, MenuUpdates.displayTitle("§0" + toSmallCaps("transactions (page " + page + ")")));
-      int start = (page - 1) * 45;
+      Inventory inv = Bukkit.createInventory(null, MarketLayout.SIZE, MenuUpdates.displayTitle("§0" + toSmallCaps("transactions (page " + page + ")"), MarketLayout.title("Auction Transactions", page, maxPage)));
+      int start = (page - 1) * MarketLayout.CAPACITY;
       int placed = 0;
 
-      for (int slot = 0; slot < 45 && placed < 45; slot++) {
+      for (int slot = 0; slot < MarketLayout.CAPACITY && placed < MarketLayout.CAPACITY; slot++) {
          int idx = start + placed;
          if (idx >= transactions.size()) {
             break;
@@ -1795,14 +1817,15 @@ public class AuctionManager implements CommandExecutor, Listener {
             item.setItemMeta(meta);
          }
 
-         inv.setItem(slot, item);
+         inv.setItem(MarketLayout.slot(slot), item);
          placed++;
       }
 
-      inv.setItem(45, page > 1 ? this.createItem(Material.ARROW, "§e" + toSmallCaps("previous page")) : null);
-      inv.setItem(48, this.createStatsBook(p));
-      inv.setItem(49, this.createItem(Material.WRITABLE_BOOK, "§e" + toSmallCaps("refresh")));
-      inv.setItem(53, page < maxPage ? this.createItem(Material.ARROW, "§e" + toSmallCaps("next page")) : null);
+      inv.setItem(MarketLayout.PREV, page > 1 ? this.createItem(Material.ARROW, "§e" + toSmallCaps("previous page")) : null);
+      inv.setItem(MarketLayout.SORT, com.taxsmp.ui.GuiSkin.button(this.createStatsBook(p), "info"));
+      inv.setItem(MarketLayout.REFRESH, this.createItem(Material.WRITABLE_BOOK, "§e" + toSmallCaps("refresh")));
+      inv.setItem(MarketLayout.NEXT, page < maxPage ? this.createItem(Material.ARROW, "§e" + toSmallCaps("next page")) : null);
+      inv.setItem(MarketLayout.SEARCH, this.createItem(Material.RED_STAINED_GLASS_PANE, "§eʙᴀᴄᴋ"));
       p.openInventory(inv);
    }
 
@@ -1850,18 +1873,20 @@ public class AuctionManager implements CommandExecutor, Listener {
          transactions = base;
       }
 
-      int pageCapacity = 45;
-      int maxPage = Math.max(1, (int)Math.ceil(transactions.size() / 45.0));
-      if (slot == 45 && page > 1) {
+      int pageCapacity = MarketLayout.CAPACITY;
+      int maxPage = Math.max(1, (int)Math.ceil(transactions.size() / (double)MarketLayout.CAPACITY));
+      if (slot == MarketLayout.SEARCH) {
+         this.openUserItems(p);
+      } else if (slot == MarketLayout.PREV && page > 1) {
          p.playSound(p.getLocation(), Sound.BLOCK_CHERRY_WOOD_BUTTON_CLICK_ON, SoundCategory.AMBIENT, 2.0F, 1.0F);
          this.openTransactions(p, page - 1);
-      } else if (slot == 48) {
+      } else if (slot == MarketLayout.SORT) {
          p.playSound(p.getLocation(), Sound.BLOCK_CHERRY_WOOD_BUTTON_CLICK_ON, SoundCategory.AMBIENT, 2.0F, 1.0F);
-      } else if (slot == 49) {
+      } else if (slot == MarketLayout.REFRESH) {
          p.playSound(p.getLocation(), Sound.BLOCK_CHERRY_WOOD_BUTTON_CLICK_ON, SoundCategory.AMBIENT, 2.0F, 1.0F);
          this.txSearchQuery.remove(p.getUniqueId());
          this.openTransactions(p, page);
-      } else if (slot == 53 && page < maxPage) {
+      } else if (slot == MarketLayout.NEXT && page < maxPage) {
          p.playSound(p.getLocation(), Sound.BLOCK_CHERRY_WOOD_BUTTON_CLICK_ON, SoundCategory.AMBIENT, 2.0F, 1.0F);
          this.openTransactions(p, page + 1);
       }
@@ -1903,7 +1928,7 @@ public class AuctionManager implements CommandExecutor, Listener {
          item.setItemMeta(meta);
       }
 
-      return item;
+      return com.taxsmp.ui.GuiSkin.button(item, "info");
    }
 
    private double getAhSpent(UUID uuid) {
@@ -1943,7 +1968,7 @@ public class AuctionManager implements CommandExecutor, Listener {
       list = new ArrayList<>(this.applyFilterCategory(list, filterCatChoice));
       this.applySortChoice(list, sortChoice);
       int total = list.size();
-      int maxPage = Math.max(1, (int)Math.ceil(total / 45.0));
+      int maxPage = Math.max(1, (int)Math.ceil(total / (double)MarketLayout.CAPACITY));
       if (page < 1) {
          page = 1;
       }
@@ -1952,25 +1977,25 @@ public class AuctionManager implements CommandExecutor, Listener {
          page = maxPage;
       }
 
-      Inventory ah = Bukkit.createInventory(null, 54, MenuUpdates.displayTitle("§0" + toSmallCaps("auction house - " + filterName)));
+      Inventory ah = Bukkit.createInventory(null, MarketLayout.SIZE, MenuUpdates.displayTitle("§0" + toSmallCaps("auction house - " + filterName), MarketLayout.title("Auction Search", page, maxPage)));
       this.renderItems(ah, list, page);
       if (page > 1) {
-         ah.setItem(45, this.createItem(Material.ARROW, "§eᴘʀᴇᴠɪᴏᴜꜱ ᴘᴀɢᴇ"));
+         ah.setItem(MarketLayout.PREV, this.createItem(Material.ARROW, "§eᴘʀᴇᴠɪᴏᴜꜱ ᴘᴀɢᴇ"));
       }
 
-      ah.setItem(49, this.createItem(Material.EGG, "§eʀᴇғʀᴇꜱʜ"));
+      ah.setItem(MarketLayout.REFRESH, this.createItem(Material.EGG, "§eʀᴇғʀᴇꜱʜ"));
       if (page < maxPage) {
-         ah.setItem(53, this.createItem(Material.ARROW, "§eɴᴇxᴛ ᴘᴀɢᴇ"));
+         ah.setItem(MarketLayout.NEXT, this.createItem(Material.ARROW, "§eɴᴇxᴛ ᴘᴀɢᴇ"));
       }
 
-      ah.setItem(47, com.taxsmp.ui.GuiSkin.button(this.createSortButton(sortChoice), "sort"));
-      ah.setItem(48, com.taxsmp.ui.GuiSkin.button(this.createFilterButton(filterCatChoice), "filter"));
+      ah.setItem(MarketLayout.SORT, com.taxsmp.ui.GuiSkin.button(this.createSortButton(sortChoice), "sort"));
+      ah.setItem(MarketLayout.FILTER, com.taxsmp.ui.GuiSkin.button(this.createFilterButton(filterCatChoice), "filter"));
       ItemStack searchItem2 = this.createItem(Material.OAK_SIGN, "§eꜱᴇᴀʀᴄʜ");
       ItemMeta searchMeta2 = searchItem2.getItemMeta();
       searchMeta2.setLore(Arrays.asList("§7ᴜꜱᴇ: /ᴀʜ <ꜱᴇᴀʀᴄʜ ᴛᴇʀᴍꜱ>"));
       searchItem2.setItemMeta(searchMeta2);
-      ah.setItem(50, com.taxsmp.ui.GuiSkin.button(searchItem2, "search"));
-      ah.setItem(51, this.createItem(Material.CHEST, "§eʏᴏᴜʀ ɪᴛᴇᴍꜱ"));
+      ah.setItem(MarketLayout.SEARCH, com.taxsmp.ui.GuiSkin.button(searchItem2, "search"));
+      ah.setItem(MarketLayout.MINE, this.createItem(Material.CHEST, "§eʏᴏᴜʀ ɪᴛᴇᴍꜱ"));
       this.viewerList.put(p.getUniqueId(), list);
       this.viewerPage.put(p.getUniqueId(), page);
       p.openInventory(ah);
