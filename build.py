@@ -115,7 +115,7 @@ def main():
     files = collect_files()
     write_zip(files)
     sha1 = hashlib.sha1(ZIP_PATH.read_bytes()).hexdigest()
-    (DIST / "TaxSMP-Pack.zip.sha1").write_text(sha1 + "\n")
+    (DIST / "TaxSMP-Pack.zip.sha1").write_bytes((sha1 + "\n").encode())
     print(f"Built {ZIP_PATH.relative_to(ROOT)} ({ZIP_PATH.stat().st_size // 1024} KB, {len(files)} files)")
     print(f"SHA-1: {sha1}")
 
