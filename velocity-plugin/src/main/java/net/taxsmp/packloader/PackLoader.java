@@ -52,7 +52,7 @@ import org.yaml.snakeyaml.Yaml;
 @Plugin(
     id = "taxsmp-packloader",
     name = "TaxSMP PackLoader",
-    version = "1.1.0",
+    version = "1.1.1",
     description = "Sends the TaxSMP resource pack once when a player joins the network",
     authors = {"TaxSMP"},
     dependencies = {@Dependency(id = "floodgate", optional = true)})
@@ -129,10 +129,14 @@ public final class PackLoader {
     result.completeOnTimeout(null, settings.acceptTimeoutSeconds(), TimeUnit.SECONDS)
         .whenComplete((status, error) -> {
           waiting.remove(player.getUniqueId(), result);
-          if (status != Status.SUCCESSFUL && player.isActive()) {
+          if (!player.isActive()) {
+            return; // they left while joining, there's nothing to continue
+          }
+          if (status == Status.SUCCESSFUL) {
+            continuation.resume();
+          } else {
             player.disconnect(settings.kickMessage());
           }
-          continuation.resume();
         });
     sendPack(player, current);
   }
@@ -164,7 +168,6 @@ public final class PackLoader {
       logger.warn("{} didn't load the TaxSMP pack ({})", event.getPlayer().getUsername(), event.getStatus());
     }
     if (result != null) {
-      event.setOverwriteKick(true); // we kick them ourselves, with our own message
       result.complete(event.getStatus());
     }
   }
