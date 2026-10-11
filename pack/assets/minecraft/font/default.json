@@ -1,0 +1,18 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "taxsmp:font/logo.png",
+      "height": 56,
+      "ascent": 7,
+      "chars": [""]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:font/logo.png",
+      "height": 52,
+      "ascent": 39,
+      "chars": [""]
+    }
+  ]
+}

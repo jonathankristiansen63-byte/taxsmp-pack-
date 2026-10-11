@@ -1,0 +1,28 @@
+name: Build pack
+
+# Rebuilds dist/TaxSMP-Pack.zip whenever the pack changes, so you can edit
+# files right on GitHub and the download link always serves the latest pack.
+on:
+  push:
+    branches: [main]
+    paths: ["pack/**", "build.py"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: python build.py
+      - name: Commit the rebuilt zip
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dist
+          git diff --cached --quiet || { git commit -m "Rebuild pack zip"; git push; }
