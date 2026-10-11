@@ -24,7 +24,7 @@ ROOT = Path(__file__).absolute().parent.parent
 PACK = ROOT / "pack"
 
 BOARD_WIDTH = 144  # W
-LINES = 15         # N (Minecraft's maximum)
+LINES = 12         # N (name to ping, plus one empty line)
 
 FRAME = ""
 MOVE_LEFT = {2 ** i: chr(0xE010 + i) for i in range(9)}
