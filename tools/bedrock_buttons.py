@@ -29,24 +29,25 @@ if os.name == 'nt' and not str(ROOT).startswith(LONG_PATH):
     ROOT = Path(LONG_PATH + str(ROOT))
 PACK = ROOT / 'bedrock/pack'
 DIST = ROOT / 'dist'
-VERSION = [1, 0, 4]  # raise on every change, or Bedrock players keep their old copy
+VERSION = [1, 0, 5]  # raise on every change, or Bedrock players keep their old copy
 
 SCOREBOARD_ICONS = ['name_tag', 'gold_ingot', 'amethyst_shard', 'egg', 'trial_key', 'clock_00',
                     'diamond_sword', 'bone', 'iron_chestplate', 'totem_of_undying', 'compass_16']
 
 
 def draw_glyphs(jar_path):
-    """16x16 grid of 32 px cells; cell i is the item picture for character U+E200 + i.
+    """16x16 grid of 16 px cells; cell i is the item picture for character U+E200 + i.
 
-    Bedrock draws every glyph cell at full line height, so a 16 px icon that filled a 16 px cell came
-    out bigger than the letters. Each icon now keeps its 16 px pixels inside a 32 px cell: half the
-    size on screen, at the left (next to the text) and around the middle of the letters.
+    Bedrock draws glyph pixels at a fixed size (padding doesn't shrink them), and a 16 px item came
+    out about twice as tall as the letters. So each icon is halved to 8 px (2x2 pixel average),
+    about the letters' height, at the left of its cell and centered on the text.
     """
     jar = zipfile.ZipFile(jar_path)
-    sheet = Image.new('RGBA', (512, 512), (0, 0, 0, 0))
+    sheet = Image.new('RGBA', (256, 256), (0, 0, 0, 0))
     for i, name in enumerate(SCOREBOARD_ICONS):
         icon = Image.open(io.BytesIO(jar.read(f'assets/minecraft/textures/item/{name}.png'))).convert('RGBA')
-        sheet.paste(icon.crop((0, 0, 16, 16)), (i % 16 * 32, i // 16 * 32 + 6))
+        small = icon.crop((0, 0, 16, 16)).convert('RGBa').resize((8, 8), Image.BOX).convert('RGBA')
+        sheet.paste(small, (i % 16 * 16, i // 16 * 16 + 4))
     (PACK / 'font').mkdir(parents=True, exist_ok=True)
     sheet.save(PACK / 'font/glyph_E2.png')
 
