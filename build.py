@@ -9,12 +9,17 @@ Usage: python build.py
 """
 import hashlib
 import json
+import os
 import struct
 import sys
 import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
+LONG_PATH = "\\\\?\\"  # the Windows long path prefix \\?\
+if os.name == "nt" and not str(ROOT).startswith(LONG_PATH):
+    # Windows skips files past 260 characters without this prefix.
+    ROOT = Path(LONG_PATH + str(ROOT))
 PACK = ROOT / "pack"
 DIST = ROOT / "dist"
 ZIP_PATH = DIST / "TaxSMP-Pack.zip"
