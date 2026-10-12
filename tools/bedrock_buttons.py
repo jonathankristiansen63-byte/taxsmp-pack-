@@ -1,20 +1,49 @@
-"""Build the Bedrock GUI-button pack and matching Geyser v2 item mappings.
+"""Build the Bedrock pack (GUI buttons + scoreboard icons) and matching Geyser v2 item mappings.
 
-Uses the exact inventory textures from the Java pack. No scoreboard fonts or UI
-overrides are included. Run after tools/gui.py, then copy the two dist outputs to
-the Geyser-Velocity packs/ and custom_mappings/ folders.
+Uses the exact inventory textures from the Java pack. The scoreboard icons are a Bedrock
+glyph sheet (font/glyph_E2.png): character U+E200 + index shows SCOREBOARD_ICONS[index],
+the same order as BEDROCK_ICON_ORDER in the TaxSMP plugin's ScoreboardManager.
+
+    python tools/bedrock_buttons.py [path/to/26.3.jar]
+
+The jar is only needed to (re)draw the glyph sheet from Minecraft's item textures.
+Run after tools/gui.py, then copy the two dist outputs to the Geyser-Velocity
+packs/ and custom_mappings/ folders.
 """
 import hashlib
+import io
 import json
+import os
 import shutil
+import sys
 import uuid
 import zipfile
 from pathlib import Path
 
-ROOT = Path(__file__).absolute().parent.parent
+from PIL import Image
+
+ROOT = Path(__file__).resolve().parent.parent
+LONG_PATH = '\\\\?\\'  # the Windows long path prefix \\?\
+if os.name == 'nt' and not str(ROOT).startswith(LONG_PATH):
+    # Windows skips files past 260 characters without this prefix.
+    ROOT = Path(LONG_PATH + str(ROOT))
 PACK = ROOT / 'bedrock/pack'
 DIST = ROOT / 'dist'
-VERSION = [1, 0, 2]
+VERSION = [1, 0, 3]  # raise on every change, or Bedrock players keep their old copy
+
+SCOREBOARD_ICONS = ['name_tag', 'gold_ingot', 'amethyst_shard', 'egg', 'trial_key', 'clock_00',
+                    'diamond_sword', 'bone', 'iron_chestplate', 'totem_of_undying', 'compass_16']
+
+
+def draw_glyphs(jar_path):
+    """16x16 grid of 16 px cells; cell i is the item picture for character U+E200 + i."""
+    jar = zipfile.ZipFile(jar_path)
+    sheet = Image.new('RGBA', (256, 256), (0, 0, 0, 0))
+    for i, name in enumerate(SCOREBOARD_ICONS):
+        icon = Image.open(io.BytesIO(jar.read(f'assets/minecraft/textures/item/{name}.png'))).convert('RGBA')
+        sheet.paste(icon.crop((0, 0, 16, 16)), (i % 16 * 16, i // 16 * 16))
+    (PACK / 'font').mkdir(parents=True, exist_ok=True)
+    sheet.save(PACK / 'font/glyph_E2.png')
 
 # Each (Java material, item_model) pair needs a unique Bedrock identifier.
 # Restrict mappings to the actual menu materials, so vanilla gameplay items keep
@@ -45,11 +74,15 @@ def write_json(path, data):
 
 
 def main():
+    if len(sys.argv) > 1:
+        draw_glyphs(sys.argv[1])
+    if not (PACK / 'font/glyph_E2.png').exists():
+        sys.exit('font/glyph_E2.png is missing: run with the 26.3 client jar once to draw it')
     manifest = {
         'format_version': 2,
         'header': {
             'name': 'TaxSMP GUI Buttons',
-            'description': 'Matching shop, auction and orders buttons. Scoreboard artwork is Java-only.',
+            'description': 'Shop, auction and orders buttons, and the scoreboard icons.',
             'uuid': str(uuid.uuid5(uuid.NAMESPACE_URL, 'https://taxsmp.net/bedrock/gui-buttons/header')),
             'version': VERSION,
             'min_engine_version': [1, 21, 0],
@@ -118,7 +151,7 @@ def main():
                 archive.writestr(info, path.read_bytes())
     (DIST / 'TaxSMP-Bedrock-Buttons.mcpack.sha256').write_text(
         hashlib.sha256(output.read_bytes()).hexdigest() + '\n', encoding='utf-8', newline='\n')
-    print(f'Built {output.name}: {len(texture_data)} textures, {len(identifiers)} Geyser definitions; no scoreboard assets.')
+    print(f'Built {output.name}: {len(texture_data)} textures, {len(identifiers)} Geyser definitions, {len(SCOREBOARD_ICONS)} scoreboard icons.')
 
 
 if __name__ == '__main__':

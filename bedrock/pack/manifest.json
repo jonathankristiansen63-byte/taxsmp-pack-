@@ -2,12 +2,12 @@
   "format_version": 2,
   "header": {
     "name": "TaxSMP GUI Buttons",
-    "description": "Matching shop, auction and orders buttons. Scoreboard artwork is Java-only.",
+    "description": "Shop, auction and orders buttons, and the scoreboard icons.",
     "uuid": "c20930e0-cce8-5699-b50b-6d43415a798d",
     "version": [
       1,
       0,
-      2
+      3
     ],
     "min_engine_version": [
       1,
@@ -22,7 +22,7 @@
       "version": [
         1,
         0,
-        2
+        3
       ]
     }
   ],
