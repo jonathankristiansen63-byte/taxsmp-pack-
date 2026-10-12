@@ -75,6 +75,8 @@ def main():
 
     providers = [
         {"type": "bitmap", "file": "taxsmp:font/sb_frame.png", **frame_def, "chars": [FRAME]},
+        # Small TaxSMP logo for dialog titles ("Amount", "Price"...), text height.
+        {"type": "bitmap", "file": "taxsmp:font/logo.png", "height": 10, "ascent": 8, "chars": [chr(0xE001)]},
         {"type": "space", "advances": {ch: -n for n, ch in MOVE_LEFT.items()} | {ch: n for n, ch in MOVE_RIGHT.items()}},
     ]
     font = PACK / "assets/taxsmp/font/hud.json"

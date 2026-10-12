@@ -10,6 +10,15 @@
       ]
     },
     {
+      "type": "bitmap",
+      "file": "taxsmp:font/logo.png",
+      "height": 10,
+      "ascent": 8,
+      "chars": [
+        "\ue001"
+      ]
+    },
+    {
       "type": "space",
       "advances": {
         "\ue010": -1,
