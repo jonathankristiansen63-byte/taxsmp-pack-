@@ -1,4 +1,4 @@
-"""Build the Bedrock pack (GUI buttons + scoreboard icons) and matching Geyser v2 item mappings.
+"""Build the Bedrock pack (GUI buttons, chicken tools + scoreboard icons) and matching Geyser v2 item mappings.
 
 Uses the exact inventory textures from the Java pack. The scoreboard icons are a Bedrock
 glyph sheet (font/glyph_E2.png): character U+E200 + index shows SCOREBOARD_ICONS[index],
@@ -7,8 +7,8 @@ the same order as BEDROCK_ICON_ORDER in the TaxSMP plugin's ScoreboardManager.
     python tools/bedrock_buttons.py [path/to/26.3.jar]
 
 The jar is only needed to (re)draw the glyph sheet from Minecraft's item textures.
-Run after tools/gui.py, then copy the two dist outputs to the Geyser-Velocity
-packs/ and custom_mappings/ folders.
+Run after tools/gui.py and tools/chicken_tools.py, then copy the two dist outputs to the
+Geyser-Velocity packs/ and custom_mappings/ folders.
 """
 import hashlib
 import io
@@ -29,7 +29,7 @@ if os.name == 'nt' and not str(ROOT).startswith(LONG_PATH):
     ROOT = Path(LONG_PATH + str(ROOT))
 PACK = ROOT / 'bedrock/pack'
 DIST = ROOT / 'dist'
-VERSION = [1, 0, 5]  # raise on every change, or Bedrock players keep their old copy
+VERSION = [1, 0, 6]  # raise on every change, or Bedrock players keep their old copy
 
 SCOREBOARD_ICONS = ['name_tag', 'gold_ingot', 'amethyst_shard', 'egg', 'trial_key', 'clock_00',
                     'diamond_sword', 'bone', 'iron_chestplate', 'totem_of_undying', 'compass_16']
@@ -73,6 +73,14 @@ BASE_ITEMS = {
 RTP_ITEMS = {'overworld': 'moss_block', 'nether': 'nether_wart_block', 'end': 'end_stone_bricks',
              'region_eu': 'moss_block', 'region_na': 'moss_block'}
 
+# Chicken tools: the TaxSMP plugin sets item model taxsmp:tool/<name> on these items.
+TOOL_ITEMS = {
+    'sell_axe': ('netherite_axe', 'Chicken Sell Axe'),
+    'tree_chopper': ('netherite_axe', 'Chicken Tree Chopper'),
+    'drill': ('netherite_pickaxe', 'Chicken Drill'),
+    'shovel': ('netherite_shovel', 'Chicken Shovel'),
+}
+
 
 def write_json(path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -88,7 +96,7 @@ def main():
         'format_version': 2,
         'header': {
             'name': 'TaxSMP GUI Buttons',
-            'description': 'Shop, auction and orders buttons, and the scoreboard icons.',
+            'description': 'Shop, auction and orders buttons, chicken tools and the scoreboard icons.',
             'uuid': str(uuid.uuid5(uuid.NAMESPACE_URL, 'https://taxsmp.net/bedrock/gui-buttons/header')),
             'version': VERSION,
             'min_engine_version': [1, 21, 0],
@@ -137,6 +145,23 @@ def main():
             'type': 'definition', 'model': 'taxsmp:rtp/' + name, 'bedrock_identifier': identifier,
             'display_name': name.replace('_', ' ').title(),
             'bedrock_options': {'icon': icon, 'creative_category': 'none'},
+        })
+    for name, (base, display_name) in TOOL_ITEMS.items():
+        icon = 'taxsmp_tool_' + name
+        texture_path = 'textures/items/taxsmp/tool_' + name
+        target = PACK / (texture_path + '.png')
+        target.parent.mkdir(parents=True, exist_ok=True)
+        # The Java texture is an animation strip; Bedrock gets its last frame (no shine passing).
+        strip = Image.open(ROOT / f'pack/assets/taxsmp/textures/item/tool/{name}.png')
+        strip.crop((0, strip.height - strip.width, strip.width, strip.height)).save(target)
+        texture_data[icon] = {'textures': [texture_path]}
+        identifier = 'taxsmp:tool_' + name
+        assert identifier not in identifiers
+        identifiers.add(identifier)
+        items.setdefault('minecraft:' + base, []).append({
+            'type': 'definition', 'model': 'taxsmp:tool/' + name, 'bedrock_identifier': identifier,
+            'display_name': display_name,
+            'bedrock_options': {'icon': icon, 'creative_category': 'none', 'display_handheld': True},
         })
     write_json(PACK / 'textures/item_texture.json', {
         'resource_pack_name': 'taxsmp_gui_buttons',

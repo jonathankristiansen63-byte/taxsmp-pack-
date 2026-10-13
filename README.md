@@ -75,6 +75,27 @@ FoliaRTP plugin. Overworld and Nether offer EU Central and NA East; End's map of
 only EU Central. Bedrock uses working native inventory buttons with matching
 artwork icons. See [installation and build instructions](rtp-ui/README.md).
 
+## Chicken tools
+
+The Chicken Sell Axe, Tree Chopper, Drill and Shovel have animated 32x32 textures
+(gold shine, spinning drill bit, running chainsaw chain) and thicker 3D models in the
+hand. Preview: `preview/chicken-tools.png`. They are drawn by `tools/chicken_tools.py`
+from the ChatGPT references in `src/chicken/` (prompts in `src/chicken/PROMPTS.md`);
+run it, then `python build.py` and `python tools/bedrock_buttons.py`.
+
+The four plugins (source in `chicken-plugins/`, build with
+`mvn -f chicken-plugins/pom.xml package`) set the item look when a tool is made, give
+silently, and the Tree Chopper only cuts the one tree it hits, with that tree's own leaves.
+`dist/TaxSMP.jar` gives tools made by the old plugins the same look.
+
+Install order on a live network:
+1. Push this pack first and let the proxies pick it up (or `/taxpack reload`).
+2. Then put `dist/TaxSMP.jar` and the four chicken jars (`ChickenSellAxe.jar`,
+   `chickenaxe-plugin-1.0-SNAPSHOT.jar`, `chicken-pickaxe-1.0.0.jar`,
+   `ChickenShovel-1.0.0.jar`, same names as the old ones) on the backend and restart.
+   Before the pack is out, players would see a missing texture on new tools.
+3. For Bedrock, update the Geyser pack and mappings as described above.
+
 ## Velocity plugin (TaxSMP PackLoader)
 
 `velocity-plugin/TaxSMP-PackLoader.jar` sends this pack to players **once**, when they join.

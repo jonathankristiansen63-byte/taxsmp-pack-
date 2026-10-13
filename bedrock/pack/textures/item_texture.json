@@ -91,6 +91,26 @@
       "textures": [
         "textures/items/taxsmp/rtp_region_na"
       ]
+    },
+    "taxsmp_tool_sell_axe": {
+      "textures": [
+        "textures/items/taxsmp/tool_sell_axe"
+      ]
+    },
+    "taxsmp_tool_tree_chopper": {
+      "textures": [
+        "textures/items/taxsmp/tool_tree_chopper"
+      ]
+    },
+    "taxsmp_tool_drill": {
+      "textures": [
+        "textures/items/taxsmp/tool_drill"
+      ]
+    },
+    "taxsmp_tool_shovel": {
+      "textures": [
+        "textures/items/taxsmp/tool_shovel"
+      ]
     }
   }
 }

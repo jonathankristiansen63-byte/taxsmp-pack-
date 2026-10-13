@@ -1,0 +1,23 @@
+name: ChickenPickaxe
+version: ${project.parent.version}
+main: com.chickenitems.ChickenPickaxePlugin
+api-version: '1.21'
+authors: [taxman_Mc]
+folia-supported: true
+description: The Chicken Drill (the old Chicken Pickaxe), breaks 3x3 at once.
+
+commands:
+  chickenpickaxe:
+    description: ᴄʜɪᴄᴋᴇɴ ᴅʀɪʟʟ admin command
+    usage: /<command> give <player> [amount]
+    permission: chickenpickaxe.admin
+    aliases: [cpickaxe, chicken_pickaxe, chickendrill]
+  givechickenpickaxe:
+    description: Give ᴄʜɪᴄᴋᴇɴ ᴅʀɪʟʟ directly
+    usage: /<command> <player> [amount]
+    permission: chickenpickaxe.admin
+    aliases: [gcpickaxe, gcp]
+
+permissions:
+  chickenpickaxe.admin:
+    default: op

@@ -1,0 +1,19 @@
+name: ChickenShovel
+version: ${project.parent.version}
+main: com.chickenshovel.ChickenShovelPlugin
+api-version: '1.21'
+folia-supported: true
+description: A powerful Netherite Shovel that breaks 9 gravity blocks at once with a self-destruct timer.
+authors:
+  - ChickenShovel
+
+commands:
+  chicken_shovel:
+    description: Chicken Shovel admin command
+    usage: /chicken_shovel give <player> <amount>
+    permission: chickenshovel.admin
+
+permissions:
+  chickenshovel.admin:
+    description: Allows using the chicken shovel admin command
+    default: op

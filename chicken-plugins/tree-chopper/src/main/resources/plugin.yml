@@ -1,0 +1,12 @@
+name: ChickenAxePlugin
+main: com.example.chickenaxe.ChickenAxePlugin
+version: ${project.parent.version}
+api-version: '1.21'
+folia-supported: true
+description: The Chicken Tree Chopper, cuts down one whole tree at once. /chickenaxe give
+commands:
+  chickenaxe:
+    description: Gives a Chicken Tree Chopper
+    usage: /<command> give <player> [amount]
+    permission: chickenaxe.give
+    permission-message: You do not have permission to use this command.

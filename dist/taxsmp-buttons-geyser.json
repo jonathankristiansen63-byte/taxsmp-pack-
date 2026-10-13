@@ -274,6 +274,56 @@
           "creative_category": "none"
         }
       }
+    ],
+    "minecraft:netherite_axe": [
+      {
+        "type": "definition",
+        "model": "taxsmp:tool/sell_axe",
+        "bedrock_identifier": "taxsmp:tool_sell_axe",
+        "display_name": "Chicken Sell Axe",
+        "bedrock_options": {
+          "icon": "taxsmp_tool_sell_axe",
+          "creative_category": "none",
+          "display_handheld": true
+        }
+      },
+      {
+        "type": "definition",
+        "model": "taxsmp:tool/tree_chopper",
+        "bedrock_identifier": "taxsmp:tool_tree_chopper",
+        "display_name": "Chicken Tree Chopper",
+        "bedrock_options": {
+          "icon": "taxsmp_tool_tree_chopper",
+          "creative_category": "none",
+          "display_handheld": true
+        }
+      }
+    ],
+    "minecraft:netherite_pickaxe": [
+      {
+        "type": "definition",
+        "model": "taxsmp:tool/drill",
+        "bedrock_identifier": "taxsmp:tool_drill",
+        "display_name": "Chicken Drill",
+        "bedrock_options": {
+          "icon": "taxsmp_tool_drill",
+          "creative_category": "none",
+          "display_handheld": true
+        }
+      }
+    ],
+    "minecraft:netherite_shovel": [
+      {
+        "type": "definition",
+        "model": "taxsmp:tool/shovel",
+        "bedrock_identifier": "taxsmp:tool_shovel",
+        "display_name": "Chicken Shovel",
+        "bedrock_options": {
+          "icon": "taxsmp_tool_shovel",
+          "creative_category": "none",
+          "display_handheld": true
+        }
+      }
     ]
   }
 }

@@ -1,0 +1,15 @@
+name: ChickenSellAxe
+main: com.chickensellaxe.ChickenSellAxePlugin
+version: ${project.parent.version}
+api-version: '1.21'
+folia-supported: true
+softdepend: [TaxSMP]
+commands:
+  chickensellaxe:
+    description: Give Chicken Sell Axe items.
+    usage: /chickensellaxe give <player> [amount]
+    permission: chickensellaxe.give
+permissions:
+  chickensellaxe.give:
+    description: Allows giving Chicken Sell Axe items.
+    default: op

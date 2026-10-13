@@ -4,7 +4,8 @@ This pack contains the same 13 button textures as the Java pack: search, sort,
 filter, refresh, your items/orders, previous, next, back, confirm, cancel, plus and
 minus, and the green information/transactions button. It keeps the server's existing inventory slots and Bedrock's native chest
 UI. It also contains five RTP artwork textures for Overworld, Nether, End,
-EU Central and NA East. End's region menu offers EU Central only.
+EU Central and NA East. End's region menu offers EU Central only. It also has the
+four chicken tool icons (Sell Axe, Tree Chopper, Drill, Shovel), shown without animation.
 The scoreboard artwork and Java title backgrounds are not part of this pack.
 
 ## Install on each Velocity proxy running Geyser

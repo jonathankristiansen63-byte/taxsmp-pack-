@@ -420,6 +420,7 @@ public class TaxSMP extends JavaPlugin {
       pm.registerEvents(nightVision, this);
       pm.registerEvents(new PhantomBlocker(this), this);
       pm.registerEvents(new com.taxsmp.ui.GuiSkin(this), this);
+      pm.registerEvents(new com.taxsmp.ui.ChickenToolSkin(this), this);
       if (this.getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
          pm.registerEvents(new WorthLoreListener(this), this);
       }

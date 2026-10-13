@@ -1,1 +1,3 @@
 __pycache__/
+
+chicken-plugins/*/target/
