@@ -67,6 +67,81 @@ def make_frame():
     return img, {"height": h, "ascent": 12}
 
 
+def frame_from_art(path):
+    """The ChatGPT frame (src/scoreboard-frame.png: a box plus a logo holder on top, pixel art on a
+    rough grid) turned into crisp art pixels and fitted to the sidebar:
+      - art pixel size = the side border's thickness / 4 (it has 4 color layers)
+      - colors snapped to the 3 frame colors
+      - wider: repeat a plain column in each top bar / wing (k) and the empty middle (gap) (g)
+      - taller: repeat a plain row of the box sides
+    The box's top edge lands at top-14 and its bottom 4 px under the last line, like make_frame().
+    """
+    src = Image.open(path).convert("RGBA")
+    a = src.getchannel("A").load()
+    bbox = src.getchannel("A").point(lambda v: 255 if v > 128 else 0).getbbox()
+    x0, y0, x1, y1 = bbox
+    mid = (y0 + y1) // 2
+    border = 0
+    while a[x0 + border, mid] > 128:
+        border += 1
+    size = border / 4
+    cols, rows = round((x1 - x0) / size), round((y1 - y0) / size)
+    px = src.load()
+    art = [[None] * cols for _ in range(rows)]
+    for j in range(rows):
+        for i in range(cols):
+            p = px[int(x0 + (i + 0.5) * size), int(y0 + (j + 0.5) * size)]
+            if p[3] < 128:
+                continue
+            if p[0] + p[1] + p[2] < 200:
+                art[j][i] = BLACK
+            elif p[1] > 190:
+                art[j][i] = GOLD_LIGHT
+            else:
+                art[j][i] = GOLD
+
+    crest = next(j for j in range(rows) if sum(1 for c in art[j] if c) > cols * 0.6)  # box top edge
+    extra = BOARD_WIDTH + 4 - cols
+    gap = min(extra, 16)
+    side = (extra - gap) // 2
+    gap = extra - 2 * side
+    left_col, mid_col, right_col = 12, cols // 2, cols - 1 - 12
+    order = []
+    for i in range(cols):
+        order.append(i)
+        if i == left_col:
+            order += [i] * side
+        elif i == mid_col:
+            order += [i] * gap
+        elif i == right_col:
+            order += [i] * side
+    box_rows = 14 + LINES * 9 + 4
+    grow = box_rows - (rows - crest)
+    mid_row = crest + (rows - crest) // 2
+    row_order = []
+    for j in range(rows):
+        row_order.append(j)
+        if j == mid_row:
+            row_order += [j] * grow
+
+    w, h = len(order), len(row_order)
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    out = img.load()
+    for y, j in enumerate(row_order):
+        for x, i in enumerate(order):
+            if art[j][i]:
+                out[x, y] = art[j][i]
+    # Same even background as make_frame(): 14% black over the lines, only where the frame is clear.
+    lines_top = crest + 14
+    for x in range(4, w - 4):
+        for y in range(lines_top - 1, lines_top + LINES * 9):
+            if out[x, y][3] == 0:
+                out[x, y] = (0, 0, 0, 36)
+    print(f"GPT frame: art pixel {size:.2f} px, {cols}x{rows} art -> {w}x{h}, logo holder {crest} px tall")
+    # Box top edge at top-14: glyph top = (top - 9) + 7 - ascent = top - 14 - crest.
+    return img, {"height": h, "ascent": 12 + crest}
+
+
 LOGO_HEIGHT = 48
 LOGO_RES = 4  # texture pixels per GUI pixel (glyph textures max 256 px)
 
@@ -84,7 +159,8 @@ def make_logo():
 
 
 def main():
-    frame, frame_def = make_frame()
+    art = ROOT / "src/scoreboard-frame.png"
+    frame, frame_def = frame_from_art(art) if art.exists() else make_frame()
     textures = PACK / "assets/taxsmp/textures/font"
     textures.mkdir(parents=True, exist_ok=True)
     frame.save(textures / "sb_frame.png", optimize=True)

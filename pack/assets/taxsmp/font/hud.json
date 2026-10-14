@@ -3,8 +3,8 @@
     {
       "type": "bitmap",
       "file": "taxsmp:font/sb_frame.png",
-      "height": 126,
-      "ascent": 12,
+      "height": 142,
+      "ascent": 28,
       "chars": [
         "\ue000"
       ]
