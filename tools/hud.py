@@ -67,16 +67,36 @@ def make_frame():
     return img, {"height": h, "ascent": 12}
 
 
+LOGO_HEIGHT = 48
+LOGO_RES = 4  # texture pixels per GUI pixel (glyph textures max 256 px)
+
+
+def make_logo():
+    """The TaxSMP logo for the top of the scoreboard. Its glyph bottom = title line top + 7 - ascent +
+    height = (top - 9) + 8 = top - 1: right above the first line."""
+    logo = Image.open(ROOT / "src/logo-original.png").convert("RGBA")
+    logo = logo.crop(logo.getchannel("A").point(lambda a: 255 if a > 8 else 0).getbbox())
+    h = LOGO_HEIGHT * LOGO_RES
+    w = round(logo.width * h / logo.height)
+    logo = logo.convert("RGBa").resize((w, h), Image.LANCZOS).convert("RGBA")
+    print(f"logo {w}x{h} texture, drawn {w / LOGO_RES:.0f} px wide (advance {round(w / LOGO_RES) + 1})")
+    return logo
+
+
 def main():
     frame, frame_def = make_frame()
     textures = PACK / "assets/taxsmp/textures/font"
     textures.mkdir(parents=True, exist_ok=True)
     frame.save(textures / "sb_frame.png", optimize=True)
+    make_logo().save(textures / "sb_logo.png", optimize=True)
 
     providers = [
         {"type": "bitmap", "file": "taxsmp:font/sb_frame.png", **frame_def, "chars": [FRAME]},
         # Small TaxSMP logo for dialog titles ("Amount", "Price"...), text height.
         {"type": "bitmap", "file": "taxsmp:font/logo.png", "height": 10, "ascent": 8, "chars": [chr(0xE001)]},
+        # Scoreboard logo (HugoSMP style): 48 px tall, bottom edge just above the first line,
+        # so it sits on top of the frame's top edge. ascent = height - 1 (see make_logo).
+        {"type": "bitmap", "file": "taxsmp:font/sb_logo.png", "height": LOGO_HEIGHT, "ascent": LOGO_HEIGHT - 1, "chars": [chr(0xE002)]},
         {"type": "space", "advances": {ch: -n for n, ch in MOVE_LEFT.items()} | {ch: n for n, ch in MOVE_RIGHT.items()}},
     ]
     font = PACK / "assets/taxsmp/font/hud.json"
