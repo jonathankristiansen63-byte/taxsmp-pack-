@@ -21,8 +21,8 @@
     {
       "type": "bitmap",
       "file": "taxsmp:font/sb_logo.png",
-      "height": 48,
-      "ascent": 47,
+      "height": 39,
+      "ascent": 38,
       "chars": [
         "\ue002"
       ]

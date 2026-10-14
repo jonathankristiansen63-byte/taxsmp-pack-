@@ -146,16 +146,36 @@ LOGO_HEIGHT = 48
 LOGO_RES = 4  # texture pixels per GUI pixel (glyph textures max 256 px)
 
 
+LOGO_PIXEL_WIDTH = 72  # the pixel-art logo is 72 art pixels wide (see the ChatGPT logo prompt)
+
+
 def make_logo():
-    """The TaxSMP logo for the top of the scoreboard. Its glyph bottom = title line top + 7 - ascent +
-    height = (top - 9) + 8 = top - 1: right above the first line."""
+    """The scoreboard logo. With src/scoreboard-logo.png (ChatGPT pixel art) it is cut back to its art
+    pixels at 1x, like the frame; otherwise the smooth logo at 4x. The glyph's bottom = title line top
+    + 7 - ascent + height = (top - 9) + 8 = top - 1: right above the first line. Returns (image, height)."""
+    art = ROOT / "src/scoreboard-logo.png"
+    if art.exists():
+        src = Image.open(art).convert("RGBA")
+        x0, y0, x1, y1 = src.getchannel("A").point(lambda v: 255 if v > 128 else 0).getbbox()
+        size = (x1 - x0) / LOGO_PIXEL_WIDTH
+        rows = round((y1 - y0) / size)
+        px = src.load()
+        logo = Image.new("RGBA", (LOGO_PIXEL_WIDTH, rows), (0, 0, 0, 0))
+        out = logo.load()
+        for j in range(rows):
+            for i in range(LOGO_PIXEL_WIDTH):
+                c = px[int(x0 + (i + 0.5) * size), int(y0 + (j + 0.5) * size)]
+                if c[3] >= 128:
+                    out[i, j] = c[:3] + (255,)
+        print(f"pixel-art logo: {size:.2f} px per art pixel -> {LOGO_PIXEL_WIDTH}x{rows}, drawn {logo.getbbox()[2]} px wide")
+        return logo, rows
     logo = Image.open(ROOT / "src/logo-original.png").convert("RGBA")
     logo = logo.crop(logo.getchannel("A").point(lambda a: 255 if a > 8 else 0).getbbox())
     h = LOGO_HEIGHT * LOGO_RES
     w = round(logo.width * h / logo.height)
     logo = logo.convert("RGBa").resize((w, h), Image.LANCZOS).convert("RGBA")
     print(f"logo {w}x{h} texture, drawn {w / LOGO_RES:.0f} px wide (advance {round(w / LOGO_RES) + 1})")
-    return logo
+    return logo, LOGO_HEIGHT
 
 
 def main():
@@ -164,7 +184,8 @@ def main():
     textures = PACK / "assets/taxsmp/textures/font"
     textures.mkdir(parents=True, exist_ok=True)
     frame.save(textures / "sb_frame.png", optimize=True)
-    make_logo().save(textures / "sb_logo.png", optimize=True)
+    logo, logo_height = make_logo()
+    logo.save(textures / "sb_logo.png", optimize=True)
 
     providers = [
         {"type": "bitmap", "file": "taxsmp:font/sb_frame.png", **frame_def, "chars": [FRAME]},
@@ -172,7 +193,7 @@ def main():
         {"type": "bitmap", "file": "taxsmp:font/logo.png", "height": 10, "ascent": 8, "chars": [chr(0xE001)]},
         # Scoreboard logo (HugoSMP style): 48 px tall, bottom edge just above the first line,
         # so it sits on top of the frame's top edge. ascent = height - 1 (see make_logo).
-        {"type": "bitmap", "file": "taxsmp:font/sb_logo.png", "height": LOGO_HEIGHT, "ascent": LOGO_HEIGHT - 1, "chars": [chr(0xE002)]},
+        {"type": "bitmap", "file": "taxsmp:font/sb_logo.png", "height": logo_height, "ascent": logo_height - 1, "chars": [chr(0xE002)]},
         {"type": "space", "advances": {ch: -n for n, ch in MOVE_LEFT.items()} | {ch: n for n, ch in MOVE_RIGHT.items()}},
     ]
     font = PACK / "assets/taxsmp/font/hud.json"
