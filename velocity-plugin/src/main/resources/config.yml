@@ -16,7 +16,7 @@ force: true
 # true = also keep players on the joining screen until the pack has loaded (with force: true).
 # If they don't load it within accept-timeout-seconds, they get disconnected with kick-message.
 # false = they join right away and the pack loads in the background.
-wait-for-pack: false
+wait-for-pack: true
 accept-timeout-seconds: 120
 kick-message: "&cYou have to accept the &6&lTaxSMP &cresource pack to play!\n&7Rejoin and click &fYes&7."
 

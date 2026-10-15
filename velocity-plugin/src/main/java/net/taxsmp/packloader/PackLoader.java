@@ -52,7 +52,7 @@ import org.yaml.snakeyaml.Yaml;
 @Plugin(
     id = "taxsmp-packloader",
     name = "TaxSMP PackLoader",
-    version = "1.2.0",
+    version = "1.2.1",
     description = "Sends the TaxSMP resource pack once when a player joins the network",
     authors = {"TaxSMP"},
     dependencies = {@Dependency(id = "floodgate", optional = true)})
@@ -116,7 +116,7 @@ public final class PackLoader {
     // 1.20.2+ players go through this while joining (and when switching NA <-> EU), before they're in the world.
     Player player = event.player();
     Pack current = packFor(player);
-    // Without wait-for-pack the player joins right away and the (still required) pack loads in the background.
+    // wait-for-pack (default) keeps the player on the joining screen until the pack has loaded; that is what forces it.
     if (current == null || !settings.force() || !settings.waitForPack()) {
       if (current != null) {
         sendPack(player, current);
@@ -340,7 +340,7 @@ public final class PackLoader {
             "&cYou have to accept the &6&lTaxSMP &cresource pack to play!\n&7Rejoin and click &fYes&7."))),
         Integer.parseInt(String.valueOf(yaml.getOrDefault("check-every-minutes", 10))),
         Boolean.parseBoolean(String.valueOf(yaml.getOrDefault("skip-bedrock", true))),
-        Boolean.parseBoolean(String.valueOf(yaml.getOrDefault("wait-for-pack", false))));
+        Boolean.parseBoolean(String.valueOf(yaml.getOrDefault("wait-for-pack", true))));
   }
 
   private static void tell(CommandSource source, String message) {
