@@ -52,7 +52,7 @@ import org.yaml.snakeyaml.Yaml;
 @Plugin(
     id = "taxsmp-packloader",
     name = "TaxSMP PackLoader",
-    version = "1.1.1",
+    version = "1.2.0",
     description = "Sends the TaxSMP resource pack once when a player joins the network",
     authors = {"TaxSMP"},
     dependencies = {@Dependency(id = "floodgate", optional = true)})
@@ -78,7 +78,7 @@ public final class PackLoader {
 
   record Settings(String repo, String branch, String path, UUID packId, boolean force,
                   Component prompt, int acceptTimeoutSeconds, Component kickMessage,
-                  int checkEveryMinutes, boolean skipBedrock) {}
+                  int checkEveryMinutes, boolean skipBedrock, boolean waitForPack) {}
 
   /** The pack zip at one exact GitHub commit, and the SHA-1 of that file. */
   record Pack(String commit, String url, byte[] sha1) {
@@ -116,7 +116,8 @@ public final class PackLoader {
     // 1.20.2+ players go through this while joining (and when switching NA <-> EU), before they're in the world.
     Player player = event.player();
     Pack current = packFor(player);
-    if (current == null || !settings.force()) {
+    // Without wait-for-pack the player joins right away and the (still required) pack loads in the background.
+    if (current == null || !settings.force() || !settings.waitForPack()) {
       if (current != null) {
         sendPack(player, current);
       }
@@ -338,7 +339,8 @@ public final class PackLoader {
         LEGACY.deserialize(String.valueOf(yaml.getOrDefault("kick-message",
             "&cYou have to accept the &6&lTaxSMP &cresource pack to play!\n&7Rejoin and click &fYes&7."))),
         Integer.parseInt(String.valueOf(yaml.getOrDefault("check-every-minutes", 10))),
-        Boolean.parseBoolean(String.valueOf(yaml.getOrDefault("skip-bedrock", true))));
+        Boolean.parseBoolean(String.valueOf(yaml.getOrDefault("skip-bedrock", true))),
+        Boolean.parseBoolean(String.valueOf(yaml.getOrDefault("wait-for-pack", false))));
   }
 
   private static void tell(CommandSource source, String message) {
