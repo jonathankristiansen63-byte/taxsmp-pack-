@@ -8,7 +8,6 @@ in the items atlas, used by the TaxSMP scoreboard) and the gem also gets an item
 
     python tools/scoreboard_icons.py
 """
-import colorsys
 import json
 from pathlib import Path
 
@@ -20,7 +19,6 @@ SIZE = 16
 
 # Sheet order. None = an icon on the sheet that the scoreboard doesn't use.
 ICONS = ["money", "gem", None, "key", "clock", "swords", "skull", None, "shield", "globe", "ping"]
-GEM_HUE = 0.53  # cyan / ice blue, to match the cyan Gems number (the sheet's gem is pink)
 
 
 def spans(values, min_gap=8):
@@ -54,19 +52,6 @@ def cut(sheet):
     return icons
 
 
-def recolor(img, hue):
-    """Moves the colored (not black/white/gray) pixels to another hue, keeping their shading."""
-    px = img.load()
-    for y in range(img.height):
-        for x in range(img.width):
-            r, g, b, a = px[x, y]
-            hh, s, v = colorsys.rgb_to_hsv(r / 255, g / 255, b / 255)
-            if s > 0.25:
-                r, g, b = (round(c * 255) for c in colorsys.hsv_to_rgb(hue, s, v))
-                px[x, y] = (r, g, b, a)
-    return img
-
-
 def shrink(icon):
     side = max(icon.size)
     square = Image.new("RGBA", (side, side), (0, 0, 0, 0))
@@ -95,8 +80,6 @@ def main():
     for name, icon in zip(ICONS, icons):
         if name is None:
             continue
-        if name == "gem":
-            icon = recolor(icon, GEM_HUE)
         shrink(icon).save(out / f"{name}.png", optimize=True)
     # /shop gem item: item model taxsmp:gem with the scoreboard gem picture.
     write_json(PACK / "assets/taxsmp/items/gem.json", {"model": {"type": "minecraft:model", "model": "taxsmp:gem"}})
