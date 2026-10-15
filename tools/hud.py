@@ -142,59 +142,57 @@ def frame_from_art(path):
     return img, {"height": h, "ascent": 12 + crest}
 
 
-LOGO_HEIGHT = 48
-LOGO_RES = 4  # texture pixels per GUI pixel (glyph textures max 256 px)
-
-
-LOGO_PIXEL_WIDTH = 72  # the pixel-art logo is 72 art pixels wide (see the ChatGPT logo prompt)
+LOGO_WIDTH = 64       # px on screen (the ChatGPT pixel art is 72 art pixels wide, shrunk to fit the holder)
+LOGO_GAP = 3          # empty px rows between the logo and the first line
+LOGO_ADVANCE = 73     # U+E002's width; the plugin's title moves count on it (FRAME_LOGO_WIDTH + 1)
 
 
 def make_logo():
-    """The scoreboard logo. With src/scoreboard-logo.png (ChatGPT pixel art) it is cut back to its art
-    pixels at 1x, like the frame; otherwise the smooth logo at 4x. The glyph's bottom = title line top
-    + 7 - ascent + height = (top - 9) + 8 = top - 1: right above the first line. Returns (image, height)."""
-    art = ROOT / "src/scoreboard-logo.png"
-    if art.exists():
-        src = Image.open(art).convert("RGBA")
-        x0, y0, x1, y1 = src.getchannel("A").point(lambda v: 255 if v > 128 else 0).getbbox()
-        size = (x1 - x0) / LOGO_PIXEL_WIDTH
-        rows = round((y1 - y0) / size)
-        px = src.load()
-        logo = Image.new("RGBA", (LOGO_PIXEL_WIDTH, rows), (0, 0, 0, 0))
-        out = logo.load()
-        for j in range(rows):
-            for i in range(LOGO_PIXEL_WIDTH):
-                c = px[int(x0 + (i + 0.5) * size), int(y0 + (j + 0.5) * size)]
-                if c[3] >= 128:
-                    out[i, j] = c[:3] + (255,)
-        print(f"pixel-art logo: {size:.2f} px per art pixel -> {LOGO_PIXEL_WIDTH}x{rows}, drawn {logo.getbbox()[2]} px wide")
-        return logo, rows
-    logo = Image.open(ROOT / "src/logo-original.png").convert("RGBA")
-    logo = logo.crop(logo.getchannel("A").point(lambda a: 255 if a > 8 else 0).getbbox())
-    h = LOGO_HEIGHT * LOGO_RES
-    w = round(logo.width * h / logo.height)
-    logo = logo.convert("RGBa").resize((w, h), Image.LANCZOS).convert("RGBA")
-    print(f"logo {w}x{h} texture, drawn {w / LOGO_RES:.0f} px wide (advance {round(w / LOGO_RES) + 1})")
-    return logo, LOGO_HEIGHT
+    """The scoreboard logo: src/scoreboard-logo.png (ChatGPT pixel art) shrunk to LOGO_WIDTH px,
+    averaging each new pixel (keeps the outlines) with hard transparency."""
+    src = Image.open(ROOT / "src/scoreboard-logo.png").convert("RGBA")
+    src = src.crop(src.getchannel("A").point(lambda v: 255 if v > 128 else 0).getbbox())
+    h = round(src.height * LOGO_WIDTH / src.width)
+    logo = src.convert("RGBa").resize((LOGO_WIDTH, h), Image.BOX).convert("RGBA")
+    px = logo.load()
+    for y in range(h):
+        for x in range(LOGO_WIDTH):
+            r, g, b, a = px[x, y]
+            px[x, y] = (r, g, b, 255) if a >= 128 else (0, 0, 0, 0)
+    return logo
+
+
+def add_logo(frame, frame_def, logo):
+    """Draws the logo into the frame picture, centered on the board, its last row LOGO_GAP + 1 px above
+    the first line. Rows are counted from `top` (the first line's y): the frame starts at
+    top - 2 - ascent. Being one picture, the logo can't drift from the frame, and U+E002 becomes an
+    empty space of the old logo's width, so older plugin versions still line up."""
+    frame_top = -2 - frame_def["ascent"]
+    logo_top = -LOGO_GAP - logo.height
+    extra = max(0, frame_top - logo_top)
+    img = Image.new("RGBA", (frame.width, frame.height + extra), (0, 0, 0, 0))
+    img.paste(frame, (0, extra))
+    img.alpha_composite(logo, ((frame.width - logo.width) // 2, logo_top - frame_top + extra))
+    return img, {"height": img.height, "ascent": frame_def["ascent"] + extra}
 
 
 def main():
     art = ROOT / "src/scoreboard-frame.png"
     frame, frame_def = frame_from_art(art) if art.exists() else make_frame()
+    logo = make_logo()
+    frame, frame_def = add_logo(frame, frame_def, logo)
     textures = PACK / "assets/taxsmp/textures/font"
     textures.mkdir(parents=True, exist_ok=True)
     frame.save(textures / "sb_frame.png", optimize=True)
-    logo, logo_height = make_logo()
-    logo.save(textures / "sb_logo.png", optimize=True)
+    (textures / "sb_logo.png").unlink(missing_ok=True)
+    print(f"logo {logo.width}x{logo.height}, {LOGO_GAP} px above the first line")
 
     providers = [
         {"type": "bitmap", "file": "taxsmp:font/sb_frame.png", **frame_def, "chars": [FRAME]},
         # Small TaxSMP logo for dialog titles ("Amount", "Price"...), text height.
         {"type": "bitmap", "file": "taxsmp:font/logo.png", "height": 10, "ascent": 8, "chars": [chr(0xE001)]},
-        # Scoreboard logo (HugoSMP style): 48 px tall, bottom edge just above the first line,
-        # so it sits on top of the frame's top edge. ascent = height - 1 (see make_logo).
-        {"type": "bitmap", "file": "taxsmp:font/sb_logo.png", "height": logo_height, "ascent": logo_height - 1, "chars": [chr(0xE002)]},
-        {"type": "space", "advances": {ch: -n for n, ch in MOVE_LEFT.items()} | {ch: n for n, ch in MOVE_RIGHT.items()}},
+        {"type": "space", "advances": {chr(0xE002): LOGO_ADVANCE}
+            | {ch: -n for n, ch in MOVE_LEFT.items()} | {ch: n for n, ch in MOVE_RIGHT.items()}},
     ]
     font = PACK / "assets/taxsmp/font/hud.json"
     font.parent.mkdir(parents=True, exist_ok=True)

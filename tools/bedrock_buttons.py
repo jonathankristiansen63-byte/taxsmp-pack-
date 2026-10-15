@@ -6,7 +6,8 @@ the same order as BEDROCK_ICON_ORDER in the TaxSMP plugin's ScoreboardManager.
 
     python tools/bedrock_buttons.py [path/to/26.3.jar]
 
-The jar is only needed to (re)draw the glyph sheet from Minecraft's item textures.
+The jar is only needed to draw the vanilla icons (name_tag, egg) from Minecraft's item textures;
+without it they are kept from the current sheet. The 'sb/' icons come from tools/scoreboard_icons.py.
 Run after tools/gui.py and tools/chicken_tools.py, then copy the two dist outputs to the
 Geyser-Velocity packs/ and custom_mappings/ folders.
 """
@@ -29,25 +30,34 @@ if os.name == 'nt' and not str(ROOT).startswith(LONG_PATH):
     ROOT = Path(LONG_PATH + str(ROOT))
 PACK = ROOT / 'bedrock/pack'
 DIST = ROOT / 'dist'
-VERSION = [1, 0, 6]  # raise on every change, or Bedrock players keep their old copy
+VERSION = [1, 0, 7]  # raise on every change, or Bedrock players keep their old copy
 
-SCOREBOARD_ICONS = ['name_tag', 'gold_ingot', 'amethyst_shard', 'egg', 'trial_key', 'clock_00',
-                    'diamond_sword', 'bone', 'iron_chestplate', 'totem_of_undying', 'compass_16']
+# 'sb/<name>' = TaxSMP icon (pack textures/item/sb), anything else = a vanilla item texture.
+SCOREBOARD_ICONS = ['name_tag', 'sb/money', 'sb/gem', 'egg', 'sb/key', 'sb/clock',
+                    'sb/swords', 'sb/skull', 'sb/shield', 'sb/globe', 'sb/ping']
 
 
-def draw_glyphs(jar_path):
+def draw_glyphs(jar_path=None):
     """16x16 grid of 16 px cells; cell i is the item picture for character U+E200 + i.
 
     Bedrock draws glyph pixels at a fixed size (padding doesn't shrink them), and a 16 px item came
     out about twice as tall as the letters. So each icon is halved to 8 px (2x2 pixel average),
     about the letters' height, at the left of its cell and centered on the text.
     """
-    jar = zipfile.ZipFile(jar_path)
-    sheet = Image.new('RGBA', (256, 256), (0, 0, 0, 0))
+    jar = zipfile.ZipFile(jar_path) if jar_path else None
+    current = PACK / 'font/glyph_E2.png'
+    sheet = Image.open(current).convert('RGBA') if current.exists() else Image.new('RGBA', (256, 256), (0, 0, 0, 0))
     for i, name in enumerate(SCOREBOARD_ICONS):
-        icon = Image.open(io.BytesIO(jar.read(f'assets/minecraft/textures/item/{name}.png'))).convert('RGBA')
+        if name.startswith('sb/'):
+            icon = Image.open(ROOT / f'pack/assets/taxsmp/textures/item/{name}.png').convert('RGBA')
+        elif jar:
+            icon = Image.open(io.BytesIO(jar.read(f'assets/minecraft/textures/item/{name}.png'))).convert('RGBA')
+        else:
+            continue  # keep the vanilla icon already on the sheet
         small = icon.crop((0, 0, 16, 16)).convert('RGBa').resize((8, 8), Image.BOX).convert('RGBA')
-        sheet.paste(small, (i % 16 * 16, i // 16 * 16 + 4))
+        cell = (i % 16 * 16, i // 16 * 16)
+        sheet.paste((0, 0, 0, 0), cell + (cell[0] + 16, cell[1] + 16))
+        sheet.paste(small, (cell[0], cell[1] + 4))
     (PACK / 'font').mkdir(parents=True, exist_ok=True)
     sheet.save(PACK / 'font/glyph_E2.png')
 
@@ -88,10 +98,9 @@ def write_json(path, data):
 
 
 def main():
-    if len(sys.argv) > 1:
-        draw_glyphs(sys.argv[1])
-    if not (PACK / 'font/glyph_E2.png').exists():
+    if not (PACK / 'font/glyph_E2.png').exists() and len(sys.argv) < 2:
         sys.exit('font/glyph_E2.png is missing: run with the 26.3 client jar once to draw it')
+    draw_glyphs(sys.argv[1] if len(sys.argv) > 1 else None)
     manifest = {
         'format_version': 2,
         'header': {
@@ -146,6 +155,17 @@ def main():
             'display_name': name.replace('_', ' ').title(),
             'bedrock_options': {'icon': icon, 'creative_category': 'none'},
         })
+    # /shop gem: amethyst shard with item model taxsmp:gem (tools/scoreboard_icons.py).
+    texture_path = 'textures/items/taxsmp/gem'
+    target = PACK / (texture_path + '.png')
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(ROOT / 'pack/assets/taxsmp/textures/item/sb/gem.png', target)
+    texture_data['taxsmp_gem'] = {'textures': [texture_path]}
+    identifiers.add('taxsmp:gem')
+    items.setdefault('minecraft:amethyst_shard', []).append({
+        'type': 'definition', 'model': 'taxsmp:gem', 'bedrock_identifier': 'taxsmp:gem',
+        'display_name': 'Gem', 'bedrock_options': {'icon': 'taxsmp_gem', 'creative_category': 'none'},
+    })
     for name, (base, display_name) in TOOL_ITEMS.items():
         icon = 'taxsmp_tool_' + name
         texture_path = 'textures/items/taxsmp/tool_' + name

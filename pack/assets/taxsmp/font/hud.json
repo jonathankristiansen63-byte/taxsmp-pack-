@@ -3,8 +3,8 @@
     {
       "type": "bitmap",
       "file": "taxsmp:font/sb_frame.png",
-      "height": 142,
-      "ascent": 28,
+      "height": 150,
+      "ascent": 36,
       "chars": [
         "\ue000"
       ]
@@ -19,17 +19,9 @@
       ]
     },
     {
-      "type": "bitmap",
-      "file": "taxsmp:font/sb_logo.png",
-      "height": 39,
-      "ascent": 38,
-      "chars": [
-        "\ue002"
-      ]
-    },
-    {
       "type": "space",
       "advances": {
+        "\ue002": 73,
         "\ue010": -1,
         "\ue011": -2,
         "\ue012": -4,

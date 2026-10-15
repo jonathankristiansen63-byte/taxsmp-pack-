@@ -275,6 +275,18 @@
         }
       }
     ],
+    "minecraft:amethyst_shard": [
+      {
+        "type": "definition",
+        "model": "taxsmp:gem",
+        "bedrock_identifier": "taxsmp:gem",
+        "display_name": "Gem",
+        "bedrock_options": {
+          "icon": "taxsmp_gem",
+          "creative_category": "none"
+        }
+      }
+    ],
     "minecraft:netherite_axe": [
       {
         "type": "definition",

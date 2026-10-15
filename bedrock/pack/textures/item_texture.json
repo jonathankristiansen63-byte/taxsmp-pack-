@@ -92,6 +92,11 @@
         "textures/items/taxsmp/rtp_region_na"
       ]
     },
+    "taxsmp_gem": {
+      "textures": [
+        "textures/items/taxsmp/gem"
+      ]
+    },
     "taxsmp_tool_sell_axe": {
       "textures": [
         "textures/items/taxsmp/tool_sell_axe"
