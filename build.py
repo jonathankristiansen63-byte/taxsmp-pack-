@@ -3,17 +3,23 @@
 - Copies the lang overrides in pack/assets/minecraft/lang/en_us.json into every
   Minecraft language, so players who don't play in English get them too.
 - Checks that every font glyph is valid (<= 256x256 px, ascent <= height).
+- Makes the download small without changing how anything looks: JSON without spaces, every
+  PNG stored in the smallest lossless form (only kept when it decodes to exactly the same
+  pixels), and a compressed zip.
 - Writes a byte-for-byte reproducible zip, plus its SHA-1 next to it.
 
 Usage: python build.py
 """
 import hashlib
+import io
 import json
 import os
 import struct
 import sys
 import zipfile
 from pathlib import Path
+
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parent
 LONG_PATH = "\\\\?\\"  # the Windows long path prefix \\?\
@@ -81,6 +87,37 @@ def check_fonts():
                 fail(f"{font.name}: ascent {p['ascent']} is higher than height {p.get('height', 8)}")
 
 
+def minify_json(data):
+    return json.dumps(json.loads(data), separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+
+
+def smallest_png(data):
+    """The smallest lossless re-encoding of a PNG (with a palette when it has 256 colors or fewer).
+    Only used when it decodes to exactly the same RGBA pixels as the original."""
+    original = Image.open(io.BytesIO(data))
+    rgba = original.convert("RGBA")
+    candidates = []
+    out = io.BytesIO()
+    original.save(out, "PNG", optimize=True)
+    candidates.append(out.getvalue())
+    colors = rgba.getcolors(256)
+    if colors:
+        palette = [c for _, c in colors]
+        index = {c: i for i, c in enumerate(palette)}
+        indexed = Image.new("P", rgba.size)
+        indexed.putdata([index[px] for px in rgba.getdata()])
+        indexed.putpalette([v for c in palette for v in c[:3]])
+        # Always write the alpha table (tRNS), so every loader reads it back as RGBA like the original.
+        out = io.BytesIO()
+        indexed.save(out, "PNG", optimize=True, transparency=bytes(c[3] for c in palette))
+        candidates.append(out.getvalue())
+    best = data
+    for candidate in candidates:
+        if len(candidate) < len(best) and Image.open(io.BytesIO(candidate)).convert("RGBA").tobytes() == rgba.tobytes():
+            best = candidate
+    return best
+
+
 def collect_files():
     files = {}
     for path in sorted(PACK.rglob("*")):
@@ -89,7 +126,10 @@ def collect_files():
             if path.suffix in TEXT_SUFFIXES:
                 if path.suffix in {".json", ".mcmeta"}:
                     load_json(path)
+                    data = minify_json(data)
                 data = data.replace(b"\r\n", b"\n")
+            elif path.suffix == ".png":
+                data = smallest_png(data)
             files[path.relative_to(PACK).as_posix()] = data
 
     base_path = PACK / "assets/minecraft/lang/en_us.json"
@@ -99,18 +139,19 @@ def collect_files():
             name = f"assets/minecraft/lang/{lang}.json"
             own = load_json(PACK / name) if (PACK / name).exists() else {}
             merged = {**base, **own}
-            files[name] = (json.dumps(merged, indent=2, sort_keys=True) + "\n").encode()
+            files[name] = json.dumps(merged, separators=(",", ":"), sort_keys=True, ensure_ascii=False).encode("utf-8")
     return files
 
 
 def write_zip(files):
     DIST.mkdir(exist_ok=True)
-    with zipfile.ZipFile(ZIP_PATH, "w", zipfile.ZIP_STORED) as z:
+    with zipfile.ZipFile(ZIP_PATH, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
         for name in sorted(files):
             info = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
             info.create_system = 0
             info.external_attr = 0
-            z.writestr(info, files[name])
+            info.compress_type = zipfile.ZIP_DEFLATED
+            z.writestr(info, files[name], compresslevel=9)
 
 
 def main():
