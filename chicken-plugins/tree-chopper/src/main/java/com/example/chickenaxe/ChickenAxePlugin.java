@@ -116,13 +116,33 @@ public class ChickenAxePlugin extends JavaPlugin implements Listener, CommandExe
       return createdAt == null ? -1L : Math.max(0L, EXPIRY_MILLIS - (System.currentTimeMillis() - createdAt));
    }
 
-   private void refreshLore(ItemStack item) {
-      Long createdAt = item.getItemMeta().getPersistentDataContainer().get(this.createdAtKey, PersistentDataType.LONG);
-      if (createdAt != null) {
-         ItemMeta meta = item.getItemMeta();
-         meta.setLore(this.buildLore(createdAt));
-         item.setItemMeta(meta);
+   /** Updates the timer lore; returns true only if the text changed (about once a minute). */
+   private boolean refreshLore(ItemStack item) {
+      ItemMeta meta = item.getItemMeta();
+      Long createdAt = meta.getPersistentDataContainer().get(this.createdAtKey, PersistentDataType.LONG);
+      if (createdAt == null) {
+         return false;
       }
+      List<String> lore = this.buildLore(createdAt);
+      if (sameText(lore, meta.getLore())) {
+         return false;
+      }
+      meta.setLore(lore);
+      item.setItemMeta(meta);
+      return true;
+   }
+
+   /** Same visible text, ignoring color codes (Paper may rebuild the colors slightly differently). */
+   private static boolean sameText(List<String> a, List<String> b) {
+      if (b == null || a.size() != b.size()) {
+         return false;
+      }
+      for (int i = 0; i < a.size(); i++) {
+         if (!ChatColor.stripColor(a.get(i)).equals(ChatColor.stripColor(b.get(i)))) {
+            return false;
+         }
+      }
+      return true;
    }
 
    private void startSelfDestructTask() {
@@ -263,8 +283,8 @@ public class ChickenAxePlugin extends JavaPlugin implements Listener, CommandExe
             if (this.remainingMillis(item) <= 0L) {
                inv.setItem(slot, null);
                destroyed = true;
-            } else {
-               this.refreshLore(item);
+            } else if (this.refreshLore(item)) {
+               // Only resend the slot when the timer text changed; resending it every second floods players.
                inv.setItem(slot, item);
             }
          }

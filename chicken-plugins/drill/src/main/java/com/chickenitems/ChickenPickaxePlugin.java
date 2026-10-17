@@ -96,13 +96,30 @@ public class ChickenPickaxePlugin extends JavaPlugin implements Listener, Comman
       return createdAt == null || System.currentTimeMillis() - createdAt >= EXPIRY_MILLIS;
    }
 
+   /** Updates the timer lore, but only touches the item when the text changed (about once a minute). */
    private void refreshLore(ItemStack item) {
       ItemMeta meta = item.getItemMeta();
       Long createdAt = meta.getPersistentDataContainer().get(this.createdAtKey, PersistentDataType.LONG);
       if (createdAt != null) {
-         meta.setLore(buildLore(createdAt));
-         item.setItemMeta(meta);
+         List<String> lore = buildLore(createdAt);
+         if (!sameText(lore, meta.getLore())) {
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+         }
       }
+   }
+
+   /** Same visible text, ignoring color codes (Paper may rebuild the colors slightly differently). */
+   private static boolean sameText(List<String> a, List<String> b) {
+      if (b == null || a.size() != b.size()) {
+         return false;
+      }
+      for (int i = 0; i < a.size(); i++) {
+         if (!ChatColor.stripColor(a.get(i)).equals(ChatColor.stripColor(b.get(i)))) {
+            return false;
+         }
+      }
+      return true;
    }
 
    private static List<String> buildLore(long createdAt) {

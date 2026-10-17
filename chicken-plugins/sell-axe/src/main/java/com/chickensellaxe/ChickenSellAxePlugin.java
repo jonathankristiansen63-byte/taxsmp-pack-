@@ -300,13 +300,32 @@ public final class ChickenSellAxePlugin extends JavaPlugin implements Listener, 
       return axe;
    }
 
-   private void updateLore(ItemStack axe) {
+   /** Updates the timer lore; returns true only if the text changed (about once a minute). */
+   private boolean updateLore(ItemStack axe) {
       ItemMeta meta = axe.getItemMeta();
       long remaining = Math.max(0L, this.getExpiresAt(axe) - System.currentTimeMillis());
-      meta.setLore(List.of(
+      List<String> lore = List.of(
          this.color("&7Instantly Sells All Items in A Chest"), this.color("&8Self Destruct:"), this.color("&8" + this.formatRemaining(remaining))
-      ));
+      );
+      if (sameText(lore, meta.getLore())) {
+         return false;
+      }
+      meta.setLore(lore);
       axe.setItemMeta(meta);
+      return true;
+   }
+
+   /** Same visible text, ignoring color codes (Paper may rebuild the colors slightly differently). */
+   private static boolean sameText(List<String> a, List<String> b) {
+      if (b == null || a.size() != b.size()) {
+         return false;
+      }
+      for (int i = 0; i < a.size(); i++) {
+         if (!ChatColor.stripColor(a.get(i)).equals(ChatColor.stripColor(b.get(i)))) {
+            return false;
+         }
+      }
+      return true;
    }
 
    private boolean isChickenSellAxe(ItemStack item) {
@@ -359,8 +378,8 @@ public final class ChickenSellAxePlugin extends JavaPlugin implements Listener, 
             if (this.isExpired(item)) {
                inventory.setItem(slot, null);
                removed = true;
-            } else {
-               this.updateLore(item);
+            } else if (this.updateLore(item)) {
+               // Only resend the slot when the timer text changed.
                inventory.setItem(slot, item);
             }
          }

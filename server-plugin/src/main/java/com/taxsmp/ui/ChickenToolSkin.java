@@ -1,25 +1,25 @@
 package com.taxsmp.ui;
 
 import com.taxsmp.TaxSMP;
-import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Container;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 /**
@@ -29,8 +29,9 @@ import org.bukkit.inventory.meta.ItemMeta;
  * to the tree chopper. Those plugins find their items by data tag, never by name or model, so this
  * doesn't change how the tools work. Bedrock gets the same models through the Geyser mappings.
  *
- * Their give commands put the item straight into the inventory without an event, so each
- * player's inventory is checked once a second; containers are fixed up when opened.
+ * The chicken plugins (1.1.0+) already create their tools with this look, so this only fixes up older
+ * tools. It does that when something happens to an item (join, pickup, switching the held item,
+ * closing an inventory, opening a chest) instead of scanning every player's inventory once a second.
  */
 public final class ChickenToolSkin implements Listener {
    private enum Tool {
@@ -54,7 +55,6 @@ public final class ChickenToolSkin implements Listener {
    }
 
    private final TaxSMP plugin;
-   private final Map<UUID, ScheduledTask> tasks = new ConcurrentHashMap<>();
 
    public ChickenToolSkin(TaxSMP plugin) {
       this.plugin = plugin;
@@ -118,21 +118,34 @@ public final class ChickenToolSkin implements Listener {
    @EventHandler
    public void onJoin(PlayerJoinEvent e) {
       Player p = e.getPlayer();
-      ScheduledTask task = p.getScheduler().runAtFixedRate(this.plugin, t -> applyAll(p.getInventory()),
-         () -> this.tasks.remove(p.getUniqueId()), 1L, 20L);
-      if (task != null) {
-         ScheduledTask old = this.tasks.put(p.getUniqueId(), task);
-         if (old != null) {
-            old.cancel();
+      p.getScheduler().runDelayed(this.plugin, t -> applyAll(p.getInventory()), null, 20L);
+   }
+
+   // Tools given by command or dropped by someone else get fixed when they're picked up.
+   @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+   public void onPickup(EntityPickupItemEvent e) {
+      if (e.getEntity() instanceof Player) {
+         Item drop = e.getItem();
+         ItemStack stack = drop.getItemStack();
+         if (apply(stack)) {
+            drop.setItemStack(stack);
          }
       }
    }
 
+   @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+   public void onHeld(PlayerItemHeldEvent e) {
+      PlayerInventory inventory = e.getPlayer().getInventory();
+      ItemStack held = inventory.getItem(e.getNewSlot());
+      if (apply(held)) {
+         inventory.setItem(e.getNewSlot(), held);
+      }
+   }
+
    @EventHandler
-   public void onQuit(PlayerQuitEvent e) {
-      ScheduledTask task = this.tasks.remove(e.getPlayer().getUniqueId());
-      if (task != null) {
-         task.cancel();
+   public void onClose(InventoryCloseEvent e) {
+      if (e.getPlayer() instanceof Player p) {
+         applyAll(p.getInventory());
       }
    }
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -119,22 +120,28 @@ public class ChickenShovelPlugin extends JavaPlugin implements Listener, Command
       return val != null ? val : -1L;
    }
 
-   /** Rewrites the last lore line (the time left). */
-   private static void updateTimerLore(ItemStack item) {
+   /** Rewrites the last lore line (the time left); returns true only if the text changed (about once a minute). */
+   private static boolean updateTimerLore(ItemStack item) {
       long destructAt = getDestructTime(item);
       if (destructAt < 0L) {
-         return;
+         return false;
       }
       long remaining = Math.max(0L, destructAt - System.currentTimeMillis());
       ItemMeta meta = item.getItemMeta();
       List<Component> lore = meta.lore();
       if (lore == null) {
-         return;
+         return false;
       }
       List<Component> newLore = new ArrayList<>(lore.subList(0, Math.max(0, lore.size() - 1)));
       newLore.add(Component.text(formatTime(remaining / 1000L)).color(DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+      // Compare the visible text: Paper may rebuild the component's style slightly differently.
+      String newTime = formatTime(remaining / 1000L);
+      if (!lore.isEmpty() && newTime.equals(PlainTextComponentSerializer.plainText().serialize(lore.get(lore.size() - 1)))) {
+         return false;
+      }
       meta.lore(newLore);
       item.setItemMeta(meta);
+      return true;
    }
 
    public static String formatTime(long totalSeconds) {
@@ -173,8 +180,8 @@ public class ChickenShovelPlugin extends JavaPlugin implements Listener, Command
             if (destructAt >= 0L) {
                if (now >= destructAt) {
                   inv.setItem(slot, null);
-               } else {
-                  updateTimerLore(item);
+               } else if (updateTimerLore(item)) {
+                  // Only resend the slot when the timer text changed.
                   inv.setItem(slot, item);
                }
             }
@@ -185,8 +192,7 @@ public class ChickenShovelPlugin extends JavaPlugin implements Listener, Command
          long destructAt = getDestructTime(offhand);
          if (destructAt >= 0L && now >= destructAt) {
             inv.setItemInOffHand(null);
-         } else if (destructAt >= 0L) {
-            updateTimerLore(offhand);
+         } else if (destructAt >= 0L && updateTimerLore(offhand)) {
             inv.setItemInOffHand(offhand);
          }
       }
