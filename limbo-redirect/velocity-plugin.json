@@ -1,0 +1,1 @@
+{"id":"taxsmp-limbo-redirect","name":"TaxSMP Limbo Redirect","version":"1.0.0","description":"Holds players in limbo when their server closes, whichever server it is.","authors":["TaxSMP"],"dependencies":[],"main":"com.taxsmp.limboredirect.LimboRedirect"}
