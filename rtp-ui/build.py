@@ -56,8 +56,10 @@ def main():
     section = re.sub(r'(?m)^  (enabled|host|port|password):.*$', lambda m: '  ' + m[1] + ': ' + defaults[m[1]], section)
     files = dict(original)
     files['config.yml'] = (config[:start] + section).encode('utf-8')
-    files['plugin.yml'] = re.sub(r'(?m)^version:.*$', 'version: 1.0.0-taxsmp-ui.1', original['plugin.yml'].decode('utf-8').replace('\r', '')).encode('utf-8')
-    modified = {'dev/foliartp/' + name + '.class' for name in ('FoliaRTP', 'gui/RTPGui', 'gui/RegionGui', 'gui/NetherRegionGui')}
+    files['plugin.yml'] = re.sub(r'(?m)^version:.*$', 'version: 1.0.0-taxsmp-ui.2', original['plugin.yml'].decode('utf-8').replace('\r', '')).encode('utf-8')
+    # listeners/ArrivalListener is rebuilt from src/ to spawn cross-server RTP arrivals at their location
+    # through AsyncPlayerSpawnLocationEvent (Paper no longer fires the old PlayerSpawnLocationEvent).
+    modified = {'dev/foliartp/' + name + '.class' for name in ('FoliaRTP', 'gui/RTPGui', 'gui/RegionGui', 'gui/NetherRegionGui', 'listeners/ArrivalListener')}
     for name in modified:
         files[name] = (base / name).read_bytes()
     for path in classes.rglob('*.class'):
@@ -78,7 +80,7 @@ def main():
             info.compress_type = zipfile.ZIP_DEFLATED
             archive.writestr(info, data)
     destination.with_suffix('.jar.sha256').write_text(hashlib.sha256(destination.read_bytes()).hexdigest() + '\n')
-    print('Built FoliaRTP.jar with artwork menus and sanitized default config. Teleport, Redis, arrival and queue classes are byte-identical to input.')
+    print('Built FoliaRTP.jar with artwork menus, the arrival spawn fix and sanitized default config. Teleport, Redis and queue classes are byte-identical to input.')
 
 
 if __name__ == '__main__':

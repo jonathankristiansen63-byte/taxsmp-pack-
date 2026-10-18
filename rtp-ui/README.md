@@ -25,8 +25,12 @@ Build from the original local jar with JDK 21+ and the backend's dependency clas
 python rtp-ui/build.py ORIGINAL.jar --classpath-file CLASSPATH.txt --asm-jar ASM.jar --asm-tree-jar ASM-TREE.jar
 ```
 
-Only three GUI entry points and the listener registration are patched. The build
-asserts that teleport, queue, Redis and arrival classes remain byte-identical.
+Only three GUI entry points, the listener registration and the arrival listener are
+patched. The arrival listener (src/dev/foliartp/listeners) spawns cross-server RTP
+arrivals straight at their location through AsyncPlayerSpawnLocationEvent, because
+Paper no longer fires the old PlayerSpawnLocationEvent; without it every cross-server
+RTP loaded the old spot first and then teleported. The build asserts that teleport,
+queue and Redis classes remain byte-identical.
 The original local jar and its private defaults are not published.
 
 Artwork sources are in `src/rtp/`; generated previews are in `preview/rtp-*.png`.
