@@ -174,9 +174,8 @@ public class ArrivalListener implements Listener {
       if (loc != null) {
          this.readyTimestamps.remove(uuid);
          this.plugin.getLogger().info("Spawning " + event.getConnection().getProfile().getName() + " directly at cross-server RTP location.");
-         // Above the build limit over the spot: the client skips "Loading terrain" and they fall in.
          RtpEffects.expectArrival(uuid);
-         event.setSpawnLocation(RtpEffects.dropPoint(loc));
+         event.setSpawnLocation(loc);
          this.completedArrivals.add(uuid);
       }
    }
@@ -204,7 +203,7 @@ public class ArrivalListener implements Listener {
             RtpEffects.expectArrival(uuid);
             player.getScheduler().runDelayed(this.plugin, t -> {
                if (player.isOnline()) {
-                  player.teleportAsync(RtpEffects.dropPoint(leftover)).thenAccept(success -> {
+                  player.teleportAsync(leftover).thenAccept(success -> {
                      if (success) {
                         RtpEffects.arrive(player);
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 1.0F, 1.0F);

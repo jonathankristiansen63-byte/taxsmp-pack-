@@ -56,7 +56,7 @@ def main():
     section = re.sub(r'(?m)^  (enabled|host|port|password):.*$', lambda m: '  ' + m[1] + ': ' + defaults[m[1]], section)
     files = dict(original)
     files['config.yml'] = (config[:start] + section).encode('utf-8')
-    files['plugin.yml'] = re.sub(r'(?m)^version:.*$', 'version: 1.0.0-taxsmp-ui.3', original['plugin.yml'].decode('utf-8').replace('\r', '')).encode('utf-8')
+    files['plugin.yml'] = re.sub(r'(?m)^version:.*$', 'version: 1.0.0-taxsmp-ui.4', original['plugin.yml'].decode('utf-8').replace('\r', '')).encode('utf-8')
     # listeners/ArrivalListener is rebuilt from src/ to spawn cross-server RTP arrivals at their location
     # through AsyncPlayerSpawnLocationEvent (Paper no longer fires the old PlayerSpawnLocationEvent).
     modified = {'dev/foliartp/' + name + '.class' for name in ('FoliaRTP', 'gui/RTPGui', 'gui/RegionGui', 'gui/NetherRegionGui', 'listeners/ArrivalListener', 'rtp/TeleportHandler', 'rtp/TeleportHandler$AsyncLocationFinder')}

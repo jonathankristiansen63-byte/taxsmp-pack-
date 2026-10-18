@@ -175,7 +175,7 @@ public class TeleportHandler {
                      if (CombatHook.isInCombat(player)) {
                         player.sendMessage(Component.text("You cant do this in combat.", NamedTextColor.RED));
                      } else if (effects) {
-                        RtpEffects.launch(player, plugin, () -> teleportTo(player, RtpEffects.dropPoint(safeLoc), true));
+                        RtpEffects.launch(player, plugin, () -> teleportTo(player, safeLoc, true));
                      } else {
                         teleportTo(player, safeLoc, false);
                      }
