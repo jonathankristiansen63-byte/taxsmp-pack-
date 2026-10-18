@@ -29,8 +29,13 @@ Only three GUI entry points, the listener registration and the arrival listener 
 patched. The arrival listener (src/dev/foliartp/listeners) spawns cross-server RTP
 arrivals straight at their location through AsyncPlayerSpawnLocationEvent, because
 Paper no longer fires the old PlayerSpawnLocationEvent; without it every cross-server
-RTP loaded the old spot first and then teleported. The build asserts that teleport,
-queue and Redis classes remain byte-identical.
+RTP loaded the old spot first and then teleported. TeleportHandler and the new
+rtp/RtpEffects add the RTP launch and drop: when the countdown ends the player is spun
+up with a riptide effect (everyone sees it), then arrives above the build limit over
+their spot and falls in without fall damage (nether spots are used as they are, because
+of the bedrock roof). Arriving above the build limit also makes the client skip
+"Loading terrain" after a cross-server RTP. The build asserts that the queue and Redis
+classes remain byte-identical.
 The original local jar and its private defaults are not published.
 
 Artwork sources are in `src/rtp/`; generated previews are in `preview/rtp-*.png`.

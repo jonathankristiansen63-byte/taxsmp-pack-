@@ -2,6 +2,7 @@ package dev.foliartp.listeners;
 
 import dev.foliartp.FoliaRTP;
 import dev.foliartp.db.RedisStore;
+import dev.foliartp.rtp.RtpEffects;
 import dev.foliartp.rtp.SafeLocationFinder;
 import dev.foliartp.rtp.TeleportHandler;
 import java.util.Map;
@@ -39,6 +40,7 @@ public class ArrivalListener implements Listener {
 
    public ArrivalListener(FoliaRTP plugin) {
       this.plugin = plugin;
+      RtpEffects.register(plugin);
       plugin.getServer().getAsyncScheduler().runAtFixedRate(plugin, task -> this.precomputePendingArrivals(), 1000L, 1000L, TimeUnit.MILLISECONDS);
    }
 
@@ -172,7 +174,9 @@ public class ArrivalListener implements Listener {
       if (loc != null) {
          this.readyTimestamps.remove(uuid);
          this.plugin.getLogger().info("Spawning " + event.getConnection().getProfile().getName() + " directly at cross-server RTP location.");
-         event.setSpawnLocation(loc);
+         // Above the build limit over the spot: the client skips "Loading terrain" and they fall in.
+         RtpEffects.expectArrival(uuid);
+         event.setSpawnLocation(RtpEffects.dropPoint(loc));
          this.completedArrivals.add(uuid);
       }
    }
@@ -182,6 +186,11 @@ public class ArrivalListener implements Listener {
       Player player = event.getPlayer();
       UUID uuid = player.getUniqueId();
       if (this.completedArrivals.remove(uuid)) {
+         player.getScheduler().run(this.plugin, t -> {
+            if (player.isOnline()) {
+               RtpEffects.arrive(player);
+            }
+         }, null);
          player.getScheduler().runDelayed(this.plugin, t -> {
             if (player.isOnline()) {
                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 1.0F, 1.0F);
@@ -192,10 +201,12 @@ public class ArrivalListener implements Listener {
          Location leftover = this.readyLocations.remove(uuid);
          if (leftover != null) {
             this.plugin.getLogger().info("Spawn placement missed for " + player.getName() + "; teleporting to pre-computed RTP location after join.");
+            RtpEffects.expectArrival(uuid);
             player.getScheduler().runDelayed(this.plugin, t -> {
                if (player.isOnline()) {
-                  player.teleportAsync(leftover).thenAccept(success -> {
+                  player.teleportAsync(RtpEffects.dropPoint(leftover)).thenAccept(success -> {
                      if (success) {
+                        RtpEffects.arrive(player);
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 1.0F, 1.0F);
                         player.sendMessage(Component.text("You teleported to a random location.", NamedTextColor.GRAY));
                      }
