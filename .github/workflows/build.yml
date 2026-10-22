@@ -1,11 +1,14 @@
 name: Build pack
 
-# Rebuilds dist/TaxSMP-Pack.zip whenever the pack changes, so you can edit
-# files right on GitHub and the download link always serves the latest pack.
 on:
   push:
     branches: [main]
-    paths: ["pack/**", "bedrock/**", "build.py", "tools/bedrock_buttons.py"]
+    paths:
+      - "pack/**"
+      - "bedrock/**"
+      - "build.py"
+      - "tools/bedrock_buttons.py"
+      - ".github/workflows/build.yml"
   workflow_dispatch:
 
 permissions:
@@ -18,10 +21,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.14"
-      - run: python build.py
-      - run: python tools/bedrock_buttons.py
-      - name: Commit the rebuilt zip
+          python-version: "3.12"
+      - name: Install image dependencies
+        run: python -m pip install "Pillow>=11,<13"
+      - name: Build Java pack
+        run: python build.py
+      - name: Build Bedrock pack
+        run: python tools/bedrock_buttons.py
+      - name: Commit the rebuilt packs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
