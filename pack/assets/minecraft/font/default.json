@@ -38,13 +38,16 @@
     },
     {
       "type": "bitmap",
-      "file": "taxsmp:font/tab/rows.png",
+      "file": "taxsmp:font/tab/buttons.png",
       "height": 14,
       "ascent": 13,
       "chars": [
         "\ue900",
         "\ue901",
-        "\ue902"
+        "\ue902",
+        "\ue906",
+        "\ue907",
+        "\ue908"
       ]
     },
     {
