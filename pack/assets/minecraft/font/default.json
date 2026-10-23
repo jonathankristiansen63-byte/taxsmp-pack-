@@ -20,6 +20,15 @@
     },
     {
       "type": "bitmap",
+      "file": "taxsmp:font/pause_ip.png",
+      "height": 19,
+      "ascent": 19,
+      "chars": [
+        "\ue8a3"
+      ]
+    },
+    {
+      "type": "bitmap",
       "file": "taxsmp:font/leave_button.png",
       "height": 18,
       "ascent": 12,
