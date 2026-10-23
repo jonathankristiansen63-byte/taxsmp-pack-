@@ -37,6 +37,56 @@
       ]
     },
     {
+      "type": "bitmap",
+      "file": "taxsmp:font/tab/rows.png",
+      "height": 14,
+      "ascent": 13,
+      "chars": [
+        "\ue900",
+        "\ue901",
+        "\ue902"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:font/tab/icons.png",
+      "height": 8,
+      "ascent": 7,
+      "chars": [
+        "\ue903",
+        "\ue904",
+        "\ue905"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:font/tab/bar.png",
+      "height": 6,
+      "ascent": 6,
+      "chars": [
+        "\ue910",
+        "\ue911",
+        "\ue912",
+        "\ue913",
+        "\ue914",
+        "\ue915",
+        "\ue916",
+        "\ue917",
+        "\ue918",
+        "\ue919",
+        "\ue91a",
+        "\ue91b",
+        "\ue91c",
+        "\ue91d",
+        "\ue91e",
+        "\ue91f",
+        "\ue920",
+        "\ue921",
+        "\ue922",
+        "\ue923"
+      ]
+    },
+    {
       "type": "space",
       "advances": {
         "\ue8c0": -1,
