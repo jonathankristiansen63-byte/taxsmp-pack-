@@ -8,10 +8,11 @@ font picture's top edge is at (6 + 7 - ascent), so ascent = 13 - y puts it at wi
 Keep the characters and sizes in sync with com.taxsmp.ui.GuiSkin in the plugin.
 
 The 10 button icons are cut from src/gui-buttons.png (made with ChatGPT): 5 columns x 2 rows.
-The minus/plus controls are cut from src/gui-quantity-buttons.png: 2 columns x 1 row.
+The approved plus/minus/yes/no sprites come from src/gui-buttons-pixel/.
 File names are short on purpose: Windows has a 260 character path limit.
 
     python tools/gui.py "path/to/26.3.jar"
+    python tools/gui.py --pixel-buttons-only
 """
 import io
 import json
@@ -31,6 +32,7 @@ MOVE_LEFT = {2 ** i: chr(0xE140 + i) for i in range(9)}
 MOVE_RIGHT = {2 ** i: chr(0xE150 + i) for i in range(9)}
 
 BUTTONS = ["search", "sort", "filter", "refresh", "mine", "prev", "next", "back", "yes", "no"]
+PIXEL_BUTTONS = ("plus", "minus", "yes", "no")
 
 PANEL_GRAY = (198, 198, 198, 255)
 DARK = (55, 55, 55, 255)
@@ -177,7 +179,30 @@ def write_json(path, data):
     path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 
+def pixel_button(name):
+    """Preserve the approved 14x16 sprite, its shadows and binary alpha exactly."""
+    icon = Image.open(ROOT / f"src/gui-buttons-pixel/{name}.png").convert("RGBA")
+    if icon.size != (14, 16) or set(icon.getchannel("A").getdata()) != {0, 255}:
+        sys.exit(f"{name}: expected a transparent 14x16 pixel sprite with binary alpha")
+    square = Image.new("RGBA", (16, 16), CLEAR)
+    square.paste(icon, (1, 0))
+    return square.resize((32, 32), Image.Resampling.NEAREST)
+
+
+def export_pixel_buttons():
+    for name in PIXEL_BUTTONS:
+        path = ASSETS / f"textures/item/b/{name}.png"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        pixel_button(name).save(path)
+        write_json(ASSETS / f"models/b/{name}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"taxsmp:item/b/{name}"}})
+        write_json(ASSETS / f"items/b/{name}.json", {"model": {"type": "minecraft:model", "model": f"taxsmp:b/{name}"}})
+    print("Exported four transparent pixel buttons (32x32, nearest-neighbor, no backgrounds)")
+
+
 def main():
+    if sys.argv[1:] == ["--pixel-buttons-only"]:
+        export_pixel_buttons()
+        return
     if len(sys.argv) != 2:
         sys.exit(__doc__)
     jar = zipfile.ZipFile(sys.argv[1])
@@ -208,6 +233,7 @@ def main():
     icons = dict(zip(BUTTONS, buttons(ROOT / "src/gui-buttons.png")))
     minus, plus = buttons(ROOT / "src/gui-quantity-buttons.png", (2, 1), Image.Resampling.NEAREST)
     icons.update(plus=plus, minus=minus)
+    icons.update({name: pixel_button(name) for name in PIXEL_BUTTONS})
     icons['info'] = information_button()
     for name, icon in icons.items():
         icon.save(ASSETS / f"textures/item/b/{name}.png")
