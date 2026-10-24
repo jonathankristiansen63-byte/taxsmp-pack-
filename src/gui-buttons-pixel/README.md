@@ -1,6 +1,6 @@
 # Approved menu buttons
 
-All twelve PNG files are 14x16 RGBA sprites copied
+All thirteen PNG files are 14x16 RGBA sprites copied
 from the user's approved reference. Each has six opaque colors plus transparent
 cut corners. Preserve the black outline and the dark colored shadow under the
 white symbol. Search, sort, back, refresh, next, previous, mine and filter use the

@@ -32,7 +32,7 @@ MOVE_LEFT = {2 ** i: chr(0xE140 + i) for i in range(9)}
 MOVE_RIGHT = {2 ** i: chr(0xE150 + i) for i in range(9)}
 
 BUTTONS = ["search", "sort", "filter", "refresh", "mine", "prev", "next", "back", "yes", "no"]
-PIXEL_BUTTONS = ("plus", "minus", "yes", "no", "search", "sort", "back", "refresh", "next", "prev", "mine", "filter")
+PIXEL_BUTTONS = ("plus", "minus", "yes", "no", "search", "sort", "back", "refresh", "next", "prev", "mine", "filter", "info")
 
 PANEL_GRAY = (198, 198, 198, 255)
 DARK = (55, 55, 55, 255)
@@ -123,21 +123,8 @@ def plate_piece(kind):
 
 
 def information_button():
-    """Native 16px Minecraft button: a white lowercase i on a green bevel."""
-    img = Image.new("RGBA", (16, 16), CLEAR)
-    px = img.load()
-    rect(px, 1, 0, 14, 15, (35, 48, 21, 255))
-    rect(px, 0, 1, 15, 14, (35, 48, 21, 255))
-    rect(px, 1, 1, 14, 14, (112, 169, 28, 255))
-    rect(px, 2, 1, 13, 2, (178, 225, 79, 255))
-    rect(px, 1, 2, 2, 12, (178, 225, 79, 255))
-    rect(px, 2, 13, 14, 14, (62, 108, 11, 255))
-    rect(px, 13, 3, 14, 13, (62, 108, 11, 255))
-    rect(px, 7, 4, 8, 5, LIGHT)
-    rect(px, 6, 7, 8, 8, LIGHT)
-    rect(px, 7, 9, 8, 11, LIGHT)
-    rect(px, 6, 12, 9, 12, LIGHT)
-    return img.resize((32, 32), Image.Resampling.NEAREST)
+    """Exact reference information icon with the original pixel shadow."""
+    return pixel_button('info')
 
 
 def runs(values):

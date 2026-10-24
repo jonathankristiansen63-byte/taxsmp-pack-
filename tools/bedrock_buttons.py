@@ -30,7 +30,7 @@ if os.name == 'nt' and not str(ROOT).startswith(LONG_PATH):
     ROOT = Path(LONG_PATH + str(ROOT))
 PACK = ROOT / 'bedrock/pack'
 DIST = ROOT / 'dist'
-VERSION = [1, 0, 9]  # raise on every change, or Bedrock players keep their old copy
+VERSION = [1, 0, 10]  # raise on every change, or Bedrock players keep their old copy
 
 # 'sb/<name>' = TaxSMP icon (pack textures/item/sb), anything else = a vanilla item texture.
 SCOREBOARD_ICONS = ['name_tag', 'sb/money', 'sb/gem', 'egg', 'sb/key', 'sb/clock',
