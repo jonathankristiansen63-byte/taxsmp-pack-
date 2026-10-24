@@ -1,0 +1,66 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.taxsmp.fx_transform": {
+      "loop": true,
+      "bones": {
+        "origin": {
+          "position": [
+            "-v.c_tx*16",
+            "v.c_ty*16",
+            "v.c_tz*16"
+          ]
+        },
+        "size": {
+          "scale": [
+            "v.c_sx",
+            "v.c_sy",
+            "v.c_sz"
+          ]
+        },
+        "lx": {
+          "rotation": [
+            "-v.c_lx",
+            0,
+            0
+          ]
+        },
+        "ly": {
+          "rotation": [
+            0,
+            "-v.c_ly",
+            0
+          ]
+        },
+        "lz": {
+          "rotation": [
+            0,
+            0,
+            "v.c_lz"
+          ]
+        },
+        "rx": {
+          "rotation": [
+            "-v.c_rx",
+            0,
+            0
+          ]
+        },
+        "ry": {
+          "rotation": [
+            0,
+            "-v.c_ry",
+            0
+          ]
+        },
+        "rz": {
+          "rotation": [
+            0,
+            0,
+            "v.c_rz"
+          ]
+        }
+      }
+    }
+  }
+}

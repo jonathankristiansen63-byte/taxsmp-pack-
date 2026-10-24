@@ -1,0 +1,23 @@
+{
+  "format_version": "1.14.0",
+  "sound_definitions": {
+    "taxsmp:ban.charge": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/taxsmp/ban/charge",
+          "is3D": true
+        }
+      ]
+    },
+    "taxsmp:ban.impact": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/taxsmp/ban/impact",
+          "is3D": true
+        }
+      ]
+    }
+  }
+}

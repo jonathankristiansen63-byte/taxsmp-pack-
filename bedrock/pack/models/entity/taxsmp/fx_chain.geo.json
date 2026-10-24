@@ -1,0 +1,201 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.taxsmp.fx_chain",
+        "texture_width": 128,
+        "texture_height": 128,
+        "visible_bounds_width": 32,
+        "visible_bounds_height": 32,
+        "visible_bounds_offset": [
+          0,
+          6,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "origin",
+          "pivot": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "lz",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "parent": "origin"
+        },
+        {
+          "name": "ly",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "parent": "lz"
+        },
+        {
+          "name": "lx",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "parent": "ly"
+        },
+        {
+          "name": "size",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "parent": "lx"
+        },
+        {
+          "name": "rz",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "parent": "size"
+        },
+        {
+          "name": "ry",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "parent": "rz"
+        },
+        {
+          "name": "rx",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "parent": "ry"
+        },
+        {
+          "name": "model",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "parent": "rx"
+        },
+        {
+          "name": "part_0",
+          "parent": "model",
+          "pivot": [
+            -8,
+            8,
+            8
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -9.5,
+                0,
+                8
+              ],
+              "size": [
+                3.0,
+                16,
+                0
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    19,
+                    0
+                  ],
+                  "uv_size": [
+                    -3,
+                    16
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    16,
+                    0
+                  ],
+                  "uv_size": [
+                    3,
+                    16
+                  ]
+                }
+              }
+            }
+          ],
+          "rotation": [
+            0,
+            -45,
+            0
+          ]
+        },
+        {
+          "name": "part_1",
+          "parent": "model",
+          "pivot": [
+            -8,
+            8,
+            8
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -8,
+                0,
+                6.5
+              ],
+              "size": [
+                0,
+                16,
+                3.0
+              ],
+              "uv": {
+                "west": {
+                  "uv": [
+                    22,
+                    0
+                  ],
+                  "uv_size": [
+                    -3,
+                    16
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    19,
+                    0
+                  ],
+                  "uv_size": [
+                    3,
+                    16
+                  ]
+                }
+              }
+            }
+          ],
+          "rotation": [
+            0,
+            -45,
+            0
+          ]
+        }
+      ]
+    }
+  ]
+}

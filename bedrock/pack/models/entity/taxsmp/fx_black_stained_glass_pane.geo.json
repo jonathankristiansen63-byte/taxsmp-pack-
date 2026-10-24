@@ -1,0 +1,177 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.taxsmp.fx_black_stained_glass_pane",
+        "texture_width": 128,
+        "texture_height": 128,
+        "visible_bounds_width": 32,
+        "visible_bounds_height": 32,
+        "visible_bounds_offset": [
+          0,
+          6,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "origin",
+          "pivot": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "lz",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "parent": "origin"
+        },
+        {
+          "name": "ly",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "parent": "lz"
+        },
+        {
+          "name": "lx",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "parent": "ly"
+        },
+        {
+          "name": "size",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "parent": "lx"
+        },
+        {
+          "name": "rz",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "parent": "size"
+        },
+        {
+          "name": "ry",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "parent": "rz"
+        },
+        {
+          "name": "rx",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "parent": "ry"
+        },
+        {
+          "name": "model",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "parent": "rx",
+          "cubes": [
+            {
+              "origin": [
+                -16,
+                0,
+                7
+              ],
+              "size": [
+                16,
+                16,
+                2
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    48,
+                    0
+                  ],
+                  "uv_size": [
+                    16,
+                    16
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    48,
+                    0
+                  ],
+                  "uv_size": [
+                    16,
+                    16
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    48,
+                    0
+                  ],
+                  "uv_size": [
+                    16,
+                    16
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    48,
+                    0
+                  ],
+                  "uv_size": [
+                    16,
+                    16
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    64,
+                    16
+                  ],
+                  "uv_size": [
+                    -16,
+                    -16
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    64,
+                    16
+                  ],
+                  "uv_size": [
+                    -16,
+                    -16
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

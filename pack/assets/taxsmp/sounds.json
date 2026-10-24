@@ -1,0 +1,12 @@
+{
+  "ban.charge": {
+    "sounds": [
+      "taxsmp:ban/charge"
+    ]
+  },
+  "ban.impact": {
+    "sounds": [
+      "taxsmp:ban/impact"
+    ]
+  }
+}

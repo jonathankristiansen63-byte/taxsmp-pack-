@@ -30,7 +30,7 @@ if os.name == 'nt' and not str(ROOT).startswith(LONG_PATH):
     ROOT = Path(LONG_PATH + str(ROOT))
 PACK = ROOT / 'bedrock/pack'
 DIST = ROOT / 'dist'
-VERSION = [1, 0, 10]  # raise on every change, or Bedrock players keep their old copy
+VERSION = [1, 1, 0]  # raise on every change, or Bedrock players keep their old copy
 
 # 'sb/<name>' = TaxSMP icon (pack textures/item/sb), anything else = a vanilla item texture.
 SCOREBOARD_ICONS = ['name_tag', 'sb/money', 'sb/gem', 'egg', 'sb/key', 'sb/clock',
@@ -104,8 +104,8 @@ def main():
     manifest = {
         'format_version': 2,
         'header': {
-            'name': 'TaxSMP GUI Buttons',
-            'description': 'Shop, auction and orders buttons, chicken tools and the scoreboard icons.',
+            'name': 'TaxSMP Bedrock Pack',
+            'description': 'GUI buttons, tools, scoreboard icons and complete ban/mute cinematics.',
             'uuid': str(uuid.uuid5(uuid.NAMESPACE_URL, 'https://taxsmp.net/bedrock/gui-buttons/header')),
             'version': VERSION,
             'min_engine_version': [1, 21, 0],

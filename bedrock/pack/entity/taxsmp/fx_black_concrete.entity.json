@@ -1,0 +1,61 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "taxsmp:fx_black_concrete",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "default": "textures/entity/taxsmp/fx_atlas"
+      },
+      "geometry": {
+        "default": "geometry.taxsmp.fx_black_concrete"
+      },
+      "animations": {
+        "transform": "animation.taxsmp.fx_transform"
+      },
+      "scripts": {
+        "initialize": [
+          "v.serial=q.property('taxsmp:state');",
+          "v.elapsed=0;",
+          "v.c_tx=q.property('taxsmp:tx');v.a_tx=v.c_tx;",
+          "v.c_ty=q.property('taxsmp:ty');v.a_ty=v.c_ty;",
+          "v.c_tz=q.property('taxsmp:tz');v.a_tz=v.c_tz;",
+          "v.c_lx=q.property('taxsmp:lx');v.a_lx=v.c_lx;",
+          "v.c_ly=q.property('taxsmp:ly');v.a_ly=v.c_ly;",
+          "v.c_lz=q.property('taxsmp:lz');v.a_lz=v.c_lz;",
+          "v.c_sx=q.property('taxsmp:sx');v.a_sx=v.c_sx;",
+          "v.c_sy=q.property('taxsmp:sy');v.a_sy=v.c_sy;",
+          "v.c_sz=q.property('taxsmp:sz');v.a_sz=v.c_sz;",
+          "v.c_rx=q.property('taxsmp:rx');v.a_rx=v.c_rx;",
+          "v.c_ry=q.property('taxsmp:ry');v.a_ry=v.c_ry;",
+          "v.c_rz=q.property('taxsmp:rz');v.a_rz=v.c_rz;"
+        ],
+        "pre_animation": [
+          "v.elapsed=v.elapsed+q.delta_time;",
+          "(v.serial!=q.property('taxsmp:state'))?{v.serial=q.property('taxsmp:state');v.elapsed=0;v.a_tx=v.c_tx;v.a_ty=v.c_ty;v.a_tz=v.c_tz;v.a_lx=v.c_lx;v.a_ly=v.c_ly;v.a_lz=v.c_lz;v.a_sx=v.c_sx;v.a_sy=v.c_sy;v.a_sz=v.c_sz;v.a_rx=v.c_rx;v.a_ry=v.c_ry;v.a_rz=v.c_rz;};",
+          "v.f=q.property('taxsmp:duration')<=0?1:math.clamp(v.elapsed/q.property('taxsmp:duration'),0,1);",
+          "v.c_tx=math.lerp(v.a_tx,q.property('taxsmp:tx'),v.f);",
+          "v.c_ty=math.lerp(v.a_ty,q.property('taxsmp:ty'),v.f);",
+          "v.c_tz=math.lerp(v.a_tz,q.property('taxsmp:tz'),v.f);",
+          "v.c_lx=math.lerprotate(v.a_lx,q.property('taxsmp:lx'),v.f);",
+          "v.c_ly=math.lerprotate(v.a_ly,q.property('taxsmp:ly'),v.f);",
+          "v.c_lz=math.lerprotate(v.a_lz,q.property('taxsmp:lz'),v.f);",
+          "v.c_sx=math.lerp(v.a_sx,q.property('taxsmp:sx'),v.f);",
+          "v.c_sy=math.lerp(v.a_sy,q.property('taxsmp:sy'),v.f);",
+          "v.c_sz=math.lerp(v.a_sz,q.property('taxsmp:sz'),v.f);",
+          "v.c_rx=math.lerprotate(v.a_rx,q.property('taxsmp:rx'),v.f);",
+          "v.c_ry=math.lerprotate(v.a_ry,q.property('taxsmp:ry'),v.f);",
+          "v.c_rz=math.lerprotate(v.a_rz,q.property('taxsmp:rz'),v.f);"
+        ],
+        "animate": [
+          "transform"
+        ]
+      },
+      "render_controllers": [
+        "controller.render.taxsmp.fx"
+      ]
+    }
+  }
+}

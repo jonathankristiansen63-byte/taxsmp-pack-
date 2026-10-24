@@ -65,14 +65,17 @@ To rebuild these sprites, run `python tools/gui.py --pixel-buttons-only`,
 then `python build.py` and `python tools/bedrock_buttons.py`.
 The full GUI generator also uses these source sprites, so future rebuilds retain them.
 
-## Bedrock buttons for Geyser-Velocity
+## Bedrock pack for Geyser-Velocity
 
 The separate `dist/TaxSMP-Bedrock-Buttons.mcpack` contains all 13 button icons
 and five RTP artwork icons, including the generated green plus and red minus.
 Copy it into each proxy's
 `plugins/Geyser-Velocity/packs/` folder, and copy `dist/taxsmp-buttons-geyser.json`
 into `plugins/Geyser-Velocity/custom_mappings/`. Enable custom content and restart
-the proxies. See [the Bedrock install guide](bedrock/README.md) for requirements.
+the proxies. Version 1.1.0 also contains the ban mace, red/black panes, shaking
+floor pieces, mute chains and padlock, plus ban audio. Moderation effects require
+the matching backend plugin and TaxSMP Bedrock FX proxy/Geyser bridge; see
+[the Bedrock install guide](bedrock/README.md) for requirements.
 
 Build with `python tools/bedrock_buttons.py`. Bedrock scoreboard text does not
 depend on a custom font pack. The Java Velocity PackLoader remains separate.
