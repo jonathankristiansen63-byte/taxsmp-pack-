@@ -53,14 +53,15 @@ example database settings, with MySQL disabled until configured.
 
 To regenerate GUI assets, run `python tools/gui.py "path/to/client.jar"` with a
 Minecraft client jar containing the vanilla `generic_54.png` texture, then `python build.py`.
-The approved pixel sprites for **plus, minus, yes and no** are stored in
+The approved pixel sprites for **plus, minus, yes, no, search, sort, back, refresh,
+next, previous, mine and filter** are stored in
 `src/gui-buttons-pixel/`. These PNGs have real alpha transparency, including the
 cut corners; their black outlines and colored icon shadows are part of the buttons.
 They are centered on a transparent 16x16 canvas and exported at 32x32 using
 nearest-neighbor sizing, preserving the exact colors and hard pixel edges.
 No background rectangle, glow or white smudges are included.
 
-To rebuild just these four sprites, run `python tools/gui.py --pixel-buttons-only`,
+To rebuild these sprites, run `python tools/gui.py --pixel-buttons-only`,
 then `python build.py` and `python tools/bedrock_buttons.py`.
 The full GUI generator also uses these source sprites, so future rebuilds retain them.
 

@@ -32,7 +32,7 @@ MOVE_LEFT = {2 ** i: chr(0xE140 + i) for i in range(9)}
 MOVE_RIGHT = {2 ** i: chr(0xE150 + i) for i in range(9)}
 
 BUTTONS = ["search", "sort", "filter", "refresh", "mine", "prev", "next", "back", "yes", "no"]
-PIXEL_BUTTONS = ("plus", "minus", "yes", "no")
+PIXEL_BUTTONS = ("plus", "minus", "yes", "no", "search", "sort", "back", "refresh", "next", "prev", "mine", "filter")
 
 PANEL_GRAY = (198, 198, 198, 255)
 DARK = (55, 55, 55, 255)
@@ -196,7 +196,7 @@ def export_pixel_buttons():
         pixel_button(name).save(path)
         write_json(ASSETS / f"models/b/{name}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"taxsmp:item/b/{name}"}})
         write_json(ASSETS / f"items/b/{name}.json", {"model": {"type": "minecraft:model", "model": f"taxsmp:b/{name}"}})
-    print("Exported four transparent pixel buttons (32x32, nearest-neighbor, no backgrounds)")
+    print(f"Exported {len(PIXEL_BUTTONS)} transparent pixel buttons (32x32, nearest-neighbor, no backgrounds)")
 
 
 def main():
