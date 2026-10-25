@@ -1,0 +1,623 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/d_lrow.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue400"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/d_lsel.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue401"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/d_lhead.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue402"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/d_rrow_a.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue410"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/d_rrow_b.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue411"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/d_rhead_a.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue412"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/d_rhead_b.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue413"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/d_lbot.png",
+      "ascent": -9,
+      "height": 1,
+      "chars": [
+        "\ue420"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/d_rbot_a.png",
+      "ascent": -9,
+      "height": 1,
+      "chars": [
+        "\ue421"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/d_rbot_b.png",
+      "ascent": -9,
+      "height": 1,
+      "chars": [
+        "\ue422"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/d_on.png",
+      "ascent": 8,
+      "height": 10,
+      "chars": [
+        "\ue430"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/d_off.png",
+      "ascent": 8,
+      "height": 10,
+      "chars": [
+        "\ue431"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/d_soon.png",
+      "ascent": 8,
+      "height": 10,
+      "chars": [
+        "\ue432"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/0.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue500"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/1.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue501"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/2.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue502"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/3.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue503"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/4.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue504"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/5.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue505"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/6.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue506"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/7.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue507"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/8.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue508"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/9.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue509"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/10.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue50a"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/11.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue50b"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/12.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue50c"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/13.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue50d"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/14.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue50e"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/15.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue50f"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/16.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue510"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/17.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue511"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/18.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue512"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/19.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue513"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/20.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue514"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/21.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue515"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/22.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue516"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/23.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue517"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/24.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue518"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/25.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue519"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/26.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue51a"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/27.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue51b"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/28.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue51c"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/29.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue51d"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/30.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue51e"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/31.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue51f"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/32.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue520"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/33.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue521"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/34.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue522"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/35.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue523"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/36.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue524"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/37.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue525"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/38.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue526"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/39.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue527"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/40.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue528"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/41.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue529"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/42.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue52a"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/43.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue52b"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/44.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue52c"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/45.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue52d"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/46.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue52e"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/47.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue52f"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/48.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue530"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/49.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue531"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/50.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue532"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/51.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue533"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/icons/52.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue534"
+      ]
+    },
+    {
+      "type": "space",
+      "advances": {
+        "\ue140": -1,
+        "\ue141": -2,
+        "\ue142": -4,
+        "\ue143": -8,
+        "\ue144": -16,
+        "\ue145": -32,
+        "\ue146": -64,
+        "\ue147": -128,
+        "\ue148": -256,
+        "\ue149": -512,
+        "\ue150": 1,
+        "\ue151": 2,
+        "\ue152": 4,
+        "\ue153": 8,
+        "\ue154": 16,
+        "\ue155": 32,
+        "\ue156": 64,
+        "\ue157": 128,
+        "\ue158": 256,
+        "\ue159": 512
+      }
+    }
+  ]
+}

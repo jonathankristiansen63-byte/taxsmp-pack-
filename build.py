@@ -76,6 +76,9 @@ def check_fonts():
             if not rel:
                 ns, rel = "minecraft", ns
             tex = PACK / "assets" / ns / "textures" / rel
+            # The settings menu reuses the game's own textures (ASCII sheet, item icons).
+            if p["file"].startswith("minecraft:") and not tex.exists():
+                continue
             if not tex.exists():
                 fail(f"{font.name}: texture {p['file']} not found at {tex.relative_to(ROOT)}")
             w, h = png_size(tex)
