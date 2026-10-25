@@ -1,0 +1,229 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_000.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue600"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_001.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue601"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_010.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue602"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_011.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue603"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_020.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue604"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_021.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue605"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_100.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue606"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_101.png",
+      "ascent": 13,
+      "height": 20,
+      "chars": [
+        "\ue607"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_110.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue608"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_111.png",
+      "ascent": 13,
+      "height": 20,
+      "chars": [
+        "\ue609"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_120.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue60a"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_121.png",
+      "ascent": 13,
+      "height": 20,
+      "chars": [
+        "\ue60b"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/btn_on.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue620"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/btn_off.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue621"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/gear.png",
+      "ascent": 7,
+      "height": 7,
+      "chars": [
+        "\ue622"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/lock.png",
+      "ascent": 7,
+      "height": 7,
+      "chars": [
+        "\ue623"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/vborder.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue627"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/vborder_last.png",
+      "ascent": 13,
+      "height": 23,
+      "chars": [
+        "\ue628"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/end_a.png",
+      "ascent": 13,
+      "height": 20,
+      "chars": [
+        "\ue629"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/end_b.png",
+      "ascent": 13,
+      "height": 20,
+      "chars": [
+        "\ue62a"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/end_l.png",
+      "ascent": 13,
+      "height": 20,
+      "chars": [
+        "\ue62b"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/end_r.png",
+      "ascent": 13,
+      "height": 20,
+      "chars": [
+        "\ue62c"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/check.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue624"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cross.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue625"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/bed_locked.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue626"
+      ]
+    }
+  ]
+}
