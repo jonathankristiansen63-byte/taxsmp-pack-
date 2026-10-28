@@ -1,0 +1,94 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "taxsmp:g/up_tl.png",
+      "ascent": 19,
+      "height": 22,
+      "chars": [
+        "\ue130"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:g/up_tm16.png",
+      "ascent": 19,
+      "height": 22,
+      "chars": [
+        "\ue131"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:g/up_tm1.png",
+      "ascent": 19,
+      "height": 22,
+      "chars": [
+        "\ue132"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:g/up_tr.png",
+      "ascent": 19,
+      "height": 22,
+      "chars": [
+        "\ue133"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:g/header.png",
+      "ascent": 31,
+      "height": 33,
+      "chars": [
+        "\ue134"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:g/lower.png",
+      "ascent": -106,
+      "height": 103,
+      "chars": [
+        "\ue135"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:g/s.png",
+      "ascent": -125,
+      "height": 18,
+      "chars": [
+        "\ue136"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:g/s.png",
+      "ascent": -143,
+      "height": 18,
+      "chars": [
+        "\ue137"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:g/s.png",
+      "ascent": -161,
+      "height": 18,
+      "chars": [
+        "\ue138"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:g/s.png",
+      "ascent": -183,
+      "height": 18,
+      "chars": [
+        "\ue139"
+      ]
+    }
+  ]
+}
