@@ -101,24 +101,49 @@ def bar():
     return img
 
 
+BLACK = (0, 0, 0, 255)
+GOLD = (245, 183, 41, 255)
+GOLD_LIGHT = (255, 226, 122, 255)
+GOLD_DARK = (170, 112, 10, 255)
+PLATE_H = 16
+
+
 def plate_piece(kind):
-    """Title plate, 12 px tall: left cap (4 px), middles (16 px / 1 px) and right cap (4 px)."""
+    """TaxSMP gold title plate, 16 px tall: black / gold / black frame around a light silver face.
+
+    Left cap (4 px), middles (16 px / 1 px) and right cap (4 px). The text sits on rows 4-11 (window rows 6-13),
+    so the plate covers window rows 2-17 and its bottom frame overlaps the tray's top edge like a tab.
+    Also used for the /settings and /homes dialog titles (TaxSettings.Dialogs.titlePlate).
+    """
     w = {"l": 4, "m16": 16, "m1": 1, "r": 4}[kind]
-    img = Image.new("RGBA", (w, 12), PLATE_FILL)
+    img = Image.new("RGBA", (w, PLATE_H), PLATE_FILL)
     px = img.load()
+    column = [BLACK, GOLD_LIGHT, BLACK, LIGHT] + [PLATE_FILL] * 8 + [SHADE, BLACK, GOLD_DARK, BLACK]
     for x in range(w):
-        px[x, 0] = DARK
-        px[x, 1] = LIGHT
-        px[x, 10] = SHADE
-        px[x, 11] = DARK
+        for y, color in enumerate(column):
+            px[x, y] = color
     if kind == "l":
-        rect(px, 0, 0, 0, 11, DARK)
-        rect(px, 1, 1, 1, 10, LIGHT)
-        px[0, 0] = px[0, 11] = CLEAR
+        for y in range(PLATE_H):
+            px[0, y] = BLACK
+        for y in range(1, PLATE_H - 1):
+            px[1, y] = GOLD_LIGHT if y < PLATE_H // 2 else GOLD
+        for y in range(2, PLATE_H - 2):
+            px[2, y] = BLACK
+        for y in range(3, PLATE_H - 3):
+            px[3, y] = LIGHT
+        px[1, PLATE_H - 2] = GOLD_DARK
+        px[0, 0] = px[0, PLATE_H - 1] = CLEAR
     if kind == "r":
-        rect(px, 3, 0, 3, 11, DARK)
-        rect(px, 2, 1, 2, 10, SHADE)
-        px[3, 0] = px[3, 11] = CLEAR
+        for y in range(PLATE_H):
+            px[3, y] = BLACK
+        for y in range(1, PLATE_H - 1):
+            px[2, y] = GOLD if y < PLATE_H // 2 else GOLD_DARK
+        for y in range(2, PLATE_H - 2):
+            px[1, y] = BLACK
+        for y in range(3, PLATE_H - 3):
+            px[0, y] = SHADE
+        px[2, 1] = GOLD_LIGHT
+        px[3, 0] = px[3, PLATE_H - 1] = CLEAR
     return img
 
 
@@ -210,8 +235,8 @@ def main():
         providers.append({"type": "bitmap", "file": "taxsmp:g/b.png", "height": 18, "ascent": 13 - y, "chars": [chr(BAR + row)]})
     for kind, code in (("l", PLATE_LEFT), ("m16", PLATE_MID16), ("m1", PLATE_MID1), ("r", PLATE_RIGHT)):
         plate_piece(kind).save(tex / f"t{kind}.png")
-        # Plate covers window rows 4..15, around the title text (rows 6..13).
-        providers.append({"type": "bitmap", "file": f"taxsmp:g/t{kind}.png", "height": 12, "ascent": 13 - 4, "chars": [chr(code)]})
+        # Plate covers window rows 2..17, around the title text (rows 6..13).
+        providers.append({"type": "bitmap", "file": f"taxsmp:g/t{kind}.png", "height": PLATE_H, "ascent": 13 - 2, "chars": [chr(code)]})
     providers.append({"type": "space", "advances": {ch: -n for n, ch in MOVE_LEFT.items()} | {ch: n for n, ch in MOVE_RIGHT.items()}})
     write_json(ASSETS / "font/gui.json", {"providers": providers})
 

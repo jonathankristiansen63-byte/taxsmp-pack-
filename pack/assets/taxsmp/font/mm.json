@@ -1,0 +1,58 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "taxsmp:m/tile_l.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue700"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:m/tile_l_top.png",
+      "ascent": 16,
+      "height": 25,
+      "chars": [
+        "\ue701"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:m/tile_r.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue702"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:m/tile_r_top.png",
+      "ascent": 16,
+      "height": 25,
+      "chars": [
+        "\ue703"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:m/end_l.png",
+      "ascent": 13,
+      "height": 20,
+      "chars": [
+        "\ue704"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:m/end_r.png",
+      "ascent": 13,
+      "height": 20,
+      "chars": [
+        "\ue705"
+      ]
+    }
+  ]
+}

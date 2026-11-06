@@ -26,16 +26,40 @@ SPRITES = ROOT / "server-plugin/src/main/resources/item-sprites.txt"
 
 CW, ROW_H, PAD, GAP = 112, 22, 3, 2
 BTN_X, BTN_W, BTN_H = 6, CW - 12, 16
-PANEL = (27, 28, 32, 255)
-LINE = (44, 45, 51, 255)
-DIVIDER = (50, 51, 58, 255)
-BORDER = (61, 142, 216, 255)
+TOP = 3  # the first row reaches 3 px above its button for the window's top edge
+
+# TaxSMP look (same palette as settings_dialog.py): silver window, darker well, raised silver cards.
+BLACK = (0, 0, 0, 255)
+WHITE = (255, 255, 255, 255)
+FACE = (198, 198, 198, 255)
+SHADOW = (85, 85, 85, 255)
+WELL = (139, 139, 139, 255)
+WELL_DARK = (55, 55, 55, 255)
+GOLD = (245, 183, 41, 255)
+GOLD_LIGHT = (255, 226, 122, 255)
+GOLD_DARK = (170, 112, 10, 255)
+GOLD_INK = (70, 44, 0, 255)
+MINT = (70, 214, 154, 255)
+MINT_LIGHT = (150, 255, 210, 255)
+MINT_DARK = (24, 122, 82, 255)
+STONE = (60, 60, 66, 255)
+STONE_LIGHT = (96, 96, 104, 255)
+STONE_DARK = (34, 34, 38, 255)
+LOCKED = {"face": (136, 136, 136, 255), "light": (166, 166, 166, 255), "dark": (80, 80, 80, 255), "hatch": (124, 124, 124, 255),
+          "slot": (104, 104, 104, 255)}
+OPEN = {"face": FACE, "light": WHITE, "dark": SHADOW, "hatch": None, "slot": WELL}
 
 # Pictures in taxsmp:hm.
-CELL_BASE = 0xE600  # + kind * 6 + column * 2 + edge  (kind 0 = name row, 1 = action row)
+CELL_BASE = 0xE600  # + kind * 6 + column * 2 + edge  (kind 0 = name row, 1 = action row, 2 / 3 = the same, locked)
 BTN_ON, BTN_OFF, GEAR, LOCK, CHECK, CROSS, BED_LOCKED = 0xE620, 0xE621, 0xE622, 0xE623, 0xE624, 0xE625, 0xE626
 VBORDER, VBORDER_LAST = 0xE627, 0xE628
 END_A, END_B, END_L, END_R = 0xE629, 0xE62A, 0xE62B, 0xE62C  # list ends: list halves, /settings left and right column
+BTN_ADD, BTN_LOCKED = 0xE62D, 0xE62E  # mint "+ Set Here", stone "Unlock"
+BIG_YES, BIG_NO = 0xE630, 0xE631  # 148 px confirm buttons (TaxSettings.Dialogs.confirmReset)
+BIG_W, BIG_H = 148, 20
+RED = (201, 74, 74, 255)
+RED_LIGHT = (240, 128, 128, 255)
+RED_DARK = (122, 31, 31, 255)
 END_H = ROW_H - 2  # a closing row stops at its button's bottom edge
 R_PIC, L_PIC = 300 // 2 + PAD, 130 + 2 + PAD  # TaxSettings.Dialogs row picture widths
 ICON_BASE = 0xE000
@@ -121,49 +145,134 @@ def render_bed(tex, dark=1.0):
     return raw
 
 
+def hline(d, x0, x1, y, color):
+    d.line([x0, y, x1, y], fill=color)
+
+
+def vline(d, x, y0, y1, color):
+    d.line([x, y0, x, y1], fill=color)
+
+
+def inset(d, x, y, w, h, fill):
+    """Minecraft slot: dark top/left edge, white bottom/right edge."""
+    d.rectangle([x, y, x + w - 1, y + h - 1], fill=fill)
+    hline(d, x, x + w - 2, y, WELL_DARK)
+    vline(d, x, y, y + h - 2, WELL_DARK)
+    hline(d, x + 1, x + w - 1, y + h - 1, WHITE)
+    vline(d, x + w - 1, y + 1, y + h - 1, WHITE)
+
+
 def cell(kind, column, edge):
-    """kind 0: name row, 1: action row. column 0 first, 1 middle, 2 last. edge: top row (name) / last row (action).
-    The dialog clips just under its last button, so the last row closes its box inside the button (y=19)."""
-    left, width = (PAD, PAD + CW + GAP) if column == 0 else (0, CW + GAP) if column == 1 else (0, CW + PAD)
-    height = END_H if kind == 1 and edge else ROW_H
+    """kind 0: name row, 1: action row (2 / 3: the same for a locked slot). One home is one raised card over both
+    rows: the name row draws its top, sides and icon slot and runs on through the 2 px gap, the action row draws the
+    rest and its bottom edge. column 0 first, 1 middle, 2 last; the first and last columns carry the window's left
+    and right edges. edge: first row (name, gets the window's top edge 3 px above the button) / last row (action).
+    The dialog clips just under its last button, so the last row closes the window inside the button (y=19)."""
+    look = LOCKED if kind >= 2 else OPEN
+    name_row = kind % 2 == 0
+    width = PAD + CW + GAP if column == 0 else CW + GAP if column == 1 else CW + PAD
+    cx = PAD if column == 0 else 0
+    top = TOP if (name_row and edge) else 0
+    height = (END_H if (not name_row and edge) else ROW_H) + top
     img = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    d.rectangle([0, 0, width - 1, height - 1], fill=PANEL)
-    if column != 2:
-        d.line([left + CW + 1, 0, left + CW + 1, height - 1], fill=DIVIDER)
-    if kind == 1:
-        d.line([0, height - 1, width - 1, height - 1], fill=BORDER if edge else LINE)
-    if kind == 0 and edge:
-        d.line([0, 0, width - 1, 0], fill=BORDER)
+    d.rectangle([0, top, width - 1, height - 1], fill=WELL)
+    x0, x1 = cx, cx + CW - 1
+    y0, y1 = (top, height - 1) if name_row else (0, 17 if edge else 19)
+    d.rectangle([x0, y0, x1, y1], fill=look["face"])
+    if look["hatch"]:
+        for y in range(y0, y1 + 1):
+            card_y = (y - top) if name_row else (y + ROW_H)
+            for x in range(x0 + 1, x1):
+                if (x - x0 - card_y) % 6 == 0:
+                    img.putpixel((x, y), look["hatch"])
+    vline(d, x0, y0, y1 if name_row else y1 - 1, look["light"])
+    vline(d, x1, y0 + (1 if name_row else 0), y1, look["dark"])
+    if name_row:
+        hline(d, x0, x1 - 1, y0, look["light"])
+        inset(d, cx + 5, top + 1, 18, 18, look["slot"])  # under the 16 px icon at x 6, y 2
+    else:
+        hline(d, x0 + 1, x1, y1, look["dark"])
     if column == 0:
-        d.line([0, 0, 0, height - 1], fill=BORDER)
+        vline(d, 0, top, height - 1, BLACK)
+        vline(d, 1, top, height - 1, FACE)
+        vline(d, 2, top, height - 1, WELL_DARK)
     if column == 2:
-        d.line([width - 1, 0, width - 1, height - 1], fill=BORDER)
+        vline(d, width - 3, top, height - 1, WHITE)
+        vline(d, width - 2, top, height - 1, FACE)
+        vline(d, width - 1, top, height - 1, BLACK)
+    if top:
+        hline(d, 0, width - 1, 0, BLACK)
+        hline(d, 0, width - 1, 1, FACE)
+        hline(d, 0, width - 1, 2, WELL_DARK)
+        if column == 0:
+            vline(d, 0, 0, 2, BLACK)
+            d.point((1, 2), fill=FACE)
+        if column == 2:
+            vline(d, width - 1, 0, 2, BLACK)
+            d.point((width - 2, 2), fill=FACE)
+            d.point((width - 3, 2), fill=WHITE)
+    if not name_row and edge:
+        hline(d, 0, width - 1, height - 2, FACE)
+        hline(d, 0, width - 1, height - 1, BLACK)
+        if column == 0:
+            d.point((0, height - 2), fill=BLACK)
+        if column == 2:
+            d.point((width - 1, height - 2), fill=BLACK)
     return img
 
 
-def list_end(width, left_border=False, right_border=False, divider=None):
-    """The closing row of a list (Manage Home, Delete Home, /settings): empty panel, blue on three sides."""
-    img = Image.new("RGBA", (width, END_H), PANEL)
+def list_end(width, kind):
+    """The closing row of a list (Manage Home, Delete Home, /settings): empty well, then the window's bottom edge.
+    kind: 'a' / 'b' one-column list halves, 'l' / 'r' the /settings left and right column."""
+    img = Image.new("RGBA", (width, END_H), WELL)
     d = ImageDraw.Draw(img)
-    if divider is not None:
-        d.line([divider, 0, divider, END_H - 2], fill=DIVIDER)
-    d.line([0, END_H - 1, width - 1, END_H - 1], fill=BORDER)
-    if left_border:
-        d.line([0, 0, 0, END_H - 1], fill=BORDER)
-    if right_border:
-        d.line([width - 1, 0, width - 1, END_H - 1], fill=BORDER)
+    hline(d, 0, width - 1, END_H - 3, WHITE)
+    hline(d, 0, width - 1, END_H - 2, FACE)
+    hline(d, 0, width - 1, END_H - 1, BLACK)
+    if kind in ("a", "l"):
+        vline(d, 0, 0, END_H - 1, BLACK)
+    if kind == "l":
+        vline(d, 1, 0, END_H - 2, FACE)
+        vline(d, 2, 0, END_H - 4, WELL_DARK)
+    if kind == "b":
+        vline(d, width - 3, 0, END_H - 3, WHITE)
+        vline(d, width - 2, 0, END_H - 2, FACE)
+        vline(d, width - 1, 0, END_H - 1, BLACK)
     return img
 
 
-def button(on):
+def button(kind):
+    """on: gold (Manage, Teleport, Back...), add: mint (+ Set Here), locked: stone (Unlock), off: a recessed slot."""
     img = Image.new("RGBA", (BTN_W, BTN_H), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    if on:
-        d.rectangle([0, 0, BTN_W - 1, BTN_H - 1], fill=(50, 52, 60, 255), outline=(82, 84, 94, 255))
-        d.line([1, 1, BTN_W - 2, 1], fill=(64, 66, 76, 255))
-    else:
-        d.rectangle([0, 0, BTN_W - 1, BTN_H - 1], fill=(31, 32, 37, 255), outline=(43, 44, 50, 255))
+    if kind == "off":
+        inset(d, 0, 0, BTN_W, BTN_H, (176, 176, 176, 255))
+        return img
+    face, light, dark = {"on": (GOLD, GOLD_LIGHT, GOLD_DARK), "add": (MINT, MINT_LIGHT, MINT_DARK),
+                         "locked": (STONE, STONE_LIGHT, STONE_DARK)}[kind]
+    d.rectangle([0, 0, BTN_W - 1, BTN_H - 1], fill=BLACK)
+    d.rectangle([1, 1, BTN_W - 2, BTN_H - 2], fill=face)
+    hline(d, 1, BTN_W - 3, 1, light)
+    vline(d, 1, 1, BTN_H - 3, light)
+    hline(d, 2, BTN_W - 2, BTN_H - 2, dark)
+    vline(d, BTN_W - 2, 2, BTN_H - 2, dark)
+    return img
+
+
+def big_button(yes):
+    """A whole 148x20 dialog button: green Yes / red No, black outline, bevelled face."""
+    face, light, dark = (MINT, MINT_LIGHT, MINT_DARK) if yes else (RED, RED_LIGHT, RED_DARK)
+    img = Image.new("RGBA", (BIG_W, BIG_H), BLACK)
+    d = ImageDraw.Draw(img)
+    d.rectangle([1, 1, BIG_W - 2, BIG_H - 2], fill=face)
+    hline(d, 1, BIG_W - 3, 1, light)
+    vline(d, 1, 1, BIG_H - 3, light)
+    hline(d, 2, BIG_W - 2, BIG_H - 2, dark)
+    vline(d, BIG_W - 2, 2, BIG_H - 2, dark)
+    hline(d, 2, BIG_W - 3, 2, light)  # a second highlight row: the big buttons look raised
+    for x, y in ((0, 0), (BIG_W - 1, 0), (0, BIG_H - 1), (BIG_W - 1, BIG_H - 1)):
+        img.putpixel((x, y), (0, 0, 0, 0))
     return img
 
 
@@ -216,23 +325,29 @@ def main():
         img.save(TEX / f"{name}.png")
         providers.append(bitmap(f"taxsmp:h/{name}.png", ascent, img.height, [chr(char)]))
 
-    for kind in range(2):
+    for kind in range(4):
         for column in range(3):
             for edge in range(2):
-                add(f"cell_{kind}{column}{edge}", cell(kind, column, edge), 13, CELL_BASE + kind * 6 + column * 2 + edge)
-    add("btn_on", button(True), 11, BTN_ON)    # top at y=2
-    add("btn_off", button(False), 11, BTN_OFF)
+                img = cell(kind, column, edge)
+                add(f"cell_{kind}{column}{edge}", img, 13 + (img.height - (END_H if kind % 2 and edge else ROW_H)),
+                    CELL_BASE + kind * 6 + column * 2 + edge)
+    add("btn_on", button("on"), 11, BTN_ON)    # top at y=2
+    add("btn_off", button("off"), 11, BTN_OFF)
+    add("btn_add", button("add"), 11, BTN_ADD)
+    add("btn_locked", button("locked"), 11, BTN_LOCKED)
+    add("big_yes", big_button(True), 13, BIG_YES)  # top at y=0, covers the whole button
+    add("big_no", big_button(False), 13, BIG_NO)
     gear = ["..#.#..", ".#####.", "##...##", ".#...#.", "##...##", ".#####.", "..#.#.."]
-    add("gear", pixels(gear, (236, 236, 240, 255)), 7, GEAR)  # top at y=6
+    add("gear", pixels(gear, GOLD_INK), 7, GEAR)  # top at y=6, on the gold button
     lock = ["..###..", ".#...#.", ".#...#.", "#######", "###.###", "###.###", "#######"]
-    add("lock", pixels(lock, (122, 124, 132, 255)), 7, LOCK)
-    # Left border for the one-column lists (Manage Home, Delete Home), which reuse the /settings right-column rows.
-    add("vborder", Image.new("RGBA", (1, ROW_H), BORDER), 13, VBORDER)
-    add("vborder_last", Image.new("RGBA", (1, ROW_H + 1), BORDER), 13, VBORDER_LAST)
-    add("end_a", list_end(R_PIC, left_border=True), 13, END_A)
-    add("end_b", list_end(R_PIC, right_border=True), 13, END_B)
-    add("end_l", list_end(L_PIC, left_border=True, divider=130 + PAD), 13, END_L)
-    add("end_r", list_end(R_PIC), 13, END_R)  # /settings right column, left half: the left column draws the divider
+    add("lock", pixels(lock, GOLD), 7, LOCK)      # on the stone button
+    # Left edge for the one-column lists (Manage Home, Delete Home), which reuse the /settings right-column rows.
+    add("vborder", Image.new("RGBA", (1, ROW_H), BLACK), 13, VBORDER)
+    add("vborder_last", Image.new("RGBA", (1, ROW_H + 1), BLACK), 13, VBORDER_LAST)
+    add("end_a", list_end(R_PIC, "a"), 13, END_A)
+    add("end_b", list_end(R_PIC, "b"), 13, END_B)
+    add("end_l", list_end(L_PIC, "l"), 13, END_L)
+    add("end_r", list_end(R_PIC, "r"), 13, END_R)
     add("check", mark(True), 11, CHECK)
     add("cross", mark(False), 11, CROSS)
     locked = render_bed(bed_texture("red"), dark=0.45)

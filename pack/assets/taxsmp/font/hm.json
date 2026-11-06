@@ -12,8 +12,8 @@
     {
       "type": "bitmap",
       "file": "taxsmp:h/cell_001.png",
-      "ascent": 13,
-      "height": 22,
+      "ascent": 16,
+      "height": 25,
       "chars": [
         "\ue601"
       ]
@@ -30,8 +30,8 @@
     {
       "type": "bitmap",
       "file": "taxsmp:h/cell_011.png",
-      "ascent": 13,
-      "height": 22,
+      "ascent": 16,
+      "height": 25,
       "chars": [
         "\ue603"
       ]
@@ -48,8 +48,8 @@
     {
       "type": "bitmap",
       "file": "taxsmp:h/cell_021.png",
-      "ascent": 13,
-      "height": 22,
+      "ascent": 16,
+      "height": 25,
       "chars": [
         "\ue605"
       ]
@@ -110,6 +110,114 @@
     },
     {
       "type": "bitmap",
+      "file": "taxsmp:h/cell_200.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue60c"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_201.png",
+      "ascent": 16,
+      "height": 25,
+      "chars": [
+        "\ue60d"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_210.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue60e"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_211.png",
+      "ascent": 16,
+      "height": 25,
+      "chars": [
+        "\ue60f"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_220.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue610"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_221.png",
+      "ascent": 16,
+      "height": 25,
+      "chars": [
+        "\ue611"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_300.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue612"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_301.png",
+      "ascent": 13,
+      "height": 20,
+      "chars": [
+        "\ue613"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_310.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue614"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_311.png",
+      "ascent": 13,
+      "height": 20,
+      "chars": [
+        "\ue615"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_320.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue616"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/cell_321.png",
+      "ascent": 13,
+      "height": 20,
+      "chars": [
+        "\ue617"
+      ]
+    },
+    {
+      "type": "bitmap",
       "file": "taxsmp:h/btn_on.png",
       "ascent": 11,
       "height": 16,
@@ -124,6 +232,42 @@
       "height": 16,
       "chars": [
         "\ue621"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/btn_add.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue62d"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/btn_locked.png",
+      "ascent": 11,
+      "height": 16,
+      "chars": [
+        "\ue62e"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/big_yes.png",
+      "ascent": 13,
+      "height": 20,
+      "chars": [
+        "\ue630"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:h/big_no.png",
+      "ascent": 13,
+      "height": 20,
+      "chars": [
+        "\ue631"
       ]
     },
     {

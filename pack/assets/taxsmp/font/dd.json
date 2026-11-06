@@ -8,8 +8,8 @@
     },
     {
       "type": "bitmap",
-      "file": "taxsmp:s/settings_ascii.png",
-      "ascent": 0,
+      "file": "minecraft:font/ascii.png",
+      "ascent": 1,
       "height": 8,
       "chars": [
         "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",

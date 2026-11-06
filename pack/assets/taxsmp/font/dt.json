@@ -8,9 +8,9 @@
     },
     {
       "type": "bitmap",
-      "file": "taxsmp:s/settings_ascii.png",
-      "ascent": 8,
-      "height": 8,
+      "file": "taxsmp:font/ascii_dt.png",
+      "ascent": 9,
+      "height": 9,
       "chars": [
         "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
         "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",

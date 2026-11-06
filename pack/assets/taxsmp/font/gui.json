@@ -192,8 +192,8 @@
     {
       "type": "bitmap",
       "file": "taxsmp:g/tl.png",
-      "height": 12,
-      "ascent": 9,
+      "height": 16,
+      "ascent": 11,
       "chars": [
         "\ue130"
       ]
@@ -201,8 +201,8 @@
     {
       "type": "bitmap",
       "file": "taxsmp:g/tm16.png",
-      "height": 12,
-      "ascent": 9,
+      "height": 16,
+      "ascent": 11,
       "chars": [
         "\ue131"
       ]
@@ -210,8 +210,8 @@
     {
       "type": "bitmap",
       "file": "taxsmp:g/tm1.png",
-      "height": 12,
-      "ascent": 9,
+      "height": 16,
+      "ascent": 11,
       "chars": [
         "\ue132"
       ]
@@ -219,8 +219,8 @@
     {
       "type": "bitmap",
       "file": "taxsmp:g/tr.png",
-      "height": 12,
-      "ascent": 9,
+      "height": 16,
+      "ascent": 11,
       "chars": [
         "\ue133"
       ]
