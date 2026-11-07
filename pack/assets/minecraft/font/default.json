@@ -21,8 +21,8 @@
     {
       "type": "bitmap",
       "file": "taxsmp:font/pause_ip.png",
-      "height": 20,
-      "ascent": 20,
+      "height": 24,
+      "ascent": 24,
       "chars": [
         "\ue8a3"
       ]
