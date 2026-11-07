@@ -48,7 +48,7 @@ BUTTON_W, BUTTON_H = 204, 20
 LABEL_TOP = (BUTTON_H - 9) // 2 + 1
 
 # Sizes in GUI pixels. Font pictures can be at most 256x256 texture pixels.
-LOGO_H, LOGO_GAP, LOGO_RES = 56, 3, 3.4  # 3.4: the wide Nov 2026 logo stays under 256 texture px
+LOGO_H, LOGO_GAP, LOGO_RES = 56, 11, 3.2  # gap 11: clears the "TaxSMP.net" line (E8A3); 3.2 keeps it under 256 px
 BANNER_W, BANNER_H, BANNER_GAP, BANNER_RES = 204, 39, 4, 4
 
 GOLD = (237, 180, 25)

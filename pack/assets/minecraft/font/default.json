@@ -12,8 +12,8 @@
     {
       "type": "bitmap",
       "file": "taxsmp:font/pause_logo.png",
-      "height": 72,
-      "ascent": 72,
+      "height": 80,
+      "ascent": 80,
       "chars": [
         "\ue8a1"
       ]
