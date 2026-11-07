@@ -58,6 +58,11 @@ STONE_DARK = (52, 52, 58, 255)
 # Pictures (each the char for one bitmap provider).
 L_ROW, L_SEL, L_HEAD = 0xE400, 0xE401, 0xE402
 R_ROW_A, R_ROW_B, R_HEAD_A, R_HEAD_B = 0xE410, 0xE411, 0xE412, 0xE413
+# Last row of each column (Nov 2026): the plate is shorter and the window's bottom edge sits inside the
+# button, because the dialog's scroll area cuts off anything drawn below the last button. This saves the
+# separate bottom-edge row, so /settings is 10 rows and fits a GUI-scale-4 1080p screen.
+L_LAST, R_LAST_A, R_LAST_B = 0xE403, 0xE414, 0xE415
+LAST_PLATE_BOTTOM = 16
 L_BOTTOM, R_BOTTOM_A, R_BOTTOM_B = 0xE420, 0xE421, 0xE422
 SW_ON, SW_OFF, SW_SOON = 0xE430, 0xE431, 0xE432
 ICON_BASE = 0xE500
@@ -154,14 +159,33 @@ def top_frame(d, width, left_edge=False, right_edge=False):
         d.point((width - 3, 2), fill=WHITE)
 
 
+def close_bottom(d, width, y, left_edge=False, right_edge=False):
+    """The window's bottom edge on rows y..y+2: the well's light edge, the silver rim, the black outline."""
+    hline(d, 0, width - 1, y, WHITE)
+    hline(d, 0, width - 1, y + 1, FACE)
+    hline(d, 0, width - 1, y + 2, BLACK)
+    if left_edge:
+        vline(d, 0, y, y + 2, BLACK)
+        d.point((1, y), fill=FACE)
+    if right_edge:
+        vline(d, width - 1, y, y + 2, BLACK)
+        d.point((width - 2, y), fill=FACE)
+
+
 def left_picture(kind):
-    """kind: row / sel / head."""
+    """kind: row / sel / head / last."""
     head = kind == "head"
     oy = TOP if head else 0
     img = Image.new("RGBA", (L_PIC, ROW_H + oy), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     if head:
         top_frame(d, L_PIC, left_edge=True)
+    if kind == "last":
+        d.rectangle([3, 0, L_PIC - 1, LAST_PLATE_BOTTOM], fill=WELL)
+        left_pads(d, 0, LAST_PLATE_BOTTOM)
+        plate(d, PAD, PAD + LEFT_W - 1, 0, LAST_PLATE_BOTTOM)
+        close_bottom(d, L_PIC, LAST_PLATE_BOTTOM + 1, left_edge=True)
+        return img
     d.rectangle([3, oy, L_PIC - 1, oy + ROW_H - 1], fill=WELL)
     left_pads(d, oy, oy + ROW_H - 1)
     x0, x1 = PAD, PAD + LEFT_W - 1
@@ -175,6 +199,22 @@ def left_picture(kind):
                     d.point((x1 - 10 + i, 7 + j), fill=GOLD_INK)
     else:
         plate(d, x0, x1, 0, PLATE_BOTTOM)
+    return img
+
+
+def right_last(half):
+    """The right column's closing row: a short empty plate with the window's bottom edge under it."""
+    img = Image.new("RGBA", (R_PIC, ROW_H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    if half == "a":
+        d.rectangle([1, 0, R_PIC - 1, LAST_PLATE_BOTTOM], fill=WELL)
+        plate(d, PAD, R_PIC - 1, 0, LAST_PLATE_BOTTOM, left=True, right=False)
+        close_bottom(d, R_PIC, LAST_PLATE_BOTTOM + 1)
+    else:
+        d.rectangle([0, 0, R_PIC - PAD - 1, LAST_PLATE_BOTTOM], fill=WELL)
+        right_pads(d, R_PIC - PAD, 0, LAST_PLATE_BOTTOM)
+        plate(d, 0, R_PIC - PAD - 1, 0, LAST_PLATE_BOTTOM, left=False, right=True)
+        close_bottom(d, R_PIC, LAST_PLATE_BOTTOM + 1, right_edge=True)
     return img
 
 
@@ -264,6 +304,9 @@ def main():
         "d_rrow_b": (right_picture("b"), R_ROW_B, 13),
         "d_rhead_a": (right_picture("a", head=True), R_HEAD_A, 13 + TOP),
         "d_rhead_b": (right_picture("b", head=True), R_HEAD_B, 13 + TOP),
+        "d_llast": (left_picture("last"), L_LAST, 13),
+        "d_rlast_a": (right_last("a"), R_LAST_A, 13),
+        "d_rlast_b": (right_last("b"), R_LAST_B, 13),
     }
     providers = []
     for name, (img, char, ascent) in pictures.items():

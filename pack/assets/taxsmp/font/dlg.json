@@ -65,6 +65,33 @@
     },
     {
       "type": "bitmap",
+      "file": "taxsmp:s/d_llast.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue403"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/d_rlast_a.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue414"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "taxsmp:s/d_rlast_b.png",
+      "ascent": 13,
+      "height": 22,
+      "chars": [
+        "\ue415"
+      ]
+    },
+    {
+      "type": "bitmap",
       "file": "taxsmp:s/d_lbot.png",
       "ascent": -9,
       "height": 3,
