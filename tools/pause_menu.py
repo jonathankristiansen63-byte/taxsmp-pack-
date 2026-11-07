@@ -30,7 +30,9 @@ PACK = ROOT / "pack"
 TEXTURES = PACK / "assets/taxsmp/textures/font"
 
 BACK_TEXT = "Back to Game"
-LEAVE_TEXT = "ᴄᴏᴍᴇ ʙᴀᴄᴋ ꜱᴏᴏɴ...."
+LEAVE_TEXT = "ꜱᴇᴇ ʏᴏᴜ ʟᴀᴛᴇʀ!"
+# Note: the "TaxSMP.net" picture under the logo (E8A3, pause_ip.png) was added to menu.returnToGame by hand after
+# this script; re-running it drops that from the label, so re-add it (see git history of en_us.json).
 
 # Font characters (private use area, so they never clash with real text).
 TAB_LOGO = ""
@@ -264,6 +266,14 @@ def main():
         {"type": "space", "advances": {ch: -n for n, ch in MOVE_LEFT.items()} | {ch: n for n, ch in MOVE_RIGHT.items()}},
     ]
     font_path = PACK / "assets/minecraft/font/default.json"
+    # Keep providers other tools/hands added to default.json (TAB footer buttons E900+, the pause IP E8A3...):
+    # rewriting the file with only this script's providers turned them into boxes (Nov 2026).
+    ours = {ch for p in providers for ch in "".join(p.get("chars", [])) + "".join(p.get("advances", {}))}
+    if font_path.exists():
+        for p in json.loads(font_path.read_text(encoding="utf-8"))["providers"]:
+            theirs = "".join(p.get("chars", [])) + "".join(p.get("advances", {}))
+            if theirs and not any(ch in ours for ch in theirs):
+                providers.append(p)
     font_path.write_text(json.dumps({"providers": providers}, indent=2) + "\n", encoding="utf-8", newline="\n")
 
     font = Font(sys.argv[1])
