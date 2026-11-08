@@ -32,7 +32,8 @@ MOVE_LEFT = {2 ** i: chr(0xE140 + i) for i in range(9)}
 MOVE_RIGHT = {2 ** i: chr(0xE150 + i) for i in range(9)}
 
 BUTTONS = ["search", "sort", "filter", "refresh", "mine", "prev", "next", "back", "yes", "no"]
-PIXEL_BUTTONS = ("plus", "minus", "yes", "no", "search", "sort", "back", "refresh", "next", "prev", "mine", "filter", "info")
+PIXEL_BUTTONS = ("plus", "minus", "yes", "no", "search", "sort", "back", "refresh", "next", "prev", "mine", "filter", "info",
+                 "sell", "drop")  # sell (gold $) and drop (orange) are the spawner menu buttons, Nov 2026
 
 PANEL_GRAY = (198, 198, 198, 255)
 DARK = (55, 55, 55, 255)
