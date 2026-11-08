@@ -12,3 +12,4 @@ Java and Bedrock use identical exported pixels. Do not use smooth resizing.
 
 `sell.png` (gold, white $) and `drop.png` (orange, arrow onto a tray) were added in Nov 2026 for the
 CustomSpawners storage menu. They use the same 14x16 template, outline and (+1, +1) symbol shadow.
+`amount.png` (wooden chest) was added in Nov 2026 for the Amount button in Orders -> New Order.
