@@ -1,0 +1,25 @@
+{
+ "parent": "minecraft:item/generated",
+ "textures": {
+  "layer0": "taxsmp:item/fx/i/badge_lock"
+ },
+ "display": {
+  "gui": {
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "translation": [
+    0,
+    0,
+    16
+   ],
+   "scale": [
+    1,
+    1,
+    1
+   ]
+  }
+ }
+}

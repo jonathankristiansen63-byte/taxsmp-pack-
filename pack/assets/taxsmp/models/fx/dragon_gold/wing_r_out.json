@@ -1,0 +1,7 @@
+{
+ "parent": "taxsmp:fx/dragon/wing_r_out",
+ "textures": {
+  "t": "taxsmp:item/fx/dragon_gold",
+  "particle": "taxsmp:item/fx/dragon_gold"
+ }
+}
