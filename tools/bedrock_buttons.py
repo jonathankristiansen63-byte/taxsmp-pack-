@@ -30,7 +30,7 @@ if os.name == 'nt' and not str(ROOT).startswith(LONG_PATH):
     ROOT = Path(LONG_PATH + str(ROOT))
 PACK = ROOT / 'bedrock/pack'
 DIST = ROOT / 'dist'
-VERSION = [1, 1, 0]  # raise on every change, or Bedrock players keep their old copy
+VERSION = [1, 2, 0]  # raise on every change, or Bedrock players keep their old copy
 
 # 'sb/<name>' = TaxSMP icon (pack textures/item/sb), anything else = a vanilla item texture.
 SCOREBOARD_ICONS = ['name_tag', 'sb/money', 'sb/gem', 'egg', 'sb/key', 'sb/clock',
@@ -68,7 +68,7 @@ BASE_ITEMS = {
     'search': ['oak_sign'],
     'sort': ['cauldron'],
     'filter': ['hopper'],
-    'refresh': ['egg', 'writable_book'],
+    'refresh': ['egg', 'writable_book', 'compass'],
     'mine': ['chest'],
     'prev': ['arrow'],
     'next': ['arrow'],
@@ -77,8 +77,23 @@ BASE_ITEMS = {
     'no': ['red_stained_glass_pane', 'red_dye', 'red_terracotta'],
     'plus': ['lime_stained_glass_pane'],
     'minus': ['red_stained_glass_pane'],
-    'info': ['book', 'lime_stained_glass_pane'],
+    'info': ['book', 'lime_stained_glass_pane', 'gray_stained_glass_pane'],
 }
+
+# /pass menu (TaxLink PassMenu): item model taxsmp:pass/<name> on these materials.
+# Texture: pack/assets/taxsmp/textures/item/<PASS_TEXTURE[name] or pass/name>.png
+PASS_ITEMS = {
+    'money': ['gold_ingot'],
+    'key_common': ['tripwire_hook'], 'key_spawner': ['tripwire_hook'], 'key_crimson': ['tripwire_hook'],
+    'key_chicken': ['tripwire_hook'], 'key_god': ['tripwire_hook'], 'key_tax': ['tripwire_hook'],
+    'premium': ['amethyst_shard'],
+    'premium_locked': ['gray_dye'],
+    'free': ['lime_dye'],
+    'lv_done': ['lime_dye'],
+    'lv_now': ['yellow_dye', 'experience_bottle'],
+    'lv_locked': ['gray_dye'],
+}
+PASS_TEXTURE = {'money': 'sb/money'}
 
 RTP_ITEMS = {'overworld': 'moss_block', 'nether': 'nether_wart_block', 'end': 'end_stone_bricks',
              'region_eu': 'moss_block', 'region_na': 'moss_block'}
@@ -166,6 +181,28 @@ def main():
         'type': 'definition', 'model': 'taxsmp:gem', 'bedrock_identifier': 'taxsmp:gem',
         'display_name': 'Gem', 'bedrock_options': {'icon': 'taxsmp_gem', 'creative_category': 'none'},
     })
+    # /pass menu shows gems on an emerald
+    identifiers.add('taxsmp:gem_emerald')
+    items.setdefault('minecraft:emerald', []).append({
+        'type': 'definition', 'model': 'taxsmp:gem', 'bedrock_identifier': 'taxsmp:gem_emerald',
+        'display_name': 'Gem', 'bedrock_options': {'icon': 'taxsmp_gem', 'creative_category': 'none'},
+    })
+    for name, bases in PASS_ITEMS.items():
+        icon = 'taxsmp_pass_' + name
+        texture_path = 'textures/items/taxsmp/pass_' + name
+        target = PACK / (texture_path + '.png')
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / f"pack/assets/taxsmp/textures/item/{PASS_TEXTURE.get(name, 'pass/' + name)}.png", target)
+        texture_data[icon] = {'textures': [texture_path]}
+        for base in bases:
+            identifier = f'taxsmp:pass_{name}_{base}'
+            assert identifier not in identifiers
+            identifiers.add(identifier)
+            items.setdefault('minecraft:' + base, []).append({
+                'type': 'definition', 'model': 'taxsmp:pass/' + name, 'bedrock_identifier': identifier,
+                'display_name': name.replace('_', ' ').title(),
+                'bedrock_options': {'icon': icon, 'creative_category': 'none'},
+            })
     for name, (base, display_name) in TOOL_ITEMS.items():
         icon = 'taxsmp_tool_' + name
         texture_path = 'textures/items/taxsmp/tool_' + name

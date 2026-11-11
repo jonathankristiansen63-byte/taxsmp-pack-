@@ -97,6 +97,71 @@
         "textures/items/taxsmp/gem"
       ]
     },
+    "taxsmp_pass_money": {
+      "textures": [
+        "textures/items/taxsmp/pass_money"
+      ]
+    },
+    "taxsmp_pass_key_common": {
+      "textures": [
+        "textures/items/taxsmp/pass_key_common"
+      ]
+    },
+    "taxsmp_pass_key_spawner": {
+      "textures": [
+        "textures/items/taxsmp/pass_key_spawner"
+      ]
+    },
+    "taxsmp_pass_key_crimson": {
+      "textures": [
+        "textures/items/taxsmp/pass_key_crimson"
+      ]
+    },
+    "taxsmp_pass_key_chicken": {
+      "textures": [
+        "textures/items/taxsmp/pass_key_chicken"
+      ]
+    },
+    "taxsmp_pass_key_god": {
+      "textures": [
+        "textures/items/taxsmp/pass_key_god"
+      ]
+    },
+    "taxsmp_pass_key_tax": {
+      "textures": [
+        "textures/items/taxsmp/pass_key_tax"
+      ]
+    },
+    "taxsmp_pass_premium": {
+      "textures": [
+        "textures/items/taxsmp/pass_premium"
+      ]
+    },
+    "taxsmp_pass_premium_locked": {
+      "textures": [
+        "textures/items/taxsmp/pass_premium_locked"
+      ]
+    },
+    "taxsmp_pass_free": {
+      "textures": [
+        "textures/items/taxsmp/pass_free"
+      ]
+    },
+    "taxsmp_pass_lv_done": {
+      "textures": [
+        "textures/items/taxsmp/pass_lv_done"
+      ]
+    },
+    "taxsmp_pass_lv_now": {
+      "textures": [
+        "textures/items/taxsmp/pass_lv_now"
+      ]
+    },
+    "taxsmp_pass_lv_locked": {
+      "textures": [
+        "textures/items/taxsmp/pass_lv_locked"
+      ]
+    },
     "taxsmp_tool_sell_axe": {
       "textures": [
         "textures/items/taxsmp/tool_sell_axe"
